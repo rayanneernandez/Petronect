@@ -445,9 +445,7 @@
   .filter-row { display: flex; flex-direction: column; gap: 10px; }
   .filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 2px 0; }
   .filter-label { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; margin-right: 4px; }
-  .chip-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-  .chip-btn:hover:not(.active) { border-color: var(--green); color: var(--text); }
-  .chip-btn.active { background: var(--green); border-color: var(--green); color: #0B1B4A; }
+  .filter-select { background: #FFFFFF; border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; outline: none; cursor: pointer; min-width: 160px; }
   /* Scroll containers */
   .scroll-list { max-height: 480px; overflow-y: auto; }
   .table-scroll-wrap { overflow-x: auto; overflow-y: auto; max-height: 360px; }
@@ -2353,18 +2351,22 @@
 
       <div class="card" style="margin-bottom:14px; padding:14px 18px;">
         <div class="filter-row">
-          <div class="filter-group" id="alertTypeTabs">
+          <div class="filter-group">
             <span class="filter-label">Tipo</span>
-            <button class="chip-btn active" data-type="all">Todos</button>
-            <button class="chip-btn" data-type="comercial">Comercial</button>
-            <button class="chip-btn" data-type="seguranca">Segurança</button>
+            <select id="alertTypeFilter" class="filter-select">
+              <option value="all">Todos</option>
+              <option value="comercial">Comercial</option>
+              <option value="seguranca">Segurança</option>
+            </select>
           </div>
-          <div class="filter-group" id="alertStatusTabs">
+          <div class="filter-group">
             <span class="filter-label">Status</span>
-            <button class="chip-btn" data-status="aberto">Novos</button>
-            <button class="chip-btn" data-status="atendimento">Em atendimento</button>
-            <button class="chip-btn" data-status="resolvido">Resolvidos</button>
-            <button class="chip-btn active" data-status="all">Todos</button>
+            <select id="alertStatusFilter" class="filter-select">
+              <option value="all">Todos</option>
+              <option value="aberto">Novos</option>
+              <option value="atendimento">Em atendimento</option>
+              <option value="resolvido">Resolvidos</option>
+            </select>
           </div>
         </div>
       </div>
@@ -2378,6 +2380,11 @@
           </div>
         </div>
       </div>
+
+      <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:12.5px; color:var(--text-2); cursor:pointer; width:fit-content;">
+        <input type="checkbox" id="alertSelectAll" style="accent-color:var(--green); width:15px; height:15px; cursor:pointer;">
+        Selecionar todos
+      </label>
 
       <div class="card scroll-list" id="alertList">
         <!-- alert_8371 — Tech Supplies, CRÍTICA, NOVO -->
@@ -3552,48 +3559,38 @@ document.querySelectorAll('[data-resolve]').forEach(btn => {
   });
 });
 
-/* ---------- Alertas: filtros por tipo e status (multi-seleção) ---------- */
-function activeValues(groupEl, attr) {
-  return [...groupEl.querySelectorAll('.chip-btn.active')].map(b => b.getAttribute(attr));
-}
+/* ---------- Alertas: filtros por tipo e status ---------- */
 function applyAlertFilters() {
-  const typeGroup = document.getElementById('alertTypeTabs');
-  const statusGroup = document.getElementById('alertStatusTabs');
-  const types = activeValues(typeGroup, 'data-type');
-  const statuses = activeValues(statusGroup, 'data-status');
-  const typeIsAll = types.length === 0 || types.includes('all');
-  const statusIsAll = statuses.length === 0 || statuses.includes('all');
+  const type = document.getElementById('alertTypeFilter').value;
+  const status = document.getElementById('alertStatusFilter').value;
   document.querySelectorAll('#alertList [data-alert]').forEach(el => {
-    const typeOk = typeIsAll || types.includes(el.getAttribute('data-type'));
-    const statusOk = statusIsAll || statuses.includes(el.getAttribute('data-status'));
+    const typeOk = type === 'all' || el.getAttribute('data-type') === type;
+    const statusOk = status === 'all' || el.getAttribute('data-status') === status;
     el.classList.toggle('row-hidden', !(typeOk && statusOk));
   });
   updateBulkBar();
 }
-function setupChipGroup(groupEl) {
-  const btns = groupEl.querySelectorAll('.chip-btn');
-  const allBtn = [...btns].find(b => b.getAttribute('data-type') === 'all' || b.getAttribute('data-status') === 'all');
-  btns.forEach(btn => btn.addEventListener('click', function () {
-    if (this === allBtn) {
-      btns.forEach(b => b.classList.toggle('active', b === allBtn));
-    } else {
-      this.classList.toggle('active');
-      const othersActive = [...btns].some(b => b !== allBtn && b.classList.contains('active'));
-      allBtn.classList.toggle('active', !othersActive);
-    }
-    applyAlertFilters();
-  }));
-}
-setupChipGroup(document.getElementById('alertTypeTabs'));
-setupChipGroup(document.getElementById('alertStatusTabs'));
+document.getElementById('alertTypeFilter').addEventListener('change', applyAlertFilters);
+document.getElementById('alertStatusFilter').addEventListener('change', applyAlertFilters);
 
 /* ---------- Alertas: seleção em lote ---------- */
 function updateBulkBar() {
   const checked = document.querySelectorAll('#alertList .alert-check:checked');
   document.getElementById('bulkBar').style.display = checked.length ? 'block' : 'none';
   document.getElementById('bulkCount').textContent = checked.length;
+  const visible = [...document.querySelectorAll('#alertList [data-alert]')].filter(el => !el.classList.contains('row-hidden'));
+  const visibleChecked = visible.filter(el => el.querySelector('.alert-check').checked);
+  const selectAll = document.getElementById('alertSelectAll');
+  selectAll.checked = visible.length > 0 && visibleChecked.length === visible.length;
+  selectAll.indeterminate = visibleChecked.length > 0 && visibleChecked.length < visible.length;
 }
 document.querySelectorAll('.alert-check').forEach(cb => cb.addEventListener('change', updateBulkBar));
+document.getElementById('alertSelectAll').addEventListener('change', function () {
+  document.querySelectorAll('#alertList [data-alert]').forEach(el => {
+    if (!el.classList.contains('row-hidden')) el.querySelector('.alert-check').checked = this.checked;
+  });
+  updateBulkBar();
+});
 document.getElementById('bulkResolve').addEventListener('click', () => {
   document.querySelectorAll('#alertList .alert-check:checked').forEach(cb => {
     const alertEl = cb.closest('[data-alert]');
