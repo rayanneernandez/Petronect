@@ -1064,6 +1064,107 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   });
 });
 
+/* ---------- Automação: regras controláveis ---------- */
+(function() {
+  const STORAGE_KEY = 'petronect_automacao_regras';
+  const GATILHO_LABEL = {
+    score_necessidade: 'Score de necessidade',
+    prazo_horas_restantes: 'Prazo restante (horas)',
+    horas_sem_atividade: 'Horas sem atividade',
+    score_risco_trafego: 'Score de risco de tráfego',
+  };
+  const ACAO_LABEL = {
+    enviar_whatsapp: 'enviar mensagem no WhatsApp',
+    criar_alerta_crm: 'criar alerta no CRM',
+    notificar_reengajamento: 'disparar notificação de reengajamento',
+    sinalizar_seguranca: 'sinalizar pra equipe de segurança',
+  };
+  const DEFAULT_RULES = [
+    { id: 'score-alto', nome: 'Score de necessidade alto', gatilho: 'score_necessidade', condicao: { operador: '>=', valor: 80 }, acao: 'enviar_whatsapp', ativo: true },
+    { id: 'prazo-curto', nome: 'Prazo do edital acabando', gatilho: 'prazo_horas_restantes', condicao: { operador: '<=', valor: 26 }, acao: 'criar_alerta_crm', ativo: true },
+    { id: 'rascunho-parado', nome: 'Proposta em rascunho parada', gatilho: 'horas_sem_atividade', condicao: { operador: '>=', valor: 6 }, acao: 'notificar_reengajamento', ativo: true },
+    { id: 'trafego-suspeito', nome: 'Padrão de tráfego suspeito', gatilho: 'score_risco_trafego', condicao: { operador: '>=', valor: 70 }, acao: 'sinalizar_seguranca', ativo: false },
+  ];
+
+  let rules = null;
+
+  function loadFromStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function saveToStorage() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rules)); } catch (e) {}
+  }
+
+  async function initRules() {
+    const cached = loadFromStorage();
+    if (cached) { rules = cached; render(); return; }
+    try {
+      const resp = await fetch('/api/automacao/regras');
+      const data = await resp.json();
+      rules = data.regras;
+    } catch (e) {
+      rules = DEFAULT_RULES;
+    }
+    saveToStorage();
+    render();
+  }
+
+  function describeRule(r) {
+    return 'Se ' + (GATILHO_LABEL[r.gatilho] || r.gatilho) + ' ' + r.condicao.operador + ' ' + r.condicao.valor + ', então ' + (ACAO_LABEL[r.acao] || r.acao) + '.';
+  }
+
+  function render() {
+    const list = document.getElementById('automacaoRulesList');
+    if (!list) return;
+    list.innerHTML = rules.map(function(r) {
+      return '<div class="automacao-rule' + (r.ativo ? '' : ' is-off') + '" data-rule-id="' + r.id + '">' +
+        '<div><div class="automacao-rule-title">' + r.nome + '</div><div class="automacao-rule-desc">' + describeRule(r) + '</div></div>' +
+        '<div class="automacao-rule-actions">' +
+          '<button class="switch' + (r.ativo ? ' on' : '') + '" data-rule-toggle></button>' +
+          '<button class="automacao-del-btn" data-rule-delete title="Remover regra"><i class="fa-regular fa-trash-can"></i></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    list.querySelectorAll('[data-rule-toggle]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const id = this.closest('[data-rule-id]').getAttribute('data-rule-id');
+        const rule = rules.find(function(r) { return r.id === id; });
+        rule.ativo = !rule.ativo;
+        saveToStorage();
+        render();
+        showToast(rule.nome + (rule.ativo ? ': automação ligada' : ': automação desligada, só recomendação'));
+      });
+    });
+    list.querySelectorAll('[data-rule-delete]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const id = this.closest('[data-rule-id]').getAttribute('data-rule-id');
+        rules = rules.filter(function(r) { return r.id !== id; });
+        saveToStorage();
+        render();
+        showToast('Regra removida');
+      });
+    });
+  }
+
+  document.getElementById('novaRegraAddBtn').addEventListener('click', function() {
+    const gatilho = document.getElementById('novaRegraGatilho').value;
+    const operador = document.getElementById('novaRegraOperador').value;
+    const valor = Number(document.getElementById('novaRegraValor').value) || 0;
+    const acao = document.getElementById('novaRegraAcao').value;
+    const nome = GATILHO_LABEL[gatilho] + ' ' + operador + ' ' + valor;
+    rules.push({ id: 'regra-' + Date.now(), nome: nome, gatilho: gatilho, condicao: { operador: operador, valor: valor }, acao: acao, ativo: true });
+    saveToStorage();
+    render();
+    showToast('Nova regra de automação criada e já ativa');
+  });
+
+  initRules();
+})();
+
 /* ---------- Integrações & API ---------- */
 (function() {
   const tokenField = document.getElementById('apiTokenField');
@@ -1087,20 +1188,57 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     try { navigator.clipboard.writeText(tokenField.value); } catch (e) {}
     showToast('Token copiado para a área de transferência');
   });
+  document.getElementById('apiHealthCheckBtn').addEventListener('click', async function() {
+    const resultEl = document.getElementById('apiHealthResult');
+    this.disabled = true;
+    resultEl.textContent = 'Consultando /api/health...';
+    try {
+      const resp = await fetch('/api/health');
+      const data = await resp.json();
+      resultEl.innerHTML = '<span style="color:var(--green); font-weight:700;">● Online</span> · resposta real da API às ' + new Date(data.timestamp).toLocaleTimeString('pt-BR');
+      showToast('Backend real respondeu: status ' + resp.status);
+    } catch (e) {
+      resultEl.innerHTML = '<span style="color:var(--amber); font-weight:700;">● Sem conexão</span> · este endpoint só existe quando publicado na Vercel (não em preview local)';
+      showToast('Não foi possível alcançar /api/health neste preview');
+    }
+    this.disabled = false;
+  });
   document.getElementById('apiTokenRegenBtn').addEventListener('click', function() {
     const activeEnv = document.querySelector('#apiEnvTabs .tab-btn.active').getAttribute('data-env');
     tokenField.value = randomToken(activeEnv === 'producao' ? 'pna_live' : 'pna_sandbox');
     showToast('Novo token gerado. O anterior foi revogado');
   });
-  document.getElementById('webhookTestBtn').addEventListener('click', () => {
+  document.getElementById('webhookTestBtn').addEventListener('click', async function() {
     const url = document.getElementById('webhookUrlField').value.trim();
     if (!url) { showToast('Informe a URL do webhook antes de testar'); return; }
     const list = document.getElementById('apiLogList');
+    const label = url.replace(/^https?:\/\//, '').slice(0, 34);
+    const btn = this;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    let statusCode = 200;
+    let realApi = false;
+    try {
+      const resp = await fetch('/api/webhook/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo: 'abandono_detectado', destino: url }),
+      });
+      statusCode = resp.status;
+      realApi = true;
+    } catch (e) {
+      statusCode = 200; // API só existe quando publicado na Vercel; em preview local, simula
+    }
+
     const row = document.createElement('div');
     row.className = 'dh-row';
-    row.innerHTML = '<span><span style="color:var(--green); font-weight:700;">200</span> POST ' + url.replace(/^https?:\/\//, '').slice(0, 34) + '</span><span>agora</span>';
+    row.innerHTML = '<span><span style="color:' + (statusCode < 400 ? 'var(--green)' : 'var(--red)') + '; font-weight:700;">' + statusCode + '</span> POST ' + label + (realApi ? ' <em style="color:var(--text-3); font-style:normal;">(API real)</em>' : '') + '</span><span>agora</span>';
     list.insertBefore(row, list.firstChild);
-    showToast('Evento de teste enviado para o webhook');
+    showToast(realApi ? 'Evento de teste processado pela API real (/api/webhook/test)' : 'Evento de teste enviado para o webhook (simulado neste preview)');
+    btn.disabled = false;
+    btn.textContent = original;
   });
 })();
 

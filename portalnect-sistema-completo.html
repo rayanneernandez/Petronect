@@ -526,6 +526,7 @@
       <img src="assets/logo-petronect.jpg" alt="Petronect" class="brand-logo-img">
     </div>
 
+    <div class="sidebar-nav-scroll">
     <div class="nav-label">Painel</div>
     <nav>
       <button type="button" class="nav-link active" data-page="visao"><i class="fa-solid fa-grip"></i> Visão geral</button>
@@ -540,6 +541,7 @@
       <button type="button" class="nav-link" data-page="copiloto"><i class="fa-solid fa-route"></i> Agente de Reengajamento</button>
       <button type="button" class="nav-link" data-page="alertas"><i class="fa-solid fa-bell"></i> Alertas e ações <span class="badge">3</span></button>
       <button type="button" class="nav-link" data-page="comunicacao"><i class="fa-regular fa-paper-plane"></i> Comunicação segmentada</button>
+      <button type="button" class="nav-link" data-page="automacao"><i class="fa-solid fa-robot"></i> Automação</button>
     </nav>
 
     <div class="nav-label">Sistema</div>
@@ -548,6 +550,7 @@
       <button type="button" class="nav-link" data-page="integracoes"><i class="fa-solid fa-plug-circle-bolt"></i> Integrações &amp; API</button>
       <button type="button" class="nav-link" data-page="config"><i class="fa-solid fa-gear"></i> Configurações</button>
     </nav>
+    </div>
 
     <div class="sidebar-user">
       <div class="av" id="userAvatar">AT</div>
@@ -1814,6 +1817,57 @@
       </div>
     </div>
 
+    <!-- ---------- PAGE: AUTOMAÇÃO ---------- -->
+    <div class="page hidden" id="page-automacao">
+      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Automação</b></div>
+      <div class="header-row">
+        <div class="header-left"><h1>Automação</h1><div class="sub">Configure quando o sistema age sozinho e quando ele só recomenda</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px; border-color:var(--green); background:var(--green-soft);">
+        <p style="font-size:12px; color:var(--text-2); margin:0;"><i class="fa-solid fa-circle-info" style="color:var(--green); margin-right:4px;"></i>Cada regra abaixo é <strong style="color:var(--text);">gatilho → condição → ação</strong>. Desligada, ela só aparece como recomendação para a equipe revisar; ligada, a ação roda sozinha. Essas regras vêm de um endpoint real (<code style="background:var(--panel-2); padding:1px 5px; border-radius:4px; font-size:11px;">/api/automacao/regras</code>); por enquanto seus ajustes ficam salvos neste navegador, prontos para migrar pra um banco de verdade no futuro.</p>
+      </div>
+
+      <div class="section-label">REGRAS ATIVAS</div>
+      <div id="automacaoRulesList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;"></div>
+
+      <div class="card">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-plus"></i> Nova regra</div></div>
+        <div style="display:grid; grid-template-columns:1.4fr 0.7fr 0.7fr 1.4fr auto; gap:8px; align-items:end;">
+          <div class="field" style="margin:0;">
+            <label>Gatilho</label>
+            <select id="novaRegraGatilho" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+              <option value="score_necessidade">Score de necessidade</option>
+              <option value="prazo_horas_restantes">Prazo restante (horas)</option>
+              <option value="horas_sem_atividade">Horas sem atividade</option>
+              <option value="score_risco_trafego">Score de risco de tráfego</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Operador</label>
+            <select id="novaRegraOperador" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+              <option value=">=">≥</option>
+              <option value="<=">≤</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Valor</label>
+            <input type="number" id="novaRegraValor" value="70" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Ação</label>
+            <select id="novaRegraAcao" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+              <option value="enviar_whatsapp">Enviar mensagem no WhatsApp</option>
+              <option value="criar_alerta_crm">Criar alerta no CRM</option>
+              <option value="notificar_reengajamento">Disparar notificação de reengajamento</option>
+              <option value="sinalizar_seguranca">Sinalizar pra equipe de segurança</option>
+            </select>
+          </div>
+          <button class="row-action-btn" id="novaRegraAddBtn" style="background:var(--green-soft); border-color:var(--green); color:var(--green); height:38px;">Adicionar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: INTEGRAÇÕES & API ---------- -->
     <div class="page hidden" id="page-integracoes">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Integrações &amp; API</b></div>
@@ -1837,10 +1891,11 @@
             </div>
             <button class="row-action-btn" id="apiTokenCopyBtn" title="Copiar"><i class="fa-regular fa-copy"></i></button>
           </div>
-          <div style="display:flex; gap:8px; margin-top:10px;">
+          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
             <button class="row-action-btn" id="apiTokenRegenBtn"><i class="fa-solid fa-rotate"></i> Gerar novo token</button>
-            <span style="font-size:11px; color:var(--text-3); align-self:center;">Última geração: há 12 dias</span>
+            <button class="row-action-btn" id="apiHealthCheckBtn"><i class="fa-solid fa-heart-pulse"></i> Testar conexão</button>
           </div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:8px;" id="apiHealthResult">Última geração: há 12 dias</div>
         </div>
 
         <div class="card">
