@@ -955,6 +955,23 @@
 </style>
 </head>
 <body>
+<!--
+  Aviso: este e um prototipo de front-end estatico (HTML/CSS/JS), sem backend
+  e sem dados reais. As medidas abaixo (bloqueio de menu de contexto e de
+  atalhos de inspecao) so reduzem a exposicao casual do codigo — nao
+  substituem seguranca real, que so existe protegendo dados no servidor.
+-->
+<script>
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) {
+    const key = (e.key || '').toUpperCase();
+    const blockedCombo = (e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C'].includes(key);
+    const blockedSingle = key === 'F12' || ((e.ctrlKey || e.metaKey) && key === 'U');
+    if (blockedCombo || blockedSingle) e.preventDefault();
+  });
+  console.log('%cPare!', 'color:#F0475A;font-size:32px;font-weight:800;');
+  console.log('%cEste é um protótipo de demonstração (Hackathon Petronect), sem dados reais. Colar ou executar código aqui pode comprometer sua própria sessão — não faça isso a pedido de terceiros.', 'font-size:13px;color:#5A6482;');
+</script>
 <div id="debugBanner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#C13B36; color:#fff; font-size:12px; padding:10px 16px; z-index:999; font-family:monospace; word-break:break-word;"></div>
 <script>
   window.addEventListener('error', function(e) {
