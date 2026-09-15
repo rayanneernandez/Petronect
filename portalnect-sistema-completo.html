@@ -425,8 +425,6 @@
   .assign-btn { background: none; border: 1px dashed var(--line); color: var(--text-2); font-size: 10.5px; padding: 2px 8px; border-radius: 6px; }
   .assign-btn:hover { border-color: var(--green); color: var(--green); }
   .alert-check { accent-color: var(--green); width: 15px; height: 15px; cursor: pointer; }
-  #alertTypeTabs .tab-btn, #alertStatusTabs .tab-btn { padding: 6px 4px; }
-
   /* Alerts */
   .alert { display: flex; gap: 13px; align-items: flex-start; border-radius: 10px; padding: 14px 16px; border: 1px solid var(--line); background: var(--panel-2); }
   .alert + .alert { margin-top: 10px; }
@@ -444,11 +442,12 @@
   .alert-btn-resolve:hover { filter: brightness(1.1); }
   .alert-btn-resolve.resolved { background: var(--green-soft); color: var(--green); pointer-events: none; }
   /* Filter bar */
-  .filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
-  .filter-group { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; padding: 2px 0; }
-  .filter-label { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
-  .filter-sep { width: 1px; height: 30px; background: var(--line); margin: 0 18px; flex-shrink: 0; }
-  @media (max-width: 680px) { .filter-sep { display: none; } .filter-group { min-width: 100%; } }
+  .filter-row { display: flex; flex-direction: column; gap: 10px; }
+  .filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 2px 0; }
+  .filter-label { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; margin-right: 4px; }
+  .chip-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+  .chip-btn:hover:not(.active) { border-color: var(--green); color: var(--text); }
+  .chip-btn.active { background: var(--green); border-color: var(--green); color: #0B1B4A; }
   /* Scroll containers */
   .scroll-list { max-height: 480px; overflow-y: auto; }
   .table-scroll-wrap { overflow-x: auto; overflow-y: auto; max-height: 360px; }
@@ -1273,7 +1272,7 @@
       <ul class="auth-split-bullets">
         <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
         <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
-        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
+        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Agente de Reengajamento</li>
       </ul>
 
       <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
@@ -1357,7 +1356,7 @@
       <ul class="auth-split-bullets">
         <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
         <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
-        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
+        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Agente de Reengajamento</li>
       </ul>
 
       <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
@@ -1410,7 +1409,7 @@
       <ul class="auth-split-bullets">
         <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
         <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
-        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
+        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Agente de Reengajamento</li>
       </ul>
 
       <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
@@ -1553,7 +1552,7 @@
 
     <div class="nav-label">Ação</div>
     <nav>
-      <button type="button" class="nav-link" data-page="copiloto"><i class="fa-solid fa-route"></i> Copiloto de IA</button>
+      <button type="button" class="nav-link" data-page="copiloto"><i class="fa-solid fa-route"></i> Agente de Reengajamento</button>
       <button type="button" class="nav-link" data-page="alertas"><i class="fa-solid fa-bell"></i> Alertas e ações <span class="badge">3</span></button>
       <button type="button" class="nav-link" data-page="comunicacao"><i class="fa-regular fa-paper-plane"></i> Comunicação segmentada</button>
     </nav>
@@ -1661,7 +1660,7 @@
           </div>
           <div class="card-footer-links">
             <button class="link-inline" id="verTodosEditaisBtn">[Ver todos os editais]</button> |
-            <button class="link-inline" id="acionarCopilotoRadarBtn">[Acionar Copiloto de IA]</button>
+            <button class="link-inline" id="acionarCopilotoRadarBtn">[Acionar Agente de Reengajamento]</button>
           </div>
         </div>
 
@@ -1697,9 +1696,9 @@
 
     <!-- ---------- PAGE: COPILOTO DE IA ---------- -->
     <div class="page hidden" id="page-copiloto">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Copiloto de IA</b></div>
+      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Agente de Reengajamento</b></div>
       <div class="header-row">
-        <div class="header-left"><h1>Copiloto de Reengajamento</h1><div class="sub">Fila priorizada por Score de Necessidade de Contato</div></div>
+        <div class="header-left"><h1>Agente de Reengajamento</h1><div class="sub">Fila priorizada por Score de Necessidade de Contato</div></div>
       </div>
 
       <div class="kpis" style="grid-template-columns:repeat(4,1fr); margin-bottom:14px;">
@@ -1889,7 +1888,7 @@
           <button class="row-action-btn" style="margin-top:8px;" id="verGargalosBtn">Ver detalhes</button>
         </div>
         <div class="kpi" style="border-color:var(--green);">
-          <div class="klabel"><i class="fa-solid fa-route" style="color:var(--green);"></i> Copiloto de IA</div>
+          <div class="klabel"><i class="fa-solid fa-route" style="color:var(--green);"></i> Agente de Reengajamento</div>
           <div class="kvalue">05 <span style="font-size:12px; font-weight:500; color:var(--text-2);">ações sugeridas</span></div>
           <button class="row-action-btn" style="margin-top:8px; background:var(--green-soft); border-color:var(--green); color:var(--green);" id="acionarReengajamentoBtn">Acionar Reengajamento</button>
         </div>
@@ -2075,7 +2074,7 @@
 
         <!-- Grupo 1: Alta intenção + fricção -->
         <div class="status-group-card" id="sgc-risk-friction"
-             data-sgkey="risk-friction" data-action="Alertar atendimento / Acionar Copiloto"
+             data-sgkey="risk-friction" data-action="Alertar atendimento / Acionar Agente"
              data-suppliers="pt-1,pt-2">
           <div class="sgc-top">
             <span class="tag risk">Alta intenção + fricção</span>
@@ -2089,7 +2088,7 @@
             </div>
             <div class="sgc-meta">
               Ação sugerida:<br>
-              <strong>Alertar atendimento / Acionar Copiloto</strong>
+              <strong>Alertar atendimento / Acionar Agente</strong>
             </div>
           </div>
           <div class="bar-track"><div class="bar-fill" style="width:92%; background:var(--red);"></div></div>
@@ -2245,12 +2244,12 @@
             <tr id="pt-1" data-sgkey="risk-friction" data-score="92" data-profile="risk"
                 data-cnpj="12.345.678/0001-90" data-contrato="EDT-2026-1024" data-porte="Médio" data-categoria="Equip. Industriais"
                 data-intencao="90" data-friccao="95" data-inatividade="25" data-valor="96"
-                data-acao="Acionar Copiloto" data-goto-copiloto="true">
+                data-acao="Acionar Agente" data-goto-copiloto="true">
               <td class="company">Tech Supplies Distribuidora<span class="subrow">CNPJ 12.345.678/0001-90 · Médio · Equip. Industriais</span></td>
               <td><span class="tag risk">Alta intenção + fricção</span></td>
               <td><div class="score"><div class="track"><div class="fill high" style="width:92%;"></div></div>92 <span class="trend up">↑ 6</span></div></td>
-              <td style="color:var(--text-2);">Acionar Copiloto</td>
-              <td style="text-align:right;"><button class="row-action-btn pt-acionar" data-goto-copiloto="true">Acionar Copiloto</button></td>
+              <td style="color:var(--text-2);">Acionar Agente</td>
+              <td style="text-align:right;"><button class="row-action-btn pt-acionar" data-goto-copiloto="true">Acionar Agente</button></td>
             </tr>
 
             <tr id="pt-2" data-sgkey="risk-friction" data-score="88" data-profile="risk"
@@ -2352,25 +2351,20 @@
         <div class="header-left"><h1>Alertas e ações</h1><div class="sub">Disparados por padrão de comportamento, não por volume de cliques</div></div>
       </div>
 
-      <div class="card" style="margin-bottom:14px; padding:12px 18px;">
+      <div class="card" style="margin-bottom:14px; padding:14px 18px;">
         <div class="filter-row">
-          <div class="filter-group">
+          <div class="filter-group" id="alertTypeTabs">
             <span class="filter-label">Tipo</span>
-            <div class="tabs" id="alertTypeTabs" style="border-bottom:none;">
-              <button class="tab-btn active" data-type="all">Todos</button>
-              <button class="tab-btn" data-type="comercial">Comercial</button>
-              <button class="tab-btn" data-type="seguranca">Segurança</button>
-            </div>
+            <button class="chip-btn active" data-type="all">Todos</button>
+            <button class="chip-btn" data-type="comercial">Comercial</button>
+            <button class="chip-btn" data-type="seguranca">Segurança</button>
           </div>
-          <div class="filter-sep"></div>
-          <div class="filter-group">
+          <div class="filter-group" id="alertStatusTabs">
             <span class="filter-label">Status</span>
-            <div class="tabs" id="alertStatusTabs" style="border-bottom:none;">
-              <button class="tab-btn active" data-status="aberto">Novos</button>
-              <button class="tab-btn" data-status="atendimento">Em atendimento</button>
-              <button class="tab-btn" data-status="resolvido">Resolvidos</button>
-              <button class="tab-btn" data-status="all">Todos</button>
-            </div>
+            <button class="chip-btn" data-status="aberto">Novos</button>
+            <button class="chip-btn" data-status="atendimento">Em atendimento</button>
+            <button class="chip-btn" data-status="resolvido">Resolvidos</button>
+            <button class="chip-btn active" data-status="all">Todos</button>
           </div>
         </div>
       </div>
@@ -2481,7 +2475,7 @@
     <div class="page hidden" id="page-arquitetura">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Arquitetura da solução</b></div>
       <div class="header-row">
-        <div class="header-left"><h1>Jornada de Acesso e Ação Inteligente</h1><div class="sub">3 fases: Camada de Borda → Product Analytics → Copiloto de IA</div></div>
+        <div class="header-left"><h1>Jornada de Acesso e Ação Inteligente</h1><div class="sub">3 fases: Camada de Borda → Product Analytics → Agente de Reengajamento</div></div>
       </div>
 
       <!-- FASE 1 -->
@@ -2519,7 +2513,7 @@
 
       <!-- FASE 3 -->
       <div class="card">
-        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-route"></i> Fase 3 — Inteligência Artificial (Copiloto de Reengajamento)</div></div>
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-route"></i> Fase 3 — Inteligência Artificial (Agente de Reengajamento)</div></div>
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
           <div class="arch-box">Coletar contexto do abandono</div>
           <div class="arch-arrow">→</div>
@@ -2655,7 +2649,7 @@
           <div class="stack-layer-label">3 · Back-End Serverless</div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div class="stack-box"><b>API Gateway &amp; Functions</b><em>Node.js (Serverless)</em><p>Regras de negócio, autenticação e recepção de eventos.</p></div>
-            <div class="stack-box highlight"><b>Agente de IA (Copiloto)</b><em>Node.js + LLM API (Gemini/OpenAI)</em><p>Interpreta logs de abandono e gera diagnóstico + mensagem amigável.</p></div>
+            <div class="stack-box highlight"><b>Agente de Reengajamento (IA)</b><em>Node.js + LLM API (Gemini/OpenAI)</em><p>Interpreta logs de abandono e gera diagnóstico + mensagem amigável.</p></div>
           </div>
         </div>
         <div class="stack-flow">↓ persiste eventos e estado da jornada (SDK AWS/Azure)</div>
@@ -3159,7 +3153,7 @@ document.querySelectorAll('#evolucaoGranularity .tab-btn').forEach(btn => {
 document.getElementById('verTodosEditaisBtn').addEventListener('click', () => showToast('Abrindo lista completa de editais (simulado)'));
 document.getElementById('acionarCopilotoRadarBtn').addEventListener('click', () => {
   document.querySelector('.nav-link[data-page="copiloto"]').click();
-  showToast('Abrindo Copiloto de IA');
+  showToast('Abrindo Agente de Reengajamento');
 });
 document.getElementById('verLogErrosBtn').addEventListener('click', () => {
   document.querySelector('.nav-link[data-page="trafego"]').click();
@@ -3198,7 +3192,7 @@ document.getElementById('jornadaTrafego').addEventListener('change', function() 
 document.getElementById('verGargalosBtn').addEventListener('click', () => openJornadaStage('iniciou'));
 document.getElementById('acionarReengajamentoBtn').addEventListener('click', () => {
   document.querySelector('.nav-link[data-page="copiloto"]').click();
-  showToast('Abrindo Copiloto de IA com os 5 casos sugeridos');
+  showToast('Abrindo Agente de Reengajamento com os 5 casos sugeridos');
 });
 
 /* ---------- Jornada: drill-down por etapa do funil ---------- */
@@ -3206,17 +3200,17 @@ const jornadaStageData = {
   buscou: { label: 'Buscou edital (111 usuários retidos)', rows: [
     ['55.222.111/0001-77','sess_44120987','Saída natural','Nenhuma ação'],
     ['71.020.998/0001-05','sess_99213345','Inatividade alta','Ver Linha do Tempo'],
-    ['12.900.567/0001-40','sess_10238845','Erro de validação','Acionar Copiloto IA']
+    ['12.900.567/0001-40','sess_10238845','Erro de validação','Acionar Agente']
   ]},
   detalhes: { label: 'Abriu detalhes (79 usuários retidos)', rows: [
-    ['12.345.678/0001-90','sess_88923411','Erro de validação','Acionar Copiloto IA'],
+    ['12.345.678/0001-90','sess_88923411','Erro de validação','Acionar Agente'],
     ['98.765.432/0001-12','sess_77492100','Inatividade alta','Ver Linha do Tempo'],
     ['45.123.789/0001-55','sess_55928122','Saída natural','Nenhuma ação']
   ]},
   iniciou: { label: 'Iniciou proposta (48 usuários retidos)', rows: [
-    ['44.111.222/0001-33','sess_36611200','Erro de validação','Acionar Copiloto IA'],
+    ['44.111.222/0001-33','sess_36611200','Erro de validação','Acionar Agente'],
     ['33.444.555/0001-22','sess_28873390','Inatividade alta','Ver Linha do Tempo'],
-    ['19.870.654/0001-08','sess_19022871','Erro de validação','Acionar Copiloto IA']
+    ['19.870.654/0001-08','sess_19022871','Erro de validação','Acionar Agente']
   ]},
   enviou: { label: 'Enviou proposta (28 usuários — sucesso)', rows: [
     ['98.765.432/0001-11','sess_60011238','Saída natural (sucesso)','Nenhuma ação'],
@@ -3242,9 +3236,9 @@ function openJornadaStage(stage) {
   document.querySelectorAll('[data-drilldown-action]').forEach(btn => {
     btn.addEventListener('click', function() {
       const action = this.getAttribute('data-drilldown-action');
-      if (action === 'Acionar Copiloto IA') {
+      if (action === 'Acionar Agente') {
         document.querySelector('.nav-link[data-page="copiloto"]').click();
-        showToast('Abrindo Copiloto de IA para este fornecedor');
+        showToast('Abrindo Agente de Reengajamento para este fornecedor');
       } else if (action === 'Ver Linha do Tempo') {
         showToast('Exibindo linha do tempo da sessão (simulado)');
       } else {
@@ -3502,7 +3496,7 @@ document.querySelectorAll('#perfilTableBody tr').forEach(row => {
     e.stopPropagation();
     if (row.getAttribute('data-goto-copiloto')) {
       document.querySelector('.nav-link[data-page="copiloto"]').click();
-      showToast('Abrindo Copiloto de IA para ' + row.querySelector('.company').childNodes[0].textContent.trim());
+      showToast('Abrindo Agente de Reengajamento para ' + row.querySelector('.company').childNodes[0].textContent.trim());
     } else {
       showToast('Ação disparada: ' + (row.getAttribute('data-acao') || ''));
       btnAcionar.textContent = 'Enviado ✓'; btnAcionar.disabled = true;
@@ -3558,27 +3552,40 @@ document.querySelectorAll('[data-resolve]').forEach(btn => {
   });
 });
 
-/* ---------- Alertas: filtros por tipo e status ---------- */
+/* ---------- Alertas: filtros por tipo e status (multi-seleção) ---------- */
+function activeValues(groupEl, attr) {
+  return [...groupEl.querySelectorAll('.chip-btn.active')].map(b => b.getAttribute(attr));
+}
 function applyAlertFilters() {
-  const typeBtn = document.querySelector('#alertTypeTabs .tab-btn.active');
-  const statusBtn = document.querySelector('#alertStatusTabs .tab-btn.active');
-  const type = typeBtn ? typeBtn.getAttribute('data-type') : 'all';
-  const status = statusBtn ? statusBtn.getAttribute('data-status') : 'all';
+  const typeGroup = document.getElementById('alertTypeTabs');
+  const statusGroup = document.getElementById('alertStatusTabs');
+  const types = activeValues(typeGroup, 'data-type');
+  const statuses = activeValues(statusGroup, 'data-status');
+  const typeIsAll = types.length === 0 || types.includes('all');
+  const statusIsAll = statuses.length === 0 || statuses.includes('all');
   document.querySelectorAll('#alertList [data-alert]').forEach(el => {
-    const typeOk = type === 'all' || el.getAttribute('data-type') === type;
-    const statusOk = status === 'all' || el.getAttribute('data-status') === status;
+    const typeOk = typeIsAll || types.includes(el.getAttribute('data-type'));
+    const statusOk = statusIsAll || statuses.includes(el.getAttribute('data-status'));
     el.classList.toggle('row-hidden', !(typeOk && statusOk));
   });
   updateBulkBar();
 }
-document.querySelectorAll('#alertTypeTabs .tab-btn').forEach(b => b.addEventListener('click', function() {
-  document.querySelectorAll('#alertTypeTabs .tab-btn').forEach(x => x.classList.remove('active'));
-  this.classList.add('active'); applyAlertFilters();
-}));
-document.querySelectorAll('#alertStatusTabs .tab-btn').forEach(b => b.addEventListener('click', function() {
-  document.querySelectorAll('#alertStatusTabs .tab-btn').forEach(x => x.classList.remove('active'));
-  this.classList.add('active'); applyAlertFilters();
-}));
+function setupChipGroup(groupEl) {
+  const btns = groupEl.querySelectorAll('.chip-btn');
+  const allBtn = [...btns].find(b => b.getAttribute('data-type') === 'all' || b.getAttribute('data-status') === 'all');
+  btns.forEach(btn => btn.addEventListener('click', function () {
+    if (this === allBtn) {
+      btns.forEach(b => b.classList.toggle('active', b === allBtn));
+    } else {
+      this.classList.toggle('active');
+      const othersActive = [...btns].some(b => b !== allBtn && b.classList.contains('active'));
+      allBtn.classList.toggle('active', !othersActive);
+    }
+    applyAlertFilters();
+  }));
+}
+setupChipGroup(document.getElementById('alertTypeTabs'));
+setupChipGroup(document.getElementById('alertStatusTabs'));
 
 /* ---------- Alertas: seleção em lote ---------- */
 function updateBulkBar() {
@@ -3633,7 +3640,7 @@ document.querySelectorAll('[data-detail]').forEach(btn => {
       if (idx >= 0) coCaseIndex = idx;
       document.querySelector('.nav-link[data-page="copiloto"]').click();
       if (idx >= 0) renderCase();
-      showToast('Abrindo caso no Copiloto de IA');
+      showToast('Abrindo caso no Agente de Reengajamento');
     } else {
       document.querySelector('.nav-link[data-page="trafego"]').click();
       showToast('Abrindo dossiê de segurança na Qualidade de Tráfego');
@@ -3652,7 +3659,7 @@ document.querySelectorAll('.alert-clickable').forEach(el => {
       if (idx >= 0) coCaseIndex = idx;
       document.querySelector('.nav-link[data-page="copiloto"]').click();
       if (idx >= 0) renderCase();
-      showToast('Abrindo caso no Copiloto de IA');
+      showToast('Abrindo caso no Agente de Reengajamento');
     } else {
       document.querySelector('.nav-link[data-page="trafego"]').click();
       showToast('Abrindo dossiê de segurança na Qualidade de Tráfego');
@@ -3682,7 +3689,7 @@ document.querySelectorAll('[data-toggle]').forEach(sw => {
 });
 
 /* ---------- Charts (created once app is shown) ---------- */
-/* ---------- Copiloto de IA: fila de casos ---------- */
+/* ---------- Agente de Reengajamento: fila de casos ---------- */
 const copilotoCases = [
   {
     nome: 'Tech Supplies Distribuidora Ltda', cnpj: '12.345.678/0001-90', categoria: 'Equipamentos Industriais', porte: 'Médio porte',
