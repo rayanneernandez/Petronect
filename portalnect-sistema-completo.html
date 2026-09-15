@@ -165,7 +165,7 @@
     font-weight: 800; font-size: 13px; color: #fff; flex-shrink: 0;
   }
   .brand-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
-  .brand-logo-img { height: 30px; width: auto; display: block; border-radius: 6px; }
+  .brand-logo-img { height: 46px; width: auto; display: block; border-radius: 6px; }
 
   .nav-label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); margin: 14px 10px 6px; }
   .nav-label:first-of-type { margin-top: 0; }
@@ -259,6 +259,7 @@
   .ph-plus { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed var(--text-3); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
   .whatsapp-float {
+    display: none;
     position: fixed; right: 24px; bottom: 24px; z-index: 1000;
     width: 56px; height: 56px; border-radius: 50%; background: #25D366;
     display: flex; align-items: center; justify-content: center;
@@ -430,9 +431,22 @@
   .alert p { margin: 0; font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
   .alert .when { font-size: 11px; color: var(--text-3); white-space: nowrap; margin-left: auto; padding-left: 12px; }
   .alert.resolved { opacity: 0.45; }
-  .alert-actions { display: flex; gap: 8px; margin-left: 10px; }
-  .alert-actions button { background: var(--panel); border: 1px solid var(--line); color: var(--text-2); font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 6px; white-space: nowrap; }
-  .alert-actions button:hover { color: #fff; border-color: var(--green); }
+  .alert-actions { display: flex; gap: 7px; margin-left: 10px; flex-direction: column; justify-content: center; }
+  .alert-btn-detail { background: var(--panel); border: 1.5px solid var(--line); color: var(--text-2); font-size: 11.5px; font-weight: 600; padding: 6px 13px; border-radius: 8px; white-space: nowrap; display:flex; align-items:center; gap:5px; transition: all 0.15s; }
+  .alert-btn-detail:hover { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  .alert-btn-resolve { background: var(--green); border: none; color: #fff; font-size: 11.5px; font-weight: 700; padding: 6px 13px; border-radius: 8px; white-space: nowrap; display:flex; align-items:center; gap:5px; transition: all 0.15s; }
+  .alert-btn-resolve:hover { filter: brightness(1.1); }
+  .alert-btn-resolve.resolved { background: var(--green-soft); color: var(--green); pointer-events: none; }
+  /* Filter bar */
+  .filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
+  .filter-group { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; padding: 2px 0; }
+  .filter-label { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+  .filter-sep { width: 1px; height: 30px; background: var(--line); margin: 0 18px; flex-shrink: 0; }
+  @media (max-width: 680px) { .filter-sep { display: none; } .filter-group { min-width: 100%; } }
+  /* Scroll containers */
+  .scroll-list { max-height: 480px; overflow-y: auto; }
+  .table-scroll-wrap { overflow-x: auto; overflow-y: auto; max-height: 360px; }
+  .table-scroll-wrap table thead th { position: sticky; top: 0; z-index: 2; background: var(--panel); box-shadow: 0 1px 0 var(--line); }
 
   .msg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .msg-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--panel-2); }
@@ -463,10 +477,303 @@
 
   footer { padding: 18px 28px; text-align: center; font-size: 11px; color: var(--text-3); }
 
+  /* ======================== PORTAL — TEMA CLARO (padrão) ======================== */
+  #screenApp {
+    --bg:         #F4F6FB;
+    --panel:      #FFFFFF;
+    --panel-2:    #EEF1F8;
+    --line:       #E0E5EF;
+    --text:       #0B1B4A;
+    --text-2:     #4A5578;
+    --text-3:     #8996BC;
+    --green-soft: #EBF5E0;
+    --red-soft:   #FDE9EC;
+    --amber-soft: #FEF5E2;
+    --yellow-soft:#FFFAED;
+  }
+  /* Forçar cor de texto em todos os elementos dentro de main no tema claro */
+  #screenApp main { background: #F4F6FB; color: #0B1B4A; }
+  #screenApp main h1, #screenApp main h2, #screenApp main h3 { color: #0B1B4A; }
+  #screenApp main p, #screenApp main div, #screenApp main span { color: inherit; }
+  #screenApp .breadcrumb { color: #8996BC; }
+  #screenApp .breadcrumb b { color: #4A5578; }
+  #screenApp .header-left h1 { color: #0B1B4A !important; }
+  #screenApp .header-left .sub { color: #4A5578 !important; }
+  #screenApp .section-label { color: #8996BC !important; }
+  #screenApp .kpi .klabel { color: #8996BC !important; }
+  #screenApp .kpi .kvalue { color: #0B1B4A !important; }
+  #screenApp .kpi .kdelta { color: inherit; }
+  #screenApp .kdelta.up { color: var(--green) !important; }
+  #screenApp .kdelta.down { color: var(--red) !important; }
+  #screenApp .kdelta.flat { color: #8996BC !important; }
+  #screenApp .card-head .ctitle { color: #4A5578 !important; }
+  #screenApp .card-footer-links { color: #8996BC; }
+  #screenApp .rank-name { color: #0B1B4A; }
+  #screenApp .rank-val { color: #4A5578; }
+  #screenApp .rank-val.danger { color: var(--red); }
+  #screenApp table th { color: #8996BC; }
+  #screenApp table td { color: #0B1B4A; }
+  #screenApp .kpi-link { color: var(--green); }
+  #screenApp .link-inline { color: var(--green); }
+  #screenApp .card-footer-links a, #screenApp .card-footer-links button { color: var(--green); }
+
+  /* Modo escuro: reverter para cores originais */
+  #screenApp.dark-mode main { background: #060F2E; color: #EDEFF7; }
+  #screenApp.dark-mode main h1, #screenApp.dark-mode main h2 { color: #EDEFF7; }
+  #screenApp.dark-mode .header-left h1 { color: #EDEFF7 !important; }
+  #screenApp.dark-mode .header-left .sub { color: #9AA6C8 !important; }
+  #screenApp.dark-mode .section-label { color: #5C6796 !important; }
+  #screenApp.dark-mode .kpi .klabel { color: #5C6796 !important; }
+  #screenApp.dark-mode .kpi .kvalue { color: #EDEFF7 !important; }
+  #screenApp.dark-mode .kdelta.flat { color: #5C6796 !important; }
+  #screenApp.dark-mode .card-head .ctitle { color: #9AA6C8 !important; }
+  #screenApp.dark-mode .rank-name { color: #EDEFF7; }
+  #screenApp.dark-mode .rank-val { color: #9AA6C8; }
+  #screenApp.dark-mode table th { color: #5C6796; }
+  #screenApp.dark-mode table td { color: #EDEFF7; }
+  #screenApp.dark-mode .breadcrumb { color: #5C6796; }
+  #screenApp.dark-mode .breadcrumb b { color: #9AA6C8; }
+
+  /* Sidebar sempre azul escuro (a cor do fundo original que o usuário pediu) */
+  #screenApp aside {
+    background: #060F2E;
+    border-right-color: rgba(255,255,255,0.08);
+  }
+  #screenApp .nav-label { color: rgba(255,255,255,0.4); }
+  #screenApp nav a,
+  #screenApp nav button.nav-link { color: rgba(255,255,255,0.65); }
+  #screenApp nav a.active,
+  #screenApp nav button.nav-link.active { background: rgba(141,198,63,0.2); color: #fff; }
+  #screenApp nav a:hover:not(.active),
+  #screenApp nav button.nav-link:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.06); }
+  #screenApp .sidebar-user { border-top-color: rgba(255,255,255,0.1); }
+  #screenApp .sidebar-user .name { color: #fff; }
+  #screenApp .sidebar-user .role { color: rgba(255,255,255,0.5); }
+  #screenApp .logout-btn { color: rgba(255,255,255,0.75); }
+  #screenApp #themeToggleBtn { color: #fff; opacity: 0.85; font-size: 17px; }
+  #screenApp .logout-btn:hover { color: var(--red); }
+  #screenApp nav .badge { background: rgba(240,71,90,0.3); color: #FF7B89; }
+
+  /* Tabs no tema claro */
+  #screenApp .tab-btn { color: var(--text-2); border-bottom-color: transparent; }
+  #screenApp .tab-btn.active { color: var(--text); border-bottom-color: var(--green); }
+
+  /* ======================== MODO ESCURO — restaura cores originais ======================== */
+  #screenApp.dark-mode {
+    --bg:         #060F2E;
+    --panel:      #0B1B4A;
+    --panel-2:    #10245C;
+    --line:       #1E2F6B;
+    --text:       #EDEFF7;
+    --text-2:     #9AA6C8;
+    --text-3:     #5C6796;
+    --green-soft: #16234A;
+    --red-soft:   #3D1F28;
+    --amber-soft: #3A2C12;
+    --yellow-soft:#3A2E10;
+  }
+  #screenApp.dark-mode .tab-btn { color: var(--text-2); }
+  #screenApp.dark-mode .tab-btn.active { color: #fff; }
+
+  /* ======================== PERFIS — CARDS DE FORNECEDOR ======================== */
+  .perfil-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 14px;
+  }
+  .perfil-card {
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .perfil-card.selected {
+    border-color: var(--green);
+    background: var(--green-soft);
+  }
+  .perfil-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .perfil-check-input {
+    width: 17px; height: 17px;
+    accent-color: var(--green);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .perfil-card-title { flex: 1; min-width: 0; }
+  .perfil-name {
+    font-size: 13.5px; font-weight: 700;
+    color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .perfil-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .perfil-score-row {
+    display: flex; justify-content: space-between;
+    font-size: 11px; margin-bottom: 4px;
+    color: var(--text-3);
+  }
+  .perfil-score-val { font-weight: 700; font-size: 12px; }
+  .perfil-kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;
+  }
+  .perfil-kpi {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .perfil-kpi-label {
+    font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-3); margin-bottom: 4px;
+  }
+  .perfil-kpi-value { font-size: 14px; font-weight: 700; color: var(--text); }
+  .perfil-last-action {
+    font-size: 12px; color: var(--text-2);
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .perfil-card-footer {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .perfil-acao-label {
+    font-size: 11.5px; color: var(--text-3);
+  }
+  .perfil-acao-label b { color: var(--text-2); }
+  .perfil-card-actions { display: flex; gap: 7px; }
+  .perfil-btn-recusar {
+    flex: 1;
+    background: var(--red-soft); border: 1px solid rgba(240,71,90,0.35);
+    color: var(--red); font-size: 12px; font-weight: 600;
+    padding: 9px 8px; border-radius: 8px;
+    font-family: inherit; cursor: pointer; transition: 0.15s;
+  }
+  .perfil-btn-recusar:hover { opacity: 0.8; }
+  .perfil-btn-detalhes {
+    flex: 1.1;
+    background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--text-2); font-size: 12px; font-weight: 600;
+    padding: 9px 8px; border-radius: 8px;
+    font-family: inherit; cursor: pointer; transition: 0.15s;
+  }
+  .perfil-btn-detalhes:hover { border-color: var(--text-3); color: var(--text); }
+  .perfil-btn-acionar {
+    flex: 1.4;
+    background: var(--green); border: none;
+    color: #fff; font-size: 12px; font-weight: 700;
+    padding: 9px 8px; border-radius: 8px;
+    font-family: inherit; cursor: pointer; transition: 0.15s;
+  }
+  .perfil-btn-acionar:hover { opacity: 0.9; }
+  .perfil-btn-acionar:disabled { background: var(--panel-2); color: var(--text-3); cursor: default; }
+
+  /* Barra de ação em lote — perfis */
+  .perfil-bulk-bar {
+    background: #060F2E;
+    border: 1.5px solid var(--green);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+  }
+  .perfil-bulk-info {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: #fff;
+  }
+  .perfil-bulk-acao { color: var(--green); font-weight: 700; }
+  .perfil-bulk-btns { display: flex; gap: 8px; }
+  .perfil-bulk-recusar {
+    background: rgba(240,71,90,0.2); border: 1px solid var(--red);
+    color: var(--red); font-size: 12px; font-weight: 700;
+    padding: 7px 14px; border-radius: 7px; font-family: inherit; cursor: pointer;
+  }
+  .perfil-bulk-confirmar {
+    background: var(--green); border: none;
+    color: #fff; font-size: 12px; font-weight: 700;
+    padding: 7px 16px; border-radius: 7px; font-family: inherit; cursor: pointer;
+  }
+  .perfil-bulk-cancel {
+    background: transparent; border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.65); font-size: 12px; font-weight: 600;
+    padding: 7px 12px; border-radius: 7px; font-family: inherit; cursor: pointer;
+  }
+  /* ======================== PERFIS — GRUPOS DE STATUS ======================== */
+  .sgc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 10px; }
+  .status-group-card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; transition: opacity 0.2s, border-color 0.2s; }
+  .status-group-card.sgc-confirmed { border-color: var(--green); opacity: 0.65; }
+  .status-group-card.sgc-refused { opacity: 0.3; pointer-events: none; }
+  .sgc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .sgc-count { background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+  .sgc-score-big { font-size: 26px; font-weight: 800; line-height: 1; }
+  .sgc-score-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .sgc-meta { font-size: 12px; color: var(--text-2); line-height: 1.55; }
+  .sgc-meta strong { color: var(--text); font-size: 12.5px; }
+  /* Ícone nos grupos de status */
+  .sgc-icon-wrap { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .sgc-icon-red   { background: rgba(240,71,90,0.13); color: var(--red); }
+  .sgc-icon-amber { background: rgba(245,166,35,0.13); color: var(--amber); }
+  .sgc-icon-green { background: rgba(141,198,63,0.13); color: var(--green); }
+  /* Tooltip no hover */
+  .status-group-card { position: relative; }
+  .sgc-tooltip {
+    display: none; position: absolute; bottom: calc(100% + 10px); left: 0; right: 0;
+    background: var(--panel); border: 1.5px solid var(--line); border-radius: 11px;
+    padding: 12px 14px; z-index: 30; box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    pointer-events: none;
+  }
+  .status-group-card:hover .sgc-tooltip { display: block; }
+  .sgc-tt-title { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .sgc-tt-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--line); }
+  .sgc-tt-row:last-child { border-bottom: none; }
+  .sgc-tt-label { color: var(--text-2); }
+  .sgc-tt-val { font-weight: 700; }
+  .sgc-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+  .sgc-btn-recusar { flex: 1; background: var(--red-soft); border: 1px solid rgba(240,71,90,0.35); color: var(--red); font-size: 11.5px; font-weight: 700; padding: 8px 6px; border-radius: 8px; font-family: inherit; cursor: pointer; }
+  .sgc-btn-ver { flex: 1.1; background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); font-size: 11.5px; font-weight: 700; padding: 8px 6px; border-radius: 8px; font-family: inherit; cursor: pointer; }
+  .sgc-btn-ver:hover { border-color: var(--text-3); color: var(--text); }
+  .sgc-btn-confirmar { flex: 1.4; background: var(--green); border: none; color: #fff; font-size: 11.5px; font-weight: 700; padding: 8px 6px; border-radius: 8px; font-family: inherit; cursor: pointer; }
+  .sgc-btn-confirmar:hover { opacity: 0.9; }
+
+  /* Drawer — view de grupo */
+  .dg-supplier { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .dg-supplier:last-child { border-bottom: none; }
+  .dg-supplier-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .dg-supplier-sub { font-size: 11.5px; color: var(--text-2); margin-bottom: 8px; }
+  .dg-dims { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+
+  @media (max-width: 900px) {
+    .perfil-cards-grid { grid-template-columns: 1fr; }
+    .sgc-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Gráfico de donut centralizado no card */
+  .donut-card-centered {
+    display: flex;
+    flex-direction: column;
+  }
+  .donut-card-centered .card-head { flex-shrink: 0; }
+  .donut-card-centered .donut-wrap {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+  }
+
+
   @media (max-width: 1100px) {
     .layout { grid-template-columns: 1fr; }
-    aside { display: none; }
-    main { margin-left: 0; }
     .kpis { grid-template-columns: repeat(2, 1fr); }
     .grid2, .grid3, .msg-grid { grid-template-columns: 1fr; }
   }
@@ -683,7 +990,7 @@
       <div class="header-actions" style="display:flex; gap:8px;">
         <button id="landingLoginTop" style="background:#8DC63F;border:none;color:#0B1B4A;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;white-space:nowrap;">Acessar sistema</button>
         <button type="button"
-          onclick="document.getElementById('screenLanding').classList.add('hidden');document.getElementById('screenApp').classList.remove('hidden');document.getElementById('appFooter').style.display='block';if(typeof buildCharts==='function'){setTimeout(buildCharts,50);}"
+          onclick="document.getElementById('screenLanding').classList.add('hidden');document.getElementById('screenApp').classList.remove('hidden');document.querySelector('.whatsapp-float').style.display='none';if(typeof buildCharts==='function'){setTimeout(buildCharts,50);}"
           style="background:none;border:1px dashed #FDC82F;color:#FDC82F;font-weight:700;font-size:11px;padding:9px 14px;border-radius:8px;white-space:nowrap;">⚡ Painel direto</button>
       </div>
     </header>
@@ -999,7 +1306,7 @@
       </form>
 
       <button type="button"
-        onclick="document.getElementById('screenLanding').classList.add('hidden');document.getElementById('screenLogin').classList.add('hidden');document.getElementById('screenForgot').classList.add('hidden');document.getElementById('screenMfa').classList.add('hidden');document.getElementById('screenApp').classList.remove('hidden');document.getElementById('appFooter').style.display='block';if(typeof buildCharts==='function'){setTimeout(buildCharts,50);}"
+        onclick="document.getElementById('screenLanding').classList.add('hidden');document.getElementById('screenLogin').classList.add('hidden');document.getElementById('screenForgot').classList.add('hidden');document.getElementById('screenMfa').classList.add('hidden');document.getElementById('screenApp').classList.remove('hidden');document.querySelector('.whatsapp-float').style.display='none';if(typeof buildCharts==='function'){setTimeout(buildCharts,50);}"
         style="width:100%; background:#FFF6DC; border:1px solid #F5E1A8; color:#8A6400; font-size:12.5px; font-weight:700; padding:11px; border-radius:9px; margin-top:12px;">
         ⚡ Ver o painel agora, sem login (atalho de demo)
       </button>
@@ -1238,6 +1545,7 @@
         <div class="name" id="userName">Atendimento Petronect</div>
         <div class="role" id="userEmail">—</div>
       </div>
+      <button class="logout-btn" id="themeToggleBtn" title="Alternar tema claro/escuro" style="font-size:15px; margin-right:2px;"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
       <button class="logout-btn" id="logoutBtn" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
     </div>
   </aside>
@@ -1292,7 +1600,7 @@
           </div>
           <div class="chart-box"><canvas id="chartEvolucao"></canvas></div>
         </div>
-        <div class="card">
+        <div class="card donut-card-centered">
           <div class="card-head"><div class="ctitle"><i class="fa-solid fa-shield-halved"></i> Tráfego humano x bot</div></div>
           <div class="donut-wrap">
             <div class="donut-canvas-wrap"><canvas id="chartHumanBot"></canvas><div class="donut-center"><div class="dval">86%</div><div class="dlabel">Bot filtrado</div></div></div>
@@ -1687,92 +1995,437 @@
     <div class="page hidden" id="page-perfis">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Perfis de fornecedor</b></div>
       <div class="header-row">
-        <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Score de Necessidade de Contato — não mede engajamento, mede quem precisa de intervenção humana</div></div>
+        <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Aprove por categoria de status — cada grupo pode ter vários fornecedores</div></div>
         <div class="header-controls"><button class="ctrl" id="exportPerfisCsv" style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar CSV</button></div>
       </div>
 
-      <div class="card" style="margin-bottom:14px;">
-        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-route"></i> Como o score é calculado</div></div>
-        <table>
-          <thead><tr><th>Dimensão</th><th>O que mede</th><th>Exemplo de sinal</th></tr></thead>
-          <tbody>
-            <tr><td class="company">Intenção</td><td style="color:var(--text-2);">Quanto o fornecedor quer avançar</td><td style="color:var(--text-2);">iniciou proposta</td></tr>
-            <tr><td class="company">Fricção</td><td style="color:var(--text-2);">Quanto ele está tendo dificuldade</td><td style="color:var(--text-2);">erro + várias tentativas</td></tr>
-            <tr><td class="company">Inatividade</td><td style="color:var(--text-2);">Quanto tempo está sem avançar</td><td style="color:var(--text-2);">48h sem retornar</td></tr>
-            <tr><td class="company">Valor da oportunidade</td><td style="color:var(--text-2);">Importância daquela oportunidade</td><td style="color:var(--text-2);">oportunidade relevante</td></tr>
-          </tbody>
-        </table>
-        <p style="font-size:12px; color:var(--text-3); margin:12px 0 0;">Intenção alta + fricção alta = alta necessidade de contato — mesmo que o fornecedor pareça "pouco engajado" em volume de cliques.</p>
+      <!-- ===== SEÇÃO 1: GRUPOS DE STATUS ===== -->
+      <div class="section-label">CATEGORIAS DE STATUS · ação em lote por grupo</div>
+      <div class="sgc-grid" id="statusGroupsGrid">
+
+        <!-- Grupo 1: Alta intenção + fricção -->
+        <div class="status-group-card" id="sgc-risk-friction"
+             data-sgkey="risk-friction" data-action="Alertar atendimento / Acionar Copiloto"
+             data-suppliers="pt-1,pt-2">
+          <div class="sgc-top">
+            <span class="tag risk">Alta intenção + fricção</span>
+            <span class="sgc-count">2 fornecedores</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-red"><i class="fa-solid fa-fire-flame-curved"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--red);">92</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">
+              Ação sugerida:<br>
+              <strong>Alertar atendimento / Acionar Copiloto</strong>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:92%; background:var(--red);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedores</button>
+            <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar todos</button>
+          </div>
+          <div class="sgc-tooltip">
+            <div class="sgc-tt-title">Fornecedores neste grupo</div>
+            <div class="sgc-tt-row"><span class="sgc-tt-label">Tech Supplies Distribuidora</span><span class="sgc-tt-val" style="color:var(--red);">Score 92</span></div>
+            <div class="sgc-tt-row"><span class="sgc-tt-label">Metalúrgica Aliança</span><span class="sgc-tt-val" style="color:var(--red);">Score 88</span></div>
+          </div>
+        </div>
+
+        <!-- Grupo 2: Inatividade crescente -->
+        <div class="status-group-card" id="sgc-inactivity"
+             data-sgkey="inactivity" data-action="Alertar atendimento"
+             data-suppliers="pt-3">
+          <div class="sgc-top">
+            <span class="tag risk">Inatividade crescente</span>
+            <span class="sgc-count">1 fornecedor</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-amber"><i class="fa-solid fa-user-clock"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--amber);">79</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">
+              Ação sugerida:<br>
+              <strong>Alertar atendimento</strong>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:79%; background:var(--amber);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
+            <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar</button>
+          </div>
+          <div class="sgc-tooltip">
+            <div class="sgc-tt-title">Fornecedores neste grupo</div>
+            <div class="sgc-tt-row"><span class="sgc-tt-label">Ferragens União Ltda</span><span class="sgc-tt-val" style="color:var(--amber);">Score 79</span></div>
+          </div>
+        </div>
+
+        <!-- Grupo 3: Intenção incerta -->
+        <div class="status-group-card" id="sgc-new"
+             data-sgkey="new" data-action="Enviar boas-vindas"
+             data-suppliers="pt-4">
+          <div class="sgc-top">
+            <span class="tag new">Intenção incerta</span>
+            <span class="sgc-count">1 fornecedor</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-amber"><i class="fa-solid fa-circle-question"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--amber);">50</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">
+              Ação sugerida:<br>
+              <strong>Enviar boas-vindas</strong>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:50%; background:var(--amber);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
+            <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar</button>
+          </div>
+          <div class="sgc-tooltip">
+            <div class="sgc-tt-title">Fornecedores neste grupo</div>
+            <div class="sgc-tt-row"><span class="sgc-tt-label">Construtora Pinheiro ME</span><span class="sgc-tt-val" style="color:var(--amber);">Score 50</span></div>
+          </div>
+        </div>
+
+        <!-- Grupo 4: Fluindo sozinho -->
+        <div class="status-group-card" id="sgc-engaged"
+             data-sgkey="engaged" data-action="Nenhuma ação"
+             data-suppliers="pt-5">
+          <div class="sgc-top">
+            <span class="tag engaged">Fluindo sozinho</span>
+            <span class="sgc-count">1 fornecedor</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--green);">12</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">
+              Ação sugerida:<br>
+              <strong style="color:var(--green);">Sem necessidade de intervenção ✓</strong>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:12%; background:var(--green);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar" style="opacity:0.4;" disabled>Recusar</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
+            <button class="sgc-btn-confirmar" style="background:var(--green-soft); color:var(--green); border:1px solid var(--green);" disabled>Ok, monitorando</button>
+          </div>
+          <div class="sgc-tooltip">
+            <div class="sgc-tt-title">Fornecedores neste grupo</div>
+            <div class="sgc-tt-row"><span class="sgc-tt-label">LogisTrade Comércio Ltda</span><span class="sgc-tt-val" style="color:var(--green);">Score 12</span></div>
+          </div>
+        </div>
+
+      </div><!-- /sgc-grid -->
+
+      <!-- ===== SEÇÃO 2: TABELA DE FORNECEDORES ===== -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:24px; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+        <div class="section-label" style="margin:0;">FORNECEDORES · visão individual</div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div style="position:relative;">
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-3); font-size:12px;"></i>
+            <input type="text" id="perfilSearch" placeholder="Buscar..." style="background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:7px 12px 7px 28px; font-size:12px; outline:none; width:200px;">
+          </div>
+          <button class="ctrl hidden" id="perfilShowAll" style="white-space:nowrap;">Mostrar todos</button>
+        </div>
       </div>
 
-      <div class="card">
-        <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px; flex-wrap:wrap;">
-          <div style="position:relative; flex:1; min-width:200px;">
-            <i class="fa-solid fa-globe" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-3); font-size:12px;"></i>
-            <input type="text" id="perfilSearch" placeholder="Buscar por nome ou CNPJ..." style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 12px 9px 30px; font-size:12.5px; outline:none;">
-          </div>
-          <select id="perfilRangeFilter" style="background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:9px 12px; font-size:12.5px;">
-            <option value="all">Score: todas as faixas</option>
-            <option value="70-100">70 – 100 (crítico)</option>
-            <option value="40-69">40 – 69 (moderado)</option>
-            <option value="0-39">0 – 39 (baixo)</option>
-          </select>
-        </div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-scroll-wrap">
+        <table style="margin:0;">
+          <thead>
+            <tr>
+              <th>Fornecedor</th>
+              <th>Status</th>
+              <th style="min-width:120px;">Score de necessidade</th>
+              <th>Ação sugerida</th>
+              <th style="text-align:right;">Acionar</th>
+            </tr>
+          </thead>
+          <tbody id="perfilTableBody">
 
-        <div class="tabs" id="profileTabs">
-          <button class="tab-btn active" data-filter="all">Todos · 5</button>
-          <button class="tab-btn" data-filter="risk">Alta necessidade · 3</button>
-          <button class="tab-btn" data-filter="new">Moderada · 1</button>
-          <button class="tab-btn" data-filter="engaged">Baixa (ok sozinho) · 1</button>
-        </div>
-        <table style="margin-top:14px;">
-          <thead><tr>
-            <th>Fornecedor</th><th>Situação</th><th>Última ação</th>
-            <th class="sortable-th" id="sortByScore" style="cursor:pointer; user-select:none;">Necessidade de contato <i class="fa-solid fa-arrow-down" style="font-size:9px;"></i></th>
-            <th style="text-align:right;">Ação sugerida</th>
-          </tr></thead>
-          <tbody id="profileTableBody">
-            <tr data-profile="risk" data-score="92" data-trend="up" data-delta="+6" data-porte="Médio" data-categoria="Equip. Industriais"
-                data-intencao="90" data-friccao="95" data-inatividade="25" data-valor="96" data-cnpj="12.345.678/0001-90">
-              <td class="company">Tech Supplies Distribuidora<span class="subrow">CNPJ 12.345.678/0001-90 <span class="mini-tag">Médio</span> <span class="mini-tag">Equip. Industriais</span></span></td>
-              <td><span class="tag risk">Alta intenção + fricção</span></td><td>Erro de upload (PDF 14MB) — Edital #1024</td>
+            <tr id="pt-1" data-sgkey="risk-friction" data-score="92" data-profile="risk"
+                data-cnpj="12.345.678/0001-90" data-porte="Médio" data-categoria="Equip. Industriais"
+                data-intencao="90" data-friccao="95" data-inatividade="25" data-valor="96"
+                data-acao="Acionar Copiloto" data-goto-copiloto="true">
+              <td class="company">Tech Supplies Distribuidora<span class="subrow">CNPJ 12.345.678/0001-90 · Médio · Equip. Industriais</span></td>
+              <td><span class="tag risk">Alta intenção + fricção</span></td>
               <td><div class="score"><div class="track"><div class="fill high" style="width:92%;"></div></div>92 <span class="trend up">↑ 6</span></div></td>
-              <td style="text-align:right;"><button class="row-action-btn" data-goto-copiloto>Acionar Copiloto</button></td>
+              <td style="color:var(--text-2);">Acionar Copiloto</td>
+              <td style="text-align:right;"><button class="row-action-btn pt-acionar" data-goto-copiloto="true">Acionar Copiloto</button></td>
             </tr>
-            <tr data-profile="risk" data-score="88" data-trend="up" data-delta="+11" data-porte="Pequeno" data-categoria="Metalurgia"
-                data-intencao="82" data-friccao="90" data-inatividade="30" data-valor="80" data-cnpj="44.111.222/0001-33">
-              <td class="company">Metalúrgica Aliança<span class="subrow">CNPJ 44.111.222/0001-33 <span class="mini-tag">Pequeno</span> <span class="mini-tag">Metalurgia</span></span></td>
-              <td><span class="tag risk">Alta intenção + fricção</span></td><td>Falha ao anexar certidão — Edital #1024</td>
+
+            <tr id="pt-2" data-sgkey="risk-friction" data-score="88" data-profile="risk"
+                data-cnpj="44.111.222/0001-33" data-porte="Pequeno" data-categoria="Metalurgia"
+                data-intencao="82" data-friccao="90" data-inatividade="30" data-valor="80"
+                data-acao="Alertar atendimento">
+              <td class="company">Metalúrgica Aliança<span class="subrow">CNPJ 44.111.222/0001-33 · Pequeno · Metalurgia</span></td>
+              <td><span class="tag risk">Alta intenção + fricção</span></td>
               <td><div class="score"><div class="track"><div class="fill high" style="width:88%;"></div></div>88 <span class="trend up">↑ 11</span></div></td>
-              <td style="text-align:right;"><button class="row-action-btn" data-row-action>Alertar atendimento</button></td>
+              <td style="color:var(--text-2);">Alertar atendimento</td>
+              <td style="text-align:right;"><button class="row-action-btn pt-acionar">Alertar atendimento</button></td>
             </tr>
-            <tr data-profile="risk" data-score="79" data-trend="up" data-delta="+18" data-porte="Médio" data-categoria="Ferragens"
-                data-intencao="55" data-friccao="60" data-inatividade="85" data-valor="65" data-cnpj="33.444.555/0001-22">
-              <td class="company">Ferragens União<span class="subrow">CNPJ 33.444.555/0001-22 <span class="mini-tag">Médio</span> <span class="mini-tag">Ferragens</span></span></td>
-              <td><span class="tag risk">Inatividade crescente</span></td><td>Visitou edital 3x em 48h, não avançou</td>
+
+            <tr id="pt-3" data-sgkey="inactivity" data-score="79" data-profile="risk"
+                data-cnpj="33.444.555/0001-22" data-porte="Médio" data-categoria="Ferragens"
+                data-intencao="55" data-friccao="60" data-inatividade="85" data-valor="65"
+                data-acao="Alertar atendimento">
+              <td class="company">Ferragens União<span class="subrow">CNPJ 33.444.555/0001-22 · Médio · Ferragens</span></td>
+              <td><span class="tag risk">Inatividade crescente</span></td>
               <td><div class="score"><div class="track"><div class="fill high" style="width:79%;"></div></div>79 <span class="trend up">↑ 18</span></div></td>
-              <td style="text-align:right;"><button class="row-action-btn" data-row-action>Alertar atendimento</button></td>
+              <td style="color:var(--text-2);">Alertar atendimento</td>
+              <td style="text-align:right;"><button class="row-action-btn pt-acionar">Alertar atendimento</button></td>
             </tr>
-            <tr data-profile="new" data-score="50" data-trend="flat" data-delta="novo" data-porte="Pequeno" data-categoria="Serviços Gerais"
-                data-intencao="45" data-friccao="10" data-inatividade="15" data-valor="55" data-cnpj="55.222.111/0001-77">
-              <td class="company">Comercial Centro-Oeste<span class="subrow">CNPJ 55.222.111/0001-77 <span class="mini-tag">Pequeno</span> <span class="mini-tag">Serviços Gerais</span></span></td>
-              <td><span class="tag new">Intenção incerta</span></td><td>Entrou pela primeira vez</td>
+
+            <tr id="pt-4" data-sgkey="new" data-score="50" data-profile="new"
+                data-cnpj="55.222.111/0001-77" data-porte="Pequeno" data-categoria="Serviços Gerais"
+                data-intencao="45" data-friccao="10" data-inatividade="15" data-valor="55"
+                data-acao="Enviar boas-vindas">
+              <td class="company">Comercial Centro-Oeste<span class="subrow">CNPJ 55.222.111/0001-77 · Pequeno · Serviços Gerais</span></td>
+              <td><span class="tag new">Intenção incerta</span></td>
               <td><div class="score"><div class="track"><div class="fill mid" style="width:50%;"></div></div>50 <span class="trend flat">novo</span></div></td>
-              <td style="text-align:right;"><button class="row-action-btn" data-row-action>Enviar boas-vindas</button></td>
+              <td style="color:var(--text-2);">Enviar boas-vindas</td>
+              <td style="text-align:right;"><button class="row-action-btn pt-acionar">Enviar boas-vindas</button></td>
             </tr>
-            <tr data-profile="engaged" data-score="12" data-trend="down" data-delta="-9" data-porte="Grande" data-categoria="Distribuição"
-                data-intencao="70" data-friccao="5" data-inatividade="5" data-valor="60" data-cnpj="98.765.432/0001-11">
-              <td class="company">Distribuidora Bravo<span class="subrow">CNPJ 98.765.432/0001-11 <span class="mini-tag">Grande</span> <span class="mini-tag">Distribuição</span></span></td>
-              <td><span class="tag engaged">Fluindo sozinho</span></td><td>Enviou proposta hoje, sem fricção</td>
+
+            <tr id="pt-5" data-sgkey="engaged" data-score="12" data-profile="engaged"
+                data-cnpj="98.765.432/0001-11" data-porte="Grande" data-categoria="Distribuição"
+                data-intencao="70" data-friccao="5" data-inatividade="5" data-valor="60"
+                data-acao="Nenhuma ação">
+              <td class="company">Distribuidora Bravo<span class="subrow">CNPJ 98.765.432/0001-11 · Grande · Distribuição</span></td>
+              <td><span class="tag engaged">Fluindo sozinho</span></td>
               <td><div class="score"><div class="track"><div class="fill low" style="width:12%;"></div></div>12 <span class="trend down">↓ 9</span></div></td>
+              <td style="color:var(--text-2); color:var(--green);">Sem necessidade de intervenção</td>
               <td style="text-align:right;"><button class="row-action-btn" disabled>Nenhuma ação</button></td>
             </tr>
+
           </tbody>
         </table>
+        </div><!-- /table-scroll-wrap -->
       </div>
-    </div>
 
-    <!-- ---------- Drawer: Perfil detalhado do fornecedor ---------- -->
+      <!-- placeholder para manter ID antigo (perfil-cards-grid removido) -->
+      <div id="perfilCardsGrid" style="display:none;"></div>
+      <input type="hidden" id="perfilRangeFilter" value="all">
+      <div style="display:none;" id="profileTabs"></div>
+      <div style="display:none;" id="perfilBulkBar"><span id="perfilBulkCount"></span><span id="perfilBulkAcao"></span><button id="perfilBulkConfirmar"></button><button id="perfilBulkRecusar"></button><button id="perfilBulkCancel"></button></div>
+
+    </div><!-- /page-perfis -->
+
+    <div hidden id="orphaned-old-cards"><div class="perfil-card" id="pc-1" data-profile="risk" data-score="92"
+             data-acao="Acionar Copiloto" data-goto-copiloto="true"
+             data-cnpj="12.345.678/0001-90" data-porte="Médio" data-categoria="Equip. Industriais"
+             data-intencao="90" data-friccao="95" data-inatividade="25" data-valor="96">
+          <div class="perfil-card-header">
+            <input type="checkbox" class="perfil-check-input" aria-label="Selecionar">
+            <div class="perfil-card-title">
+              <div class="perfil-name">Tech Supplies Distribuidora</div>
+              <div class="perfil-sub">CNPJ 12.345.678/0001-90 · Médio · Equip. Industriais</div>
+            </div>
+            <span class="tag risk" style="flex-shrink:0; white-space:nowrap;">Alta intenção + fricção</span>
+          </div>
+          <div>
+            <div class="perfil-score-row">
+              <span>Necessidade de contato</span>
+              <span class="perfil-score-val" style="color:var(--red);">92 ↑ 6</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:var(--red); width:92%;"></div></div>
+          </div>
+          <div class="perfil-kpis">
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Intenção</div><div class="perfil-kpi-value">90</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Fricção</div><div class="perfil-kpi-value" style="color:var(--red);">95</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Inatividade</div><div class="perfil-kpi-value">25</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Valor</div><div class="perfil-kpi-value">96</div></div>
+          </div>
+          <div class="perfil-last-action">
+            <i class="fa-solid fa-circle-exclamation" style="color:var(--red); flex-shrink:0;"></i>
+            Erro de upload (PDF 14MB) — Edital #1024
+          </div>
+          <div class="perfil-card-footer">
+            <div class="perfil-acao-label">Ação sugerida: <b>Acionar Copiloto de IA</b></div>
+            <div class="perfil-card-actions">
+              <button class="perfil-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+              <button class="perfil-btn-detalhes"><i class="fa-solid fa-eye"></i> Detalhes</button>
+              <button class="perfil-btn-acionar"><i class="fa-solid fa-robot"></i> Acionar Copiloto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Metalúrgica Aliança -->
+        <div class="perfil-card" id="pc-2" data-profile="risk" data-score="88"
+             data-acao="Alertar atendimento"
+             data-cnpj="44.111.222/0001-33" data-porte="Pequeno" data-categoria="Metalurgia"
+             data-intencao="82" data-friccao="90" data-inatividade="30" data-valor="80">
+          <div class="perfil-card-header">
+            <input type="checkbox" class="perfil-check-input" aria-label="Selecionar">
+            <div class="perfil-card-title">
+              <div class="perfil-name">Metalúrgica Aliança</div>
+              <div class="perfil-sub">CNPJ 44.111.222/0001-33 · Pequeno · Metalurgia</div>
+            </div>
+            <span class="tag risk" style="flex-shrink:0; white-space:nowrap;">Alta intenção + fricção</span>
+          </div>
+          <div>
+            <div class="perfil-score-row">
+              <span>Necessidade de contato</span>
+              <span class="perfil-score-val" style="color:var(--red);">88 ↑ 11</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:var(--red); width:88%;"></div></div>
+          </div>
+          <div class="perfil-kpis">
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Intenção</div><div class="perfil-kpi-value">82</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Fricção</div><div class="perfil-kpi-value" style="color:var(--red);">90</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Inatividade</div><div class="perfil-kpi-value">30</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Valor</div><div class="perfil-kpi-value">80</div></div>
+          </div>
+          <div class="perfil-last-action">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--amber); flex-shrink:0;"></i>
+            Falha ao anexar certidão — Edital #1024
+          </div>
+          <div class="perfil-card-footer">
+            <div class="perfil-acao-label">Ação sugerida: <b>Alertar atendimento</b></div>
+            <div class="perfil-card-actions">
+              <button class="perfil-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+              <button class="perfil-btn-detalhes"><i class="fa-solid fa-eye"></i> Detalhes</button>
+              <button class="perfil-btn-acionar"><i class="fa-brands fa-whatsapp"></i> Alertar atendimento</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Ferragens União -->
+        <div class="perfil-card" id="pc-3" data-profile="risk" data-score="79"
+             data-acao="Alertar atendimento"
+             data-cnpj="33.444.555/0001-22" data-porte="Médio" data-categoria="Ferragens"
+             data-intencao="55" data-friccao="60" data-inatividade="85" data-valor="65">
+          <div class="perfil-card-header">
+            <input type="checkbox" class="perfil-check-input" aria-label="Selecionar">
+            <div class="perfil-card-title">
+              <div class="perfil-name">Ferragens União</div>
+              <div class="perfil-sub">CNPJ 33.444.555/0001-22 · Médio · Ferragens</div>
+            </div>
+            <span class="tag risk" style="flex-shrink:0; white-space:nowrap;">Inatividade crescente</span>
+          </div>
+          <div>
+            <div class="perfil-score-row">
+              <span>Necessidade de contato</span>
+              <span class="perfil-score-val" style="color:var(--red);">79 ↑ 18</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:var(--red); width:79%;"></div></div>
+          </div>
+          <div class="perfil-kpis">
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Intenção</div><div class="perfil-kpi-value">55</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Fricção</div><div class="perfil-kpi-value" style="color:var(--amber);">60</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Inatividade</div><div class="perfil-kpi-value" style="color:var(--red);">85</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Valor</div><div class="perfil-kpi-value">65</div></div>
+          </div>
+          <div class="perfil-last-action">
+            <i class="fa-solid fa-clock" style="color:var(--text-3); flex-shrink:0;"></i>
+            Visitou edital 3x em 48h, não avançou
+          </div>
+          <div class="perfil-card-footer">
+            <div class="perfil-acao-label">Ação sugerida: <b>Alertar atendimento</b></div>
+            <div class="perfil-card-actions">
+              <button class="perfil-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+              <button class="perfil-btn-detalhes"><i class="fa-solid fa-eye"></i> Detalhes</button>
+              <button class="perfil-btn-acionar"><i class="fa-brands fa-whatsapp"></i> Alertar atendimento</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Comercial Centro-Oeste -->
+        <div class="perfil-card" id="pc-4" data-profile="new" data-score="50"
+             data-acao="Enviar boas-vindas"
+             data-cnpj="55.222.111/0001-77" data-porte="Pequeno" data-categoria="Serviços Gerais"
+             data-intencao="45" data-friccao="10" data-inatividade="15" data-valor="55">
+          <div class="perfil-card-header">
+            <input type="checkbox" class="perfil-check-input" aria-label="Selecionar">
+            <div class="perfil-card-title">
+              <div class="perfil-name">Comercial Centro-Oeste</div>
+              <div class="perfil-sub">CNPJ 55.222.111/0001-77 · Pequeno · Serviços Gerais</div>
+            </div>
+            <span class="tag new" style="flex-shrink:0; white-space:nowrap;">Intenção incerta</span>
+          </div>
+          <div>
+            <div class="perfil-score-row">
+              <span>Necessidade de contato</span>
+              <span class="perfil-score-val" style="color:var(--amber);">50 · novo</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:var(--amber); width:50%;"></div></div>
+          </div>
+          <div class="perfil-kpis">
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Intenção</div><div class="perfil-kpi-value">45</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Fricção</div><div class="perfil-kpi-value" style="color:var(--green);">10</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Inatividade</div><div class="perfil-kpi-value">15</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Valor</div><div class="perfil-kpi-value">55</div></div>
+          </div>
+          <div class="perfil-last-action">
+            <i class="fa-solid fa-star" style="color:var(--yellow); flex-shrink:0;"></i>
+            Entrou pela primeira vez no portal
+          </div>
+          <div class="perfil-card-footer">
+            <div class="perfil-acao-label">Ação sugerida: <b>Enviar boas-vindas</b></div>
+            <div class="perfil-card-actions">
+              <button class="perfil-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
+              <button class="perfil-btn-detalhes"><i class="fa-solid fa-eye"></i> Detalhes</button>
+              <button class="perfil-btn-acionar"><i class="fa-regular fa-paper-plane"></i> Enviar boas-vindas</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Distribuidora Bravo -->
+        <div class="perfil-card" id="pc-5" data-profile="engaged" data-score="12"
+             data-acao="Nenhuma ação"
+             data-cnpj="98.765.432/0001-11" data-porte="Grande" data-categoria="Distribuição"
+             data-intencao="70" data-friccao="5" data-inatividade="5" data-valor="60">
+          <div class="perfil-card-header">
+            <input type="checkbox" class="perfil-check-input" aria-label="Selecionar">
+            <div class="perfil-card-title">
+              <div class="perfil-name">Distribuidora Bravo</div>
+              <div class="perfil-sub">CNPJ 98.765.432/0001-11 · Grande · Distribuição</div>
+            </div>
+            <span class="tag engaged" style="flex-shrink:0; white-space:nowrap;">Fluindo sozinho</span>
+          </div>
+          <div>
+            <div class="perfil-score-row">
+              <span>Necessidade de contato</span>
+              <span class="perfil-score-val" style="color:var(--green);">12 ↓ 9</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="background:var(--green); width:12%;"></div></div>
+          </div>
+          <div class="perfil-kpis">
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Intenção</div><div class="perfil-kpi-value">70</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Fricção</div><div class="perfil-kpi-value" style="color:var(--green);">5</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Inatividade</div><div class="perfil-kpi-value" style="color:var(--green);">5</div></div>
+            <div class="perfil-kpi"><div class="perfil-kpi-label">Valor</div><div class="perfil-kpi-value">60</div></div>
+          </div>
+          <div class="perfil-last-action">
+            <i class="fa-solid fa-circle-check" style="color:var(--green); flex-shrink:0;"></i>
+            Enviou proposta hoje, sem fricção
+          </div>
+          <div class="perfil-card-footer">
+            <div class="perfil-acao-label" style="color:var(--green);">Sem necessidade de intervenção ✓</div>
+            <div class="perfil-card-actions">
+              <button class="perfil-btn-recusar" style="opacity:0.4;" disabled>Recusar</button>
+              <button class="perfil-btn-detalhes"><i class="fa-solid fa-eye"></i> Detalhes</button>
+              <button class="perfil-btn-acionar" disabled>Nenhuma ação</button>
+            </div>
+          </div>
+        </div>
+
+    </div><!-- /orphaned-old-cards -->
+
+    <!-- ---------- Drawer: Perfil detalhado do fornecedor / grupo ---------- -->
     <div class="drawer-overlay" id="perfilDrawerOverlay">
       <div class="drawer" id="perfilDrawer">
         <div class="drawer-head">
@@ -1783,14 +2436,21 @@
           <button class="icon-btn" id="drawerClose"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
         <div class="drawer-body">
-          <div class="nc-dims" id="drawerDims"></div>
-          <div style="margin-top:18px; padding-top:16px; border-top:1px solid var(--line);">
-            <div style="font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Histórico de sessões</div>
-            <div class="drawer-history">
-              <div class="dh-row"><span>Hoje, 16:36</span><span>Sessão abandonada — erro de upload</span></div>
-              <div class="dh-row"><span>12/09, 10:14</span><span>Visitou o mesmo edital, sem avançar</span></div>
-              <div class="dh-row"><span>08/09, 09:02</span><span>Primeiro acesso — login via certificado</span></div>
+          <!-- Visão individual (um fornecedor) -->
+          <div id="drawerSingleView">
+            <div class="nc-dims" id="drawerDims"></div>
+            <div style="margin-top:18px; padding-top:16px; border-top:1px solid var(--line);">
+              <div style="font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Histórico de sessões</div>
+              <div class="drawer-history">
+                <div class="dh-row"><span>Hoje, 16:36</span><span>Sessão abandonada — erro de upload</span></div>
+                <div class="dh-row"><span>12/09, 10:14</span><span>Visitou o mesmo edital, sem avançar</span></div>
+                <div class="dh-row"><span>08/09, 09:02</span><span>Primeiro acesso — login via certificado</span></div>
+              </div>
             </div>
+          </div>
+          <!-- Visão de grupo (todos os fornecedores do status) -->
+          <div id="drawerGroupView" class="hidden">
+            <div id="drawerGroupList" class="dg-dims"></div>
           </div>
         </div>
       </div>
@@ -1803,17 +2463,24 @@
         <div class="header-left"><h1>Alertas e ações</h1><div class="sub">Disparados por padrão de comportamento, não por volume de cliques</div></div>
       </div>
 
-      <div class="card" style="margin-bottom:14px;">
-        <div style="display:flex; gap:18px; flex-wrap:wrap; align-items:center;">
-          <div class="tabs" id="alertTypeTabs" style="border-bottom:none;">
-            <button class="tab-btn active" data-type="all">Todos os tipos</button>
-            <button class="tab-btn" data-type="comercial">Comercial</button>
-            <button class="tab-btn" data-type="seguranca">Segurança</button>
+      <div class="card" style="margin-bottom:14px; padding:12px 18px;">
+        <div class="filter-row">
+          <div class="filter-group">
+            <span class="filter-label">Tipo</span>
+            <div class="tabs" id="alertTypeTabs" style="border-bottom:none;">
+              <button class="tab-btn active" data-type="all">Todos</button>
+              <button class="tab-btn" data-type="comercial">Comercial</button>
+              <button class="tab-btn" data-type="seguranca">Segurança</button>
+            </div>
           </div>
-          <div class="tabs" id="alertStatusTabs" style="border-bottom:none;">
-            <button class="tab-btn active" data-status="aberto">Abertos</button>
-            <button class="tab-btn" data-status="resolvido">Resolvidos</button>
-            <button class="tab-btn" data-status="all">Todos</button>
+          <div class="filter-sep"></div>
+          <div class="filter-group">
+            <span class="filter-label">Status</span>
+            <div class="tabs" id="alertStatusTabs" style="border-bottom:none;">
+              <button class="tab-btn active" data-status="aberto">Abertos</button>
+              <button class="tab-btn" data-status="resolvido">Resolvidos</button>
+              <button class="tab-btn" data-status="all">Todos</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1828,7 +2495,7 @@
         </div>
       </div>
 
-      <div class="card" id="alertList">
+      <div class="card scroll-list" id="alertList">
         <div class="alert warn" data-alert data-type="comercial" data-status="aberto" data-cnpj="12.345.678/0001-90">
           <input type="checkbox" class="alert-check" style="margin-top:3px;">
           <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -1837,7 +2504,10 @@
             <p>Erro de upload (PDF 14MB) no Edital #1024. Score de necessidade de contato: 92. Clique para abrir no Copiloto de IA.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">—</span> <button class="assign-btn" data-assign>Atribuir</button></div>
           </div>
-          <div class="alert-actions"><button data-resolve>Marcar resolvido</button></div>
+          <div class="alert-actions">
+            <button class="alert-btn-detail" data-detail><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver detalhes</button>
+            <button class="alert-btn-resolve" data-resolve><i class="fa-solid fa-check"></i> Resolver</button>
+          </div>
           <span class="when">há 2 min</span>
         </div>
         <div class="alert warn" data-alert data-type="comercial" data-status="aberto" data-cnpj="44.111.222/0001-33">
@@ -1848,7 +2518,10 @@
             <p>Fechou a aba ao tentar anexar a certidão em PDF no Edital #1024. Agente de IA já classificou como alta prioridade.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">—</span> <button class="assign-btn" data-assign>Atribuir</button></div>
           </div>
-          <div class="alert-actions"><button data-resolve>Marcar resolvido</button></div>
+          <div class="alert-actions">
+            <button class="alert-btn-detail" data-detail><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver detalhes</button>
+            <button class="alert-btn-resolve" data-resolve><i class="fa-solid fa-check"></i> Resolver</button>
+          </div>
           <span class="when">há 6 min</span>
         </div>
         <div class="alert warn" data-alert data-type="comercial" data-status="aberto" data-cnpj="33.444.555/0001-22">
@@ -1859,7 +2532,10 @@
             <p>Voltou ao mesmo edital três vezes sem iniciar proposta. Padrão de indecisão, sem erro técnico.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">—</span> <button class="assign-btn" data-assign>Atribuir</button></div>
           </div>
-          <div class="alert-actions"><button data-resolve>Marcar resolvido</button></div>
+          <div class="alert-actions">
+            <button class="alert-btn-detail" data-detail><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver detalhes</button>
+            <button class="alert-btn-resolve" data-resolve><i class="fa-solid fa-check"></i> Resolver</button>
+          </div>
           <span class="when">há 40 min</span>
         </div>
         <div class="alert info" data-alert data-type="seguranca" data-status="aberto" data-ip="203.0.113.44">
@@ -1870,7 +2546,10 @@
             <p>Sessão bloqueada e encaminhada ao time de Segurança. Clique para abrir o dossiê na Qualidade de Tráfego.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">Equipe de Segurança</span></div>
           </div>
-          <div class="alert-actions"><button data-resolve>Marcar resolvido</button></div>
+          <div class="alert-actions">
+            <button class="alert-btn-detail" data-detail><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver detalhes</button>
+            <button class="alert-btn-resolve" data-resolve><i class="fa-solid fa-check"></i> Resolver</button>
+          </div>
           <span class="when">há 1 h</span>
         </div>
       </div>
@@ -2146,7 +2825,8 @@ function showScreen(name) {
   screenRegister.classList.toggle('hidden', name !== 'register');
   screenMfa.classList.toggle('hidden', name !== 'mfa');
   screenApp.classList.toggle('hidden', name !== 'app');
-  document.getElementById('appFooter').style.display = name === 'app' ? 'block' : 'none';
+  const waBtn = document.querySelector('.whatsapp-float');
+  if (waBtn) waBtn.style.display = ['login', 'forgot', 'register'].includes(name) ? 'flex' : 'none';
 }
 showScreen('login');
 
@@ -2511,7 +3191,7 @@ function renderEvolucaoChart(gran) {
       ]
     },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { grid: { color: '#1B2030' }, border: { display: false } }, y: { grid: { color: '#1B2030' }, border: { display: false } } } }
+      scales: { x: { grid: { color: getChartGridColor() }, border: { display: false } }, y: { grid: { color: getChartGridColor() }, border: { display: false } } } }
   });
 }
 document.querySelectorAll('#evolucaoGranularity .tab-btn').forEach(btn => {
@@ -2691,7 +3371,7 @@ function renderTrendChart(gran) {
       ]
     },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { grid: { color: '#1B2030' }, border: { display: false } }, y: { grid: { color: '#1B2030' }, border: { display: false } } } }
+      scales: { x: { grid: { color: getChartGridColor() }, border: { display: false } }, y: { grid: { color: getChartGridColor() }, border: { display: false } } } }
   });
 }
 document.querySelectorAll('#trendGranularity .tab-btn').forEach(btn => {
@@ -2725,64 +3405,26 @@ document.getElementById('ipDrawerBlockBtn').addEventListener('click', function()
   showToast('IP bloqueado manualmente');
 });
 
-/* ---------- Perfis: filtro combinado (abas + busca + faixa) ---------- */
-let perfilSortDir = 'desc';
+/* ---------- Perfis: busca na tabela individual ---------- */
 function applyPerfilFilters() {
-  const activeTab = document.querySelector('#profileTabs .tab-btn.active');
-  const tabFilter = activeTab ? activeTab.getAttribute('data-filter') : 'all';
   const search = (document.getElementById('perfilSearch').value || '').toLowerCase().trim();
-  const range = document.getElementById('perfilRangeFilter').value;
-
-  document.querySelectorAll('#profileTableBody tr').forEach(row => {
-    const profile = row.getAttribute('data-profile');
-    const score = parseInt(row.getAttribute('data-score'), 10);
-    const name = row.querySelector('.company').textContent.toLowerCase();
-    const cnpj = row.getAttribute('data-cnpj');
-
-    let ok = (tabFilter === 'all' || profile === tabFilter);
-    if (ok && search) ok = name.includes(search) || cnpj.includes(search);
-    if (ok && range !== 'all') {
-      const [min, max] = range.split('-').map(Number);
-      ok = score >= min && score <= max;
-    }
-    row.classList.toggle('row-hidden', !ok);
+  document.querySelectorAll('#perfilTableBody tr').forEach(row => {
+    row.style.display = (!search || row.textContent.toLowerCase().includes(search)) ? '' : 'none';
   });
 }
-
-document.querySelectorAll('#profileTabs .tab-btn').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('#profileTabs .tab-btn').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    applyPerfilFilters();
-  });
-});
 document.getElementById('perfilSearch').addEventListener('input', applyPerfilFilters);
-document.getElementById('perfilRangeFilter').addEventListener('change', applyPerfilFilters);
 
-/* ---------- Perfis: ordenação por score ---------- */
-document.getElementById('sortByScore').addEventListener('click', function() {
-  perfilSortDir = perfilSortDir === 'desc' ? 'asc' : 'desc';
-  const tbody = document.getElementById('profileTableBody');
-  const rows = Array.from(tbody.querySelectorAll('tr'));
-  rows.sort((a, b) => {
-    const sa = parseInt(a.getAttribute('data-score'), 10);
-    const sb = parseInt(b.getAttribute('data-score'), 10);
-    return perfilSortDir === 'desc' ? sb - sa : sa - sb;
-  });
-  rows.forEach(r => tbody.appendChild(r));
-  this.querySelector('i').className = perfilSortDir === 'desc' ? 'fa-solid fa-arrow-down' : 'fa-solid fa-arrow-up';
-});
 
 /* ---------- Perfis: exportar CSV ---------- */
 document.getElementById('exportPerfisCsv').addEventListener('click', () => {
-  const rows = [['Fornecedor','CNPJ','Situacao','Ultima acao','Score de necessidade de contato']];
-  document.querySelectorAll('#profileTableBody tr:not(.row-hidden)').forEach(tr => {
+  const rows = [['Fornecedor','CNPJ','Score','Ação sugerida']];
+  document.querySelectorAll('#perfilTableBody tr').forEach(row => {
+    if (row.style.display === 'none') return;
     rows.push([
-      tr.querySelector('.company').childNodes[0].textContent.trim(),
-      tr.getAttribute('data-cnpj'),
-      tr.querySelector('.tag').textContent.trim(),
-      tr.children[2].textContent.trim(),
-      tr.getAttribute('data-score')
+      row.querySelector('.company').childNodes[0].textContent.trim(),
+      row.getAttribute('data-cnpj'),
+      row.getAttribute('data-score'),
+      row.getAttribute('data-acao')
     ]);
   });
   const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(';')).join('\n');
@@ -2794,19 +3436,14 @@ document.getElementById('exportPerfisCsv').addEventListener('click', () => {
   showToast('CSV exportado: perfis-fornecedor.csv');
 });
 
-/* ---------- Perfis: acionar Copiloto (navega direto pra página) ---------- */
-document.querySelectorAll('[data-goto-copiloto]').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelector('.nav-link[data-page="copiloto"]').click();
-    showToast('Abrindo Copiloto de IA para este fornecedor');
-  });
-});
-
-/* ---------- Perfis: drawer lateral (drill-down) ---------- */
+/* ---------- Perfis: drawer lateral (individual + grupo) ---------- */
 const perfilDrawerOverlay = document.getElementById('perfilDrawerOverlay');
-function openPerfilDrawer(row) {
-  document.getElementById('drawerName').textContent = row.querySelector('.company').childNodes[0].textContent.trim();
+
+function openDrawerSingle(row) {
+  document.getElementById('drawerSingleView').classList.remove('hidden');
+  document.getElementById('drawerGroupView').classList.add('hidden');
+  const name = row.querySelector('.company').childNodes[0].textContent.trim();
+  document.getElementById('drawerName').textContent = name;
   document.getElementById('drawerCnpj').textContent = 'CNPJ ' + row.getAttribute('data-cnpj') + ' · ' + row.getAttribute('data-porte') + ' · ' + row.getAttribute('data-categoria');
   const dims = [
     ['Intenção', row.getAttribute('data-intencao')],
@@ -2815,27 +3452,81 @@ function openPerfilDrawer(row) {
     ['Valor da oportunidade', row.getAttribute('data-valor')]
   ];
   document.getElementById('drawerDims').innerHTML = dims.map(([label, val]) => {
-    const color = val >= 70 ? 'var(--red)' : (val >= 40 ? 'var(--amber)' : 'var(--green)');
-    return `<div class="nc-dim"><div class="nc-dim-label">${label} <span>${val}</span></div><div class="bar-track"><div class="bar-fill" style="width:${val}%;background:${color};"></div></div></div>`;
+    const c = parseInt(val)>=70?'var(--red)':(parseInt(val)>=40?'var(--amber)':'var(--green)');
+    return `<div class="nc-dim"><div class="nc-dim-label">${label} <span>${val}</span></div><div class="bar-track"><div class="bar-fill" style="width:${val}%;background:${c};"></div></div></div>`;
   }).join('');
   perfilDrawerOverlay.classList.add('show');
 }
-document.querySelectorAll('#profileTableBody tr').forEach(row => {
-  row.style.cursor = 'pointer';
-  row.addEventListener('click', (e) => {
-    if (e.target.closest('button')) return;
-    openPerfilDrawer(row);
+
+function openDrawerGroup(sgCard) {
+  document.getElementById('drawerSingleView').classList.add('hidden');
+  document.getElementById('drawerGroupView').classList.remove('hidden');
+  const tagEl = sgCard.querySelector('.tag');
+  const statusLabel = tagEl ? tagEl.textContent.trim() : sgCard.getAttribute('data-sgkey');
+  document.getElementById('drawerName').textContent = statusLabel;
+  document.getElementById('drawerCnpj').textContent = sgCard.querySelector('.sgc-count').textContent;
+  const sgKey = sgCard.getAttribute('data-sgkey');
+  let html = '';
+  document.querySelectorAll(`#perfilTableBody tr[data-sgkey="${sgKey}"]`).forEach(row => {
+    const name = row.querySelector('.company').childNodes[0].textContent.trim();
+    const score = row.getAttribute('data-score');
+    const acao = row.getAttribute('data-acao');
+    const n = parseInt(score);
+    const barColor = n>=70?'var(--red)':(n>=40?'var(--amber)':'var(--green)');
+    const dims = [['Intenção',row.getAttribute('data-intencao')],['Fricção',row.getAttribute('data-friccao')],['Inatividade',row.getAttribute('data-inatividade')],['Valor',row.getAttribute('data-valor')]];
+    html += `<div class="dg-supplier">
+      <div class="dg-supplier-name">${name}</div>
+      <div class="dg-supplier-sub">CNPJ ${row.getAttribute('data-cnpj')} · Score: <strong style="color:${barColor}">${score}</strong> · ${acao}</div>
+      <div class="bar-track" style="margin:6px 0 8px;"><div class="bar-fill" style="width:${score}%;background:${barColor};"></div></div>
+      <div class="dg-dims">${dims.map(([l,v])=>{const c=parseInt(v)>=70?'var(--red)':(parseInt(v)>=40?'var(--amber)':'var(--green)');return`<div class="nc-dim"><div class="nc-dim-label">${l} <span>${v}</span></div><div class="bar-track"><div class="bar-fill" style="width:${v}%;background:${c};"></div></div></div>`;}).join('')}</div>
+    </div>`;
   });
-});
+  document.getElementById('drawerGroupList').innerHTML = html;
+  perfilDrawerOverlay.classList.add('show');
+}
+
 document.getElementById('drawerClose').addEventListener('click', () => perfilDrawerOverlay.classList.remove('show'));
 perfilDrawerOverlay.addEventListener('click', (e) => { if (e.target === perfilDrawerOverlay) perfilDrawerOverlay.classList.remove('show'); });
 
-document.querySelectorAll('[data-row-action]').forEach(btn => {
-  btn.addEventListener('click', function(e) {
+/* ---------- Perfis: clique nas linhas da tabela ---------- */
+document.querySelectorAll('#perfilTableBody tr').forEach(row => {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', (e) => { if (!e.target.closest('button')) openDrawerSingle(row); });
+  const btnAcionar = row.querySelector('.pt-acionar');
+  if (btnAcionar && !btnAcionar.disabled) btnAcionar.addEventListener('click', (e) => {
     e.stopPropagation();
-    showToast('Ação disparada: ' + this.textContent);
-    this.textContent = 'Enviado ✓';
-    this.disabled = true;
+    if (row.getAttribute('data-goto-copiloto')) {
+      document.querySelector('.nav-link[data-page="copiloto"]').click();
+      showToast('Abrindo Copiloto de IA para ' + row.querySelector('.company').childNodes[0].textContent.trim());
+    } else {
+      showToast('Ação disparada: ' + (row.getAttribute('data-acao') || ''));
+      btnAcionar.textContent = 'Enviado ✓'; btnAcionar.disabled = true;
+    }
+  });
+});
+
+/* ---------- Perfis: botões dos grupos de status ---------- */
+document.querySelectorAll('#statusGroupsGrid .status-group-card').forEach(sgCard => {
+  const sgKey = sgCard.getAttribute('data-sgkey');
+  const btnVer = sgCard.querySelector('.sgc-btn-ver');
+  const btnConfirmar = sgCard.querySelector('.sgc-btn-confirmar');
+  const btnRecusar = sgCard.querySelector('.sgc-btn-recusar');
+
+  if (btnVer) btnVer.addEventListener('click', () => openDrawerGroup(sgCard));
+
+  if (btnConfirmar && !btnConfirmar.disabled) btnConfirmar.addEventListener('click', () => {
+    document.querySelectorAll(`#perfilTableBody tr[data-sgkey="${sgKey}"] .pt-acionar`).forEach(btn => {
+      if (!btn.disabled) { btn.textContent = 'Enviado ✓'; btn.disabled = true; }
+    });
+    sgCard.classList.add('sgc-confirmed');
+    const label = sgCard.querySelector('.tag') ? sgCard.querySelector('.tag').textContent.trim() : sgKey;
+    showToast('Ação confirmada para todos em: ' + label);
+  });
+
+  if (btnRecusar && !btnRecusar.disabled) btnRecusar.addEventListener('click', () => {
+    sgCard.classList.add('sgc-refused');
+    const label = sgCard.querySelector('.tag') ? sgCard.querySelector('.tag').textContent.trim() : sgKey;
+    showToast('Categoria recusada: ' + label);
   });
 });
 
@@ -2853,8 +3544,9 @@ document.querySelectorAll('[data-resolve]').forEach(btn => {
     const alertEl = this.closest('[data-alert]');
     alertEl.classList.add('resolved');
     alertEl.setAttribute('data-status', 'resolvido');
-    this.textContent = 'Resolvido';
+    this.innerHTML = '<i class="fa-solid fa-check"></i> Resolvido';
     this.disabled = true;
+    this.classList.add('resolved');
     showToast('Alerta marcado como resolvido');
     updateAlertBadge();
     applyAlertFilters();
@@ -2895,8 +3587,8 @@ document.getElementById('bulkResolve').addEventListener('click', () => {
     const alertEl = cb.closest('[data-alert]');
     alertEl.classList.add('resolved');
     alertEl.setAttribute('data-status', 'resolvido');
-    alertEl.querySelector('[data-resolve]').textContent = 'Resolvido';
-    alertEl.querySelector('[data-resolve]').disabled = true;
+    const rBtn = alertEl.querySelector('[data-resolve]');
+    if (rBtn) { rBtn.innerHTML = '<i class="fa-solid fa-check"></i> Resolvido'; rBtn.disabled = true; rBtn.classList.add('resolved'); }
     cb.checked = false;
   });
   showToast('Alertas selecionados marcados como resolvidos');
@@ -2921,6 +3613,26 @@ document.querySelectorAll('[data-assign]').forEach(btn => {
     const assignee = this.previousElementSibling;
     assignee.textContent = names[Math.floor(Math.random() * names.length)];
     showToast('Alerta atribuído a ' + assignee.textContent);
+  });
+});
+
+/* ---------- Alertas: botão Ver detalhes ---------- */
+document.querySelectorAll('[data-detail]').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const alertEl = this.closest('[data-alert]');
+    const type = alertEl.getAttribute('data-type');
+    if (type === 'comercial') {
+      const cnpj = alertEl.getAttribute('data-cnpj');
+      const idx = copilotoCases.findIndex(c => c.cnpj === cnpj);
+      if (idx >= 0) coCaseIndex = idx;
+      document.querySelector('.nav-link[data-page="copiloto"]').click();
+      if (idx >= 0) renderCase();
+      showToast('Abrindo caso no Copiloto de IA');
+    } else {
+      document.querySelector('.nav-link[data-page="trafego"]').click();
+      showToast('Abrindo dossiê de segurança na Qualidade de Tráfego');
+    }
   });
 });
 
@@ -3250,14 +3962,22 @@ document.querySelectorAll('[data-result]').forEach(btn => {
 renderCase();
 
 let chartsBuilt = false;
+function getChartGridColor() {
+  return document.getElementById('screenApp').classList.contains('dark-mode') ? '#1B2030' : '#E5E9F4';
+}
+function getChartTickColor() {
+  return document.getElementById('screenApp').classList.contains('dark-mode') ? '#9297AC' : '#7A88B2';
+}
+
 function buildCharts() {
   if (chartsBuilt) return;
   chartsBuilt = true;
 
-  Chart.defaults.color = '#9297AC';
+  const isDark = document.getElementById('screenApp').classList.contains('dark-mode');
+  Chart.defaults.color = isDark ? '#9297AC' : '#7A88B2';
   Chart.defaults.font.family = "Inter, sans-serif";
   Chart.defaults.font.size = 11;
-  const gridColor = '#1B2030';
+  const gridColor = getChartGridColor();
   const blue = '#8DC63F', red = '#F0475A', green = '#8DC63F', amber = '#F5A623', purple = '#FDC82F';
 
   function lineDataset(label, color, data) {
@@ -3283,6 +4003,46 @@ function buildCharts() {
 
 /* Build charts right after successful MFA (app becomes visible) */
 document.getElementById('mfaSubmit').addEventListener('click', () => setTimeout(buildCharts, 50));
+
+/* ======================== TOGGLE MODO CLARO / ESCURO ======================== */
+function rebuildAllCharts() {
+  // Destroy all existing chart instances before rebuilding
+  const canvasIds = ['chartEvolucao', 'chartHumanBot', 'chartPorte', 'chartTrafficTrend',
+                     'chartJornada', 'chartEngage', 'chartRisk', 'chartSegComparison'];
+  canvasIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { const c = Chart.getChart(el); if (c) c.destroy(); }
+  });
+  chartsBuilt = false;
+  evolucaoChart = null;
+  if (typeof trendChart !== 'undefined') trendChart = null;
+  const isDark = document.getElementById('screenApp').classList.contains('dark-mode');
+  Chart.defaults.color = isDark ? '#9297AC' : '#7A88B2';
+  setTimeout(buildCharts, 30);
+}
+
+document.getElementById('themeToggleBtn').addEventListener('click', function() {
+  const app = document.getElementById('screenApp');
+  const goingDark = app.classList.toggle('dark-mode');
+  const icon = document.getElementById('themeIcon');
+  icon.className = goingDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  this.title = goingDark ? 'Mudar para modo claro' : 'Mudar para modo escuro';
+  try { localStorage.setItem('petronect-theme', goingDark ? 'dark' : 'light'); } catch(e) {}
+  rebuildAllCharts();
+});
+
+// Restaura o tema salvo ao carregar
+(function() {
+  let saved;
+  try { saved = localStorage.getItem('petronect-theme'); } catch(e) {}
+  if (saved === 'dark') {
+    document.getElementById('screenApp').classList.add('dark-mode');
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = 'fa-solid fa-sun';
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.title = 'Mudar para modo claro';
+  }
+})();
 
 </script>
 
