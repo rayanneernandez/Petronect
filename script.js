@@ -1069,16 +1069,29 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   const STORAGE_KEY = 'petronect_automacao_regras';
   const GATILHO_LABEL = {
     score_necessidade: 'Score de necessidade',
+    score_interesse: 'Score de interesse (inscrições)',
     prazo_horas_restantes: 'Prazo restante (horas)',
     horas_sem_atividade: 'Horas sem atividade',
+    dias_sem_acesso: 'Dias sem acesso ao portal',
+    tentativas_upload_falhas: 'Tentativas de upload com falha',
+    editais_visitados_sem_proposta: 'Editais visitados sem proposta',
+    valor_proposta: 'Valor da proposta (R$)',
+    reclamacoes_registradas: 'Reclamações registradas',
     score_risco_trafego: 'Score de risco de tráfego',
   };
   const ACAO_LABEL = {
     enviar_whatsapp: 'enviar mensagem no WhatsApp',
+    enviar_email: 'enviar e-mail personalizado',
     criar_alerta_crm: 'criar alerta no CRM',
+    criar_tarefa_atendimento: 'criar tarefa para o Atendimento',
+    escalar_gerente: 'escalar para o gerente de contas',
     notificar_reengajamento: 'disparar notificação de reengajamento',
+    pausar_comunicacao: 'pausar comunicações automáticas',
+    webhook_externo: 'disparar webhook para sistema externo',
     sinalizar_seguranca: 'sinalizar pra equipe de segurança',
   };
+  const PRIORIDADE_LABEL = { baixa: 'Baixa', media: 'Média', alta: 'Alta', critica: 'Crítica' };
+  const PRIORIDADE_COLOR = { baixa: 'var(--text-3)', media: 'var(--text-2)', alta: 'var(--amber)', critica: 'var(--red)' };
   const DEFAULT_RULES = [
     { id: 'score-alto', nome: 'Score de necessidade alto', gatilho: 'score_necessidade', condicao: { operador: '>=', valor: 80 }, acao: 'enviar_whatsapp', ativo: true },
     { id: 'prazo-curto', nome: 'Prazo do edital acabando', gatilho: 'prazo_horas_restantes', condicao: { operador: '<=', valor: 26 }, acao: 'criar_alerta_crm', ativo: true },
@@ -1120,8 +1133,9 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     const list = document.getElementById('automacaoRulesList');
     if (!list) return;
     list.innerHTML = rules.map(function(r) {
+      const prioridade = r.prioridade || 'media';
       return '<div class="automacao-rule' + (r.ativo ? '' : ' is-off') + '" data-rule-id="' + r.id + '">' +
-        '<div><div class="automacao-rule-title">' + r.nome + '</div><div class="automacao-rule-desc">' + describeRule(r) + '</div></div>' +
+        '<div><div class="automacao-rule-title">' + r.nome + ' <span style="font-size:10px; font-weight:700; color:' + PRIORIDADE_COLOR[prioridade] + '; border:1px solid ' + PRIORIDADE_COLOR[prioridade] + '; border-radius:10px; padding:1px 8px; margin-left:6px; vertical-align:middle;">' + PRIORIDADE_LABEL[prioridade] + '</span></div><div class="automacao-rule-desc">' + describeRule(r) + '</div></div>' +
         '<div class="automacao-rule-actions">' +
           '<button class="switch' + (r.ativo ? ' on' : '') + '" data-rule-toggle></button>' +
           '<button class="automacao-del-btn" data-rule-delete title="Remover regra"><i class="fa-regular fa-trash-can"></i></button>' +
@@ -1155,14 +1169,192 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     const operador = document.getElementById('novaRegraOperador').value;
     const valor = Number(document.getElementById('novaRegraValor').value) || 0;
     const acao = document.getElementById('novaRegraAcao').value;
+    const prioridade = document.getElementById('novaRegraPrioridade').value;
     const nome = GATILHO_LABEL[gatilho] + ' ' + operador + ' ' + valor;
-    rules.push({ id: 'regra-' + Date.now(), nome: nome, gatilho: gatilho, condicao: { operador: operador, valor: valor }, acao: acao, ativo: true });
+    rules.push({ id: 'regra-' + Date.now(), nome: nome, gatilho: gatilho, condicao: { operador: operador, valor: valor }, acao: acao, prioridade: prioridade, ativo: true });
     saveToStorage();
     render();
     showToast('Nova regra de automação criada e já ativa');
   });
 
   initRules();
+})();
+
+/* ---------- Usuários & Permissões ---------- */
+(function() {
+  const ROLES = ['Administrador', 'Atendimento', 'Marketing', 'Segurança', 'Somente leitura'];
+  const ROLE_COLOR = {
+    'Administrador': 'var(--red)', 'Atendimento': 'var(--green)', 'Marketing': 'var(--yellow)',
+    'Segurança': '#4F9AE0', 'Somente leitura': 'var(--text-3)',
+  };
+  const PAGES = [
+    'Visão geral', 'Jornada do fornecedor', 'Jornada do cliente', 'Qualidade de tráfego',
+    'Perfis de fornecedor', 'Agente de Reengajamento', 'Alertas e ações', 'Comunicação segmentada',
+    'Automação', 'Integrações & API', 'Usuários & Permissões', 'Configurações',
+  ];
+  const LEVELS = ['nenhum', 'ver', 'editar'];
+  const LEVEL_LABEL = { nenhum: 'Nenhum', ver: 'Ver', editar: 'Editar' };
+
+  const USERS_KEY = 'petronect_usuarios';
+  const PERMS_KEY = 'petronect_permissoes';
+
+  const DEFAULT_USERS = [
+    { nome: 'Joana Silva', email: 'joana.silva@petronect.com.br', perfil: 'Administrador', ativo: true, ultimoAcesso: 'agora' },
+    { nome: 'Carlos Mendes', email: 'carlos.mendes@petronect.com.br', perfil: 'Atendimento', ativo: true, ultimoAcesso: 'há 16 min' },
+    { nome: 'Ana Ribeiro', email: 'ana.ribeiro@petronect.com.br', perfil: 'Marketing', ativo: true, ultimoAcesso: 'há 3h' },
+    { nome: 'Juliana Alves', email: 'juliana.alves@petronect.com.br', perfil: 'Atendimento', ativo: true, ultimoAcesso: 'ontem' },
+    { nome: 'Rafael Souza', email: 'rafael.souza@petronect.com.br', perfil: 'Segurança', ativo: true, ultimoAcesso: 'há 2 dias' },
+    { nome: 'Beatriz Lima', email: 'beatriz.lima@petronect.com.br', perfil: 'Somente leitura', ativo: false, ultimoAcesso: 'há 19 dias' },
+  ];
+
+  function defaultPerms() {
+    const m = {};
+    ROLES.forEach(function(role) { m[role] = {}; });
+    PAGES.forEach(function(page) {
+      m['Administrador'][page] = 'editar';
+      m['Somente leitura'][page] = (page === 'Usuários & Permissões' || page === 'Configurações') ? 'nenhum' : 'ver';
+    });
+    const atendimentoEditar = ['Alertas e ações', 'Agente de Reengajamento', 'Automação'];
+    const marketingEditar = ['Comunicação segmentada'];
+    const segurancaEditar = ['Qualidade de tráfego'];
+    PAGES.forEach(function(page) {
+      m['Atendimento'][page] = atendimentoEditar.includes(page) ? 'editar' : (page === 'Usuários & Permissões' || page === 'Configurações' || page === 'Integrações & API' ? 'nenhum' : 'ver');
+      m['Marketing'][page] = marketingEditar.includes(page) ? 'editar' : (['Usuários & Permissões', 'Configurações', 'Integrações & API', 'Qualidade de tráfego', 'Automação'].includes(page) ? 'nenhum' : 'ver');
+      m['Segurança'][page] = segurancaEditar.includes(page) ? 'editar' : (['Usuários & Permissões', 'Configurações', 'Comunicação segmentada'].includes(page) ? 'nenhum' : 'ver');
+    });
+    return m;
+  }
+
+  let users = null;
+  let perms = null;
+
+  function loadJSON(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
+  }
+  function saveJSON(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+
+  function renderUsers() {
+    const body = document.getElementById('usuariosTableBody');
+    body.innerHTML = users.map(function(u, i) {
+      const initials = u.nome.split(' ').map(function(p) { return p[0]; }).slice(0, 2).join('').toUpperCase();
+      return '<tr>' +
+        '<td><div style="display:flex; align-items:center; gap:10px;"><div class="av" style="width:30px;height:30px;font-size:11px;">' + initials + '</div><div><div class="company" style="font-weight:600;">' + u.nome + '</div><div class="subrow">' + u.email + '</div></div></div></td>' +
+        '<td><span class="tag" style="background:transparent; border:1px solid ' + ROLE_COLOR[u.perfil] + '; color:' + ROLE_COLOR[u.perfil] + ';">' + u.perfil + '</span></td>' +
+        '<td><button class="switch' + (u.ativo ? ' on' : '') + '" data-user-toggle="' + i + '"></button></td>' +
+        '<td style="color:var(--text-2);">' + u.ultimoAcesso + '</td>' +
+        '<td style="text-align:right;"><button class="row-action-btn" data-user-remove="' + i + '"><i class="fa-regular fa-trash-can"></i> Remover</button></td>' +
+      '</tr>';
+    }).join('');
+
+    body.querySelectorAll('[data-user-toggle]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const i = Number(this.getAttribute('data-user-toggle'));
+        users[i].ativo = !users[i].ativo;
+        saveJSON(USERS_KEY, users);
+        showToast(users[i].nome + (users[i].ativo ? ' reativado' : ' desativado, perde o acesso imediatamente'));
+        renderUsers();
+      });
+    });
+    body.querySelectorAll('[data-user-remove]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const i = Number(this.getAttribute('data-user-remove'));
+        const nome = users[i].nome;
+        users.splice(i, 1);
+        saveJSON(USERS_KEY, users);
+        showToast(nome + ' removido do sistema');
+        renderUsers();
+      });
+    });
+  }
+
+  function renderPerms() {
+    const head = document.getElementById('permissoesHeadRow');
+    head.innerHTML = '<th>Tela</th>' + ROLES.map(function(r) { return '<th>' + r + '</th>'; }).join('');
+
+    const body = document.getElementById('permissoesTableBody');
+    body.innerHTML = PAGES.map(function(page) {
+      return '<tr><td>' + page + '</td>' + ROLES.map(function(role) {
+        const level = (perms[role] && perms[role][page]) || 'nenhum';
+        return '<td><button type="button" class="perm-pill perm-' + level + '" data-perm-role="' + role + '" data-perm-page="' + page + '">' + LEVEL_LABEL[level] + '</button></td>';
+      }).join('') + '</tr>';
+    }).join('');
+
+    body.querySelectorAll('[data-perm-role]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const role = this.getAttribute('data-perm-role');
+        const page = this.getAttribute('data-perm-page');
+        const current = perms[role][page] || 'nenhum';
+        const next = LEVELS[(LEVELS.indexOf(current) + 1) % LEVELS.length];
+        perms[role][page] = next;
+        saveJSON(PERMS_KEY, perms);
+        this.className = 'perm-pill perm-' + next;
+        this.textContent = LEVEL_LABEL[next];
+        showToast(role + ' · ' + page + ': ' + LEVEL_LABEL[next]);
+      });
+    });
+  }
+
+  users = loadJSON(USERS_KEY, DEFAULT_USERS);
+  perms = loadJSON(PERMS_KEY, defaultPerms());
+  renderUsers();
+  renderPerms();
+
+  document.getElementById('convidarUsuarioBtn').addEventListener('click', function() {
+    document.getElementById('convidarUsuarioForm').classList.toggle('hidden');
+  });
+  document.getElementById('enviarConviteBtn').addEventListener('click', function() {
+    const nome = document.getElementById('novoUsuarioNome').value.trim();
+    const email = document.getElementById('novoUsuarioEmail').value.trim();
+    const perfil = document.getElementById('novoUsuarioPerfil').value;
+    if (!nome || !email) { showToast('Preencha nome e e-mail antes de convidar'); return; }
+    users.push({ nome: nome, email: email, perfil: perfil, ativo: true, ultimoAcesso: 'convite pendente' });
+    saveJSON(USERS_KEY, users);
+    renderUsers();
+    showToast('Convite enviado para ' + email);
+    document.getElementById('novoUsuarioNome').value = '';
+    document.getElementById('novoUsuarioEmail').value = '';
+    document.getElementById('convidarUsuarioForm').classList.add('hidden');
+  });
+})();
+
+/* ---------- Integrações & API: configuração por conector ---------- */
+(function() {
+  const CAMPOS = {
+    'ERP (SAP / TOTVS)': ['CNPJ', 'Razão social', 'Status do contrato', 'Categoria de fornecimento'],
+    'Power BI / Looker': ['KPIs consolidados', 'Funil da jornada', 'Perfis por porte'],
+    'CRM (Salesforce)': ['Nome do caso', 'Score de necessidade', 'CNPJ', 'Ação recomendada'],
+    'WhatsApp Business API': ['Telefone', 'Template de mensagem', 'Status de entrega'],
+    'Slack': ['Alertas críticos', 'Resumo diário'],
+    'RD Station / Mailchimp': ['E-mail', 'Segmento de comportamento', 'Template de campanha'],
+  };
+  const overlay = document.getElementById('connectorDrawerOverlay');
+  document.querySelectorAll('[data-connector-config]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const nome = this.getAttribute('data-connector-config');
+      document.getElementById('connectorDrawerTitle').textContent = nome;
+      document.getElementById('connectorDrawerToken').value = 'conn_' + nome.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 20) + '_8f2a91';
+      const fields = CAMPOS[nome] || [];
+      document.getElementById('connectorDrawerFields').innerHTML = fields.map(function(f) {
+        return '<div class="dh-row"><span>' + f + '</span><span style="color:var(--green);"><i class="fa-solid fa-check"></i> Mapeado</span></div>';
+      }).join('');
+      overlay.classList.add('show');
+    });
+  });
+  document.getElementById('connectorDrawerClose').addEventListener('click', function() { overlay.classList.remove('show'); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('show'); });
+  document.getElementById('connectorDrawerSaveBtn').addEventListener('click', function() {
+    showToast('Configuração salva para ' + document.getElementById('connectorDrawerTitle').textContent);
+    overlay.classList.remove('show');
+  });
+  document.getElementById('connectorDrawerSyncBtn').addEventListener('click', function() {
+    this.disabled = true;
+    this.innerHTML = 'Sincronizando... <i class="fa-solid fa-spinner fa-spin"></i>';
+    setTimeout(() => {
+      this.disabled = false;
+      this.innerHTML = '<i class="fa-solid fa-rotate"></i> Sincronizar agora';
+      showToast('Sincronização concluída para ' + document.getElementById('connectorDrawerTitle').textContent);
+    }, 900);
+  });
 })();
 
 /* ---------- Integrações & API ---------- */
@@ -1249,7 +1441,8 @@ document.querySelectorAll('[data-toggle]').forEach(sw => {
     const on = this.classList.contains('on');
     const connector = this.getAttribute('data-connector');
     if (connector) {
-      const status = this.nextElementSibling;
+      const card = this.closest('.connector-card');
+      const status = card ? card.querySelector('.connector-status') : this.nextElementSibling;
       status.textContent = on ? 'Conectado' : 'Desconectado';
       status.style.color = on ? 'var(--green)' : 'var(--text-3)';
       showToast(on

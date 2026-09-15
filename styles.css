@@ -498,6 +498,12 @@
   .automacao-rule-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
   .automacao-del-btn { background: none; border: none; color: var(--text-3); font-size: 14px; cursor: pointer; }
   .automacao-del-btn:hover { color: var(--red); }
+
+  .perm-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; padding: 5px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 700; border: 1px solid var(--line); background: var(--panel-2); color: var(--text-3); cursor: pointer; user-select: none; }
+  .perm-pill.perm-ver { border-color: #4F9AE0; color: #4F9AE0; background: rgba(79,154,224,0.1); }
+  .perm-pill.perm-editar { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  #permissoesTable th, #permissoesTable td { text-align: center; }
+  #permissoesTable th:first-child, #permissoesTable td:first-child { text-align: left; white-space: nowrap; }
   .switch.on::after { left: 19px; }
 
   .toast {
@@ -744,9 +750,9 @@
     padding: 7px 12px; border-radius: 7px; font-family: inherit; cursor: pointer;
   }
   /* ======================== PERFIS — GRUPOS DE STATUS ======================== */
-  .sgc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
-  @media (max-width: 1400px) { .sgc-grid { grid-template-columns: repeat(2, 1fr); } }
-  .status-group-card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; transition: opacity 0.2s, border-color 0.2s; }
+  .sgc-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
+  @media (max-width: 1400px) { .sgc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .status-group-card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; transition: opacity 0.2s, border-color 0.2s; min-width: 0; }
   .status-group-card.sgc-confirmed { border-color: var(--green); opacity: 0.65; }
   .status-group-card.sgc-refused { opacity: 0.3; pointer-events: none; }
   .sgc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }

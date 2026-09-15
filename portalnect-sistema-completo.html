@@ -548,6 +548,7 @@
     <nav>
       <button type="button" class="nav-link" data-page="arquitetura"><i class="fa-solid fa-layer-group"></i> Arquitetura da solução</button>
       <button type="button" class="nav-link" data-page="integracoes"><i class="fa-solid fa-plug-circle-bolt"></i> Integrações &amp; API</button>
+      <button type="button" class="nav-link" data-page="usuarios"><i class="fa-solid fa-users-gear"></i> Usuários &amp; Permissões</button>
       <button type="button" class="nav-link" data-page="config"><i class="fa-solid fa-gear"></i> Configurações</button>
     </nav>
     </div>
@@ -1833,13 +1834,19 @@
 
       <div class="card">
         <div class="card-head"><div class="ctitle"><i class="fa-solid fa-plus"></i> Nova regra</div></div>
-        <div style="display:grid; grid-template-columns:1.4fr 0.7fr 0.7fr 1.4fr auto; gap:8px; align-items:end;">
+        <div style="display:grid; grid-template-columns:1.3fr 0.6fr 0.7fr 1.6fr; gap:8px; margin-bottom:10px;">
           <div class="field" style="margin:0;">
             <label>Gatilho</label>
             <select id="novaRegraGatilho" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
               <option value="score_necessidade">Score de necessidade</option>
+              <option value="score_interesse">Score de interesse (inscrições)</option>
               <option value="prazo_horas_restantes">Prazo restante (horas)</option>
               <option value="horas_sem_atividade">Horas sem atividade</option>
+              <option value="dias_sem_acesso">Dias sem acesso ao portal</option>
+              <option value="tentativas_upload_falhas">Tentativas de upload com falha</option>
+              <option value="editais_visitados_sem_proposta">Editais visitados sem proposta</option>
+              <option value="valor_proposta">Valor da proposta (R$)</option>
+              <option value="reclamacoes_registradas">Reclamações registradas</option>
               <option value="score_risco_trafego">Score de risco de tráfego</option>
             </select>
           </div>
@@ -1858,9 +1865,25 @@
             <label>Ação</label>
             <select id="novaRegraAcao" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
               <option value="enviar_whatsapp">Enviar mensagem no WhatsApp</option>
+              <option value="enviar_email">Enviar e-mail personalizado</option>
               <option value="criar_alerta_crm">Criar alerta no CRM</option>
+              <option value="criar_tarefa_atendimento">Criar tarefa para o Atendimento</option>
+              <option value="escalar_gerente">Escalar para o gerente de contas</option>
               <option value="notificar_reengajamento">Disparar notificação de reengajamento</option>
+              <option value="pausar_comunicacao">Pausar comunicações automáticas</option>
+              <option value="webhook_externo">Disparar webhook para sistema externo</option>
               <option value="sinalizar_seguranca">Sinalizar pra equipe de segurança</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end;">
+          <div class="field" style="margin:0;">
+            <label>Prioridade da ação</label>
+            <select id="novaRegraPrioridade" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+              <option value="baixa">Baixa</option>
+              <option value="media" selected>Média</option>
+              <option value="alta">Alta</option>
+              <option value="critica">Crítica</option>
             </select>
           </div>
           <button class="row-action-btn" id="novaRegraAddBtn" style="background:var(--green-soft); border-color:var(--green); color:var(--green); height:38px;">Adicionar</button>
@@ -1912,35 +1935,61 @@
       </div>
 
       <div class="section-label">CONECTORES PRONTOS</div>
-      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Cada conector abaixo já vem integrado ao Petronect Analytics. Ligar o botão ativa a sincronização automática com aquele sistema (usando a chave de API acima); desligar interrompe, sem apagar nada do que já foi enviado.</p>
-      <div class="grid2" style="margin-bottom:14px;">
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-cubes-stacked"></i></div><div><div style="font-weight:700; font-size:13px;">ERP (SAP / TOTVS)</div><div style="font-size:11px; color:var(--text-3);">Sincroniza cadastro de fornecedor e status de contrato</div></div></div>
-          <div style="text-align:right;">
+      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Cada conector abaixo já vem integrado ao Petronect Analytics. Ligar o botão ativa a sincronização automática com aquele sistema (usando a chave de API acima); desligar interrompe, sem apagar nada do que já foi enviado. Clique em "Configurar" pra ver os detalhes de cada um.</p>
+      <div class="grid3" style="margin-bottom:14px;">
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-cubes-stacked"></i></div><div><div style="font-weight:700; font-size:13px;">ERP (SAP / TOTVS)</div><div style="font-size:11px; color:var(--text-3);">Cadastro de fornecedor e status de contrato</div></div></div>
             <button class="switch on" data-toggle data-connector="ERP (SAP / TOTVS)"></button>
-            <div class="connector-status" style="color:var(--green);">Conectado</div>
           </div>
+          <div class="connector-status" style="color:var(--green); margin-top:10px;">Conectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Último sync: há 8 min · 1.204 registros hoje</div>
+          <button class="link-inline connector-config-btn" data-connector-config="ERP (SAP / TOTVS)" style="margin-top:10px;">Configurar</button>
         </div>
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-chart-pie"></i></div><div><div style="font-weight:700; font-size:13px;">Power BI / Looker</div><div style="font-size:11px; color:var(--text-3);">Exporta os dados agregados pra dashboards externos, atualizando 1x por hora</div></div></div>
-          <div style="text-align:right;">
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-chart-pie"></i></div><div><div style="font-weight:700; font-size:13px;">Power BI / Looker</div><div style="font-size:11px; color:var(--text-3);">Dados agregados para dashboards externos</div></div></div>
             <button class="switch" data-toggle data-connector="Power BI / Looker"></button>
-            <div class="connector-status" style="color:var(--text-3);">Desconectado</div>
           </div>
+          <div class="connector-status" style="color:var(--text-3); margin-top:10px;">Desconectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Nunca sincronizado</div>
+          <button class="link-inline connector-config-btn" data-connector-config="Power BI / Looker" style="margin-top:10px;">Configurar</button>
         </div>
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-headset"></i></div><div><div style="font-weight:700; font-size:13px;">CRM (Salesforce)</div><div style="font-size:11px; color:var(--text-3);">Cria e atualiza cards de atendimento automaticamente</div></div></div>
-          <div style="text-align:right;">
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-headset"></i></div><div><div style="font-weight:700; font-size:13px;">CRM (Salesforce)</div><div style="font-size:11px; color:var(--text-3);">Cards de atendimento automáticos</div></div></div>
             <button class="switch on" data-toggle data-connector="CRM (Salesforce)"></button>
-            <div class="connector-status" style="color:var(--green);">Conectado</div>
           </div>
+          <div class="connector-status" style="color:var(--green); margin-top:10px;">Conectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Último sync: há 2 min · 31 casos hoje</div>
+          <button class="link-inline connector-config-btn" data-connector-config="CRM (Salesforce)" style="margin-top:10px;">Configurar</button>
         </div>
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-brands fa-whatsapp"></i></div><div><div style="font-weight:700; font-size:13px;">WhatsApp Business API</div><div style="font-size:11px; color:var(--text-3);">Dispara o reengajamento direto pelo WhatsApp oficial</div></div></div>
-          <div style="text-align:right;">
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-brands fa-whatsapp"></i></div><div><div style="font-weight:700; font-size:13px;">WhatsApp Business API</div><div style="font-size:11px; color:var(--text-3);">Reengajamento direto pelo WhatsApp oficial</div></div></div>
             <button class="switch on" data-toggle data-connector="WhatsApp Business API"></button>
-            <div class="connector-status" style="color:var(--green);">Conectado</div>
           </div>
+          <div class="connector-status" style="color:var(--green); margin-top:10px;">Conectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Último sync: há 1 min · 71% de resposta</div>
+          <button class="link-inline connector-config-btn" data-connector-config="WhatsApp Business API" style="margin-top:10px;">Configurar</button>
+        </div>
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-brands fa-slack"></i></div><div><div style="font-weight:700; font-size:13px;">Slack</div><div style="font-size:11px; color:var(--text-3);">Alertas críticos direto no canal do time</div></div></div>
+            <button class="switch" data-toggle data-connector="Slack"></button>
+          </div>
+          <div class="connector-status" style="color:var(--text-3); margin-top:10px;">Desconectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Nunca sincronizado</div>
+          <button class="link-inline connector-config-btn" data-connector-config="Slack" style="margin-top:10px;">Configurar</button>
+        </div>
+        <div class="card connector-card">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-regular fa-envelope"></i></div><div><div style="font-weight:700; font-size:13px;">RD Station / Mailchimp</div><div style="font-size:11px; color:var(--text-3);">Comunicação segmentada por e-mail em massa</div></div></div>
+            <button class="switch" data-toggle data-connector="RD Station / Mailchimp"></button>
+          </div>
+          <div class="connector-status" style="color:var(--text-3); margin-top:10px;">Desconectado</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Nunca sincronizado</div>
+          <button class="link-inline connector-config-btn" data-connector-config="RD Station / Mailchimp" style="margin-top:10px;">Configurar</button>
         </div>
       </div>
 
@@ -1958,6 +2007,57 @@
             <div class="dh-row"><span><span style="color:var(--amber); font-weight:700;">429</span> GET /v1/perfis</span><span>há 41 min</span></div>
             <div class="dh-row"><span><span style="color:var(--green); font-weight:700;">200</span> GET /v1/alertas?status=aberto</span><span>há 1h</span></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- PAGE: USUÁRIOS & PERMISSÕES ---------- -->
+    <div class="page hidden" id="page-usuarios">
+      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Usuários &amp; Permissões</b></div>
+      <div class="header-row">
+        <div class="header-left"><h1>Usuários &amp; Permissões</h1><div class="sub">Quem tem acesso ao painel e o que cada perfil pode ver ou editar</div></div>
+        <div class="header-controls">
+          <button class="row-action-btn" id="convidarUsuarioBtn" style="background:var(--green-soft); border-color:var(--green); color:var(--green);"><i class="fa-solid fa-user-plus"></i> Convidar usuário</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="convidarUsuarioForm" style="margin-bottom:14px;">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-user-plus"></i> Convidar novo usuário</div></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; align-items:end;">
+          <div class="field" style="margin:0;"><label>Nome</label><input type="text" id="novoUsuarioNome" placeholder="Nome completo" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;"></div>
+          <div class="field" style="margin:0;"><label>E-mail</label><input type="email" id="novoUsuarioEmail" placeholder="nome@petronect.com.br" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;"></div>
+          <div class="field" style="margin:0;">
+            <label>Perfil</label>
+            <select id="novoUsuarioPerfil" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
+              <option>Administrador</option>
+              <option>Atendimento</option>
+              <option>Marketing</option>
+              <option>Segurança</option>
+              <option>Somente leitura</option>
+            </select>
+          </div>
+          <button class="row-action-btn" id="enviarConviteBtn" style="background:var(--green); border-color:var(--green); color:#0B1B4A; height:38px;">Enviar convite</button>
+        </div>
+      </div>
+
+      <div class="section-label">USUÁRIOS DO SISTEMA</div>
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:20px;">
+        <div class="table-scroll-wrap">
+        <table style="margin:0;">
+          <thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th>Último acesso</th><th style="text-align:right;">Ações</th></tr></thead>
+          <tbody id="usuariosTableBody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="section-label">PERMISSÕES POR PERFIL</div>
+      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Clique numa célula pra alternar entre <strong style="color:var(--text-3);">Nenhum</strong> → <strong style="color:#4F9AE0;">Ver</strong> → <strong style="color:var(--green);">Editar</strong>. Vale por tela do sistema, pra cada perfil.</p>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-scroll-wrap" style="max-height:520px;">
+        <table style="margin:0;" id="permissoesTable">
+          <thead><tr id="permissoesHeadRow"><th>Tela</th></tr></thead>
+          <tbody id="permissoesTableBody"></tbody>
+        </table>
         </div>
       </div>
     </div>
@@ -2053,6 +2153,40 @@
         <div style="font-size:16px; font-weight:700; color:var(--text);">Proposta enviada com sucesso!</div>
         <p style="font-size:12.5px; color:var(--text-2); margin-top:6px;">O rascunho do Edital EDT-2026-1024 foi concluído e enviado no valor de <strong id="resumeValorConfirmado" style="color:var(--text);">R$ 420.000,00</strong>. Sem esse lembrete automático, esse envio provavelmente teria virado abandono.</p>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer: configuração de conector -->
+<div class="drawer-overlay" id="connectorDrawerOverlay">
+  <div class="drawer" id="connectorDrawer">
+    <div class="drawer-head">
+      <div>
+        <div style="font-size:15px; font-weight:700;" id="connectorDrawerTitle">Conector</div>
+        <div style="font-size:12px; color:var(--text-3); margin-top:2px;">Configuração de integração</div>
+      </div>
+      <button class="icon-btn" id="connectorDrawerClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="field">
+        <label>Chave/token deste conector</label>
+        <div class="input-wrap"><input type="text" id="connectorDrawerToken" readonly style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:12px; font-family:monospace;"></div>
+      </div>
+      <div class="field">
+        <label>Frequência de sincronização</label>
+        <select id="connectorDrawerFreq" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:12.5px;">
+          <option value="tempo_real">Tempo real (webhook)</option>
+          <option value="15min">A cada 15 minutos</option>
+          <option value="1h" selected>A cada 1 hora</option>
+          <option value="diario">1x por dia</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Campos sincronizados</label>
+        <div class="drawer-history" id="connectorDrawerFields"></div>
+      </div>
+      <button type="button" class="btn-primary" id="connectorDrawerSaveBtn">Salvar configuração</button>
+      <button type="button" class="row-action-btn" id="connectorDrawerSyncBtn" style="width:100%; margin-top:8px;"><i class="fa-solid fa-rotate"></i> Sincronizar agora</button>
     </div>
   </div>
 </div>
