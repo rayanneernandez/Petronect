@@ -54,6 +54,7 @@
     font-weight: 800; font-size: 14px; color: #fff;
   }
   .auth-brand { font-size: 16px; font-weight: 700; }
+  .auth-logo-img { height: 36px; width: auto; display: block; border-radius: 8px; }
   .auth-card h2 { font-size: 19px; font-weight: 700; margin: 0 0 6px; }
   .auth-card .sub { font-size: 12.5px; color: var(--text-2); margin: 0 0 24px; line-height: 1.5; }
 
@@ -65,6 +66,11 @@
     border-radius: 9px; padding: 11px 13px 11px 38px; font-size: 13.5px; outline: none;
   }
   .field input:focus { border-color: var(--green); }
+  .field select {
+    width: 100%; background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 9px; padding: 11px 13px 11px 38px; font-size: 13.5px; outline: none;
+  }
+  .field select:focus { border-color: var(--green); }
   .field .field-icon {
     position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
     color: var(--text-3); font-size: 13px;
@@ -143,12 +149,13 @@
   .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); font-size: 12px; text-decoration: none; margin-bottom: 18px; background: none; border: none; padding: 0; }
 
   /* ===================== APP SHELL ===================== */
-  .layout { display: grid; grid-template-columns: 224px 1fr; min-height: 100vh; }
+  .layout { display: block; min-height: 100vh; }
 
   aside {
     background: var(--panel); border-right: 1px solid var(--line);
     padding: 20px 14px; display: flex; flex-direction: column;
-    position: sticky; top: 0; height: 100vh;
+    position: fixed; top: 0; left: 0; height: 100vh; width: 224px;
+    overflow-y: auto; z-index: 20;
   }
   .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; }
   .brand-mark {
@@ -158,6 +165,7 @@
     font-weight: 800; font-size: 13px; color: #fff; flex-shrink: 0;
   }
   .brand-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand-logo-img { height: 30px; width: auto; display: block; border-radius: 6px; }
 
   .nav-label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); margin: 14px 10px 6px; }
   .nav-label:first-of-type { margin-top: 0; }
@@ -179,7 +187,7 @@
   .logout-btn { background: none; border: none; color: var(--text-3); font-size: 14px; margin-left: auto; }
   .logout-btn:hover { color: var(--red); }
 
-  main { padding: 22px 28px 50px; }
+  main { padding: 22px 28px 50px; margin-left: 224px; min-width: 0; }
   .page { }
 
   .breadcrumb { font-size: 12px; color: var(--text-3); margin-bottom: 14px; }
@@ -249,6 +257,15 @@
     border: 1.5px dashed var(--line); background: none; min-height: 170px;
   }
   .ph-plus { width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed var(--text-3); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  .whatsapp-float {
+    position: fixed; right: 24px; bottom: 24px; z-index: 1000;
+    width: 56px; height: 56px; border-radius: 50%; background: #25D366;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 28px; box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    text-decoration: none; transition: transform 0.15s ease;
+  }
+  .whatsapp-float:hover { transform: scale(1.08); }
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
@@ -449,6 +466,7 @@
   @media (max-width: 1100px) {
     .layout { grid-template-columns: 1fr; }
     aside { display: none; }
+    main { margin-left: 0; }
     .kpis { grid-template-columns: repeat(2, 1fr); }
     .grid2, .grid3, .msg-grid { grid-template-columns: 1fr; }
   }
@@ -555,11 +573,11 @@
   }
 
   /* ---------- Login: layout dividido (hero + formulário) ---------- */
-  .auth-wrap-split { align-items: stretch; justify-content: flex-start; padding: 0; background: var(--bg); flex-wrap: wrap; }
+  .auth-wrap-split { align-items: stretch; justify-content: center; padding: 0; background: var(--bg); flex-wrap: wrap; }
   .auth-split-left {
-    flex: 1 1 480px; min-height: 100vh; position: relative; overflow: hidden;
+    flex: 1 1 480px; max-width: 780px; min-height: 100vh; position: relative; overflow: hidden;
     background: linear-gradient(160deg, #0B1B4A 0%, #060F2E 75%);
-    padding: 56px 48px; display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 48px; display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
   .auth-split-decor {
     position: absolute; inset: 0; pointer-events: none;
@@ -567,41 +585,51 @@
       radial-gradient(circle at 12% 88%, rgba(141,198,63,0.16), transparent 42%),
       radial-gradient(circle at 92% 8%, rgba(253,200,47,0.12), transparent 38%);
   }
-  .auth-split-content { position: relative; z-index: 1; max-width: 420px; }
-  .auth-split-headline { font-size: 30px; font-weight: 800; color: #fff; line-height: 1.28; margin: 30px 0 14px; }
+  .auth-split-content { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; }
+  .auth-split-eyebrow { display: inline-block; color: var(--yellow); font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin: 28px 0 0; }
+  .auth-split-headline { font-size: 36px; font-weight: 800; color: #fff; line-height: 1.22; letter-spacing: -0.01em; margin: 12px 0 16px; }
   .auth-split-headline span { color: var(--green); }
-  .auth-split-sub { color: var(--text-2); font-size: 13.5px; line-height: 1.65; margin: 0 0 26px; }
-  .auth-split-bullets { list-style: none; padding: 0; margin: 0 0 32px; display: flex; flex-direction: column; gap: 12px; }
-  .auth-split-bullets li { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13px; font-weight: 500; }
-  .auth-split-bullets li i { color: var(--yellow); font-size: 11px; width: 18px; height: 18px; border-radius: 50%; background: rgba(253,200,47,0.14); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .auth-split-mascot-wrap { position: relative; width: 100%; max-width: 300px; margin: 0 auto; }
-  .auth-split-mascot { display: block; width: 100%; }
-  .auth-mascot-chip {
-    position: absolute; display: flex; align-items: center; gap: 6px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
-    padding: 7px 12px; font-size: 11px; font-weight: 700; color: #fff;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.35); white-space: nowrap;
+  .auth-split-sub { color: var(--text-2); font-size: 14.5px; line-height: 1.7; margin: 0 0 28px; max-width: 400px; }
+  .auth-split-bullets { list-style: none; padding: 0; margin: 0 0 32px; display: flex; flex-direction: column; gap: 14px; }
+  .auth-split-bullets li { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 13.5px; font-weight: 600; letter-spacing: 0.01em; }
+  .auth-split-bullets li i { color: var(--yellow); font-size: 11px; width: 20px; height: 20px; border-radius: 50%; background: rgba(253,200,47,0.16); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .auth-split-hero {
+    display: block; width: 100%; max-width: 300px; margin: 20px auto 0;
+    filter: drop-shadow(0 20px 26px rgba(0,0,0,0.35));
   }
-  .auth-mascot-chip i { color: var(--green); font-size: 10px; }
-  .auth-mascot-chip-1 { top: 6%; left: -14%; }
-  .auth-mascot-chip-2 { top: 34%; right: -18%; }
-  @media (max-width: 1200px) {
-    .auth-mascot-chip-1 { left: 2%; }
-    .auth-mascot-chip-2 { right: 0%; }
-  }
-  .auth-split-right { flex: 1 1 420px; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+  .auth-split-right { flex: 1 1 420px; display: flex; align-items: center; justify-content: center; padding: 40px 24px; background: #FFFFFF; overflow-y: auto; }
+  .auth-split-right.auth-split-right-top { align-items: flex-start; padding-top: 48px; }
   .auth-card-plain { background: none; border: none; padding: 0; }
-  .auth-method-tabs { display: flex; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 4px; margin-bottom: 22px; }
-  .auth-method-btn { flex: 1; background: none; border: none; color: var(--text-2); font-weight: 700; font-size: 12.5px; padding: 9px; border-radius: 8px; transition: 0.15s; }
-  .auth-method-btn.active { background: var(--green); color: #06210B; }
+  .auth-card-plain h2 { color: #0B1B4A; font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+  .auth-card-plain .sub { color: #5A6482; font-size: 13.5px; }
+  .auth-split-right .field label { color: #4A5578; }
+  .auth-split-right .field input[type=text],
+  .auth-split-right .field input[type=email],
+  .auth-split-right .field input[type=password] {
+    background: #FFFFFF; border: 1px solid #DDE1EE; color: #0B1B4A;
+  }
+  .auth-split-right .field input::placeholder { color: #A6ADC6; }
+  .auth-split-right .field input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(141,198,63,0.15); }
+  .auth-split-right .field select {
+    background: #FFFFFF; border: 1px solid #DDE1EE; color: #0B1B4A;
+  }
+  .auth-split-right .field select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(141,198,63,0.15); }
+  .auth-split-right .field .field-icon, .auth-split-right .toggle-eye { color: #A6ADC6; }
+  .auth-split-right .checkbox-row { color: #5A6482; }
+  .auth-split-right .link-btn { color: #4F9A1E; }
+  .auth-split-right .divider-or { color: #A6ADC6; }
+  .auth-split-right .divider-or::before, .auth-split-right .divider-or::after { background: #E7E9F2; }
+  .auth-split-right .auth-footer-note { color: #9AA3C2; }
+  .auth-register-note { text-align: center; font-size: 12.5px; color: #5A6482; margin: 18px 0 0; }
+  .auth-register-note .link-btn { color: #4F9A1E; font-weight: 700; }
+  .auth-method-tabs { display: flex; background: #F0F2F8; border: 1px solid #E7E9F2; border-radius: 10px; padding: 4px; margin-bottom: 22px; }
+  .auth-method-btn { flex: 1; background: none; border: none; color: #5A6482; font-weight: 700; font-size: 12.5px; padding: 9px; border-radius: 8px; transition: 0.15s; }
+  .auth-method-btn.active { background: #FFFFFF; color: #0B1B4A; box-shadow: 0 3px 10px rgba(11,27,74,0.14); }
 
   @media (max-width: 900px) {
     .auth-split-left { min-height: auto; padding: 40px 28px 32px; }
     .auth-split-bullets { margin-bottom: 24px; }
-    .auth-split-mascot-wrap { max-width: 220px; }
-    .auth-mascot-chip { font-size: 10px; padding: 5px 9px; }
-    .auth-mascot-chip-1 { left: 0; top: 2%; }
-    .auth-mascot-chip-2 { right: -4%; top: 30%; }
+    .auth-split-hero { max-width: 220px; }
     .auth-split-right { padding: 32px 20px 48px; }
   }
 
@@ -903,22 +931,18 @@
     <div class="auth-split-decor"></div>
     <div class="auth-split-content">
       <div class="auth-logo">
-        <div class="auth-mark">Pt</div>
-        <div class="auth-brand" style="color:#fff;">Portalnect</div>
+        <img src="assets/logo-petronect.jpg" alt="Petronect" class="auth-logo-img">
       </div>
-      <h1 class="auth-split-headline">Cada acesso <span>vira sinal</span> pra reter o fornecedor certo.</h1>
-      <p class="auth-split-sub">Identifique quem trava, entenda onde, e aja no momento certo — sem depender só de cliques agregados no Google Analytics.</p>
+      <span class="auth-split-eyebrow">Portalnect Intelligence</span>
+      <h1 class="auth-split-headline">Cada acesso <span>vira sinal</span><br>pra reter o fornecedor certo.</h1>
+      <p class="auth-split-sub">Identifique quem trava, entenda onde e atue no momento certo, sem depender só de cliques agregados no Google Analytics.</p>
       <ul class="auth-split-bullets">
         <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
         <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
         <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
       </ul>
 
-      <div class="auth-split-mascot-wrap">
-        <img class="auth-split-mascot" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset, crachá e tablet">
-        <span class="auth-mascot-chip auth-mascot-chip-1"><i class="fa-solid fa-check"></i> Fornecedor autenticado</span>
-        <span class="auth-mascot-chip auth-mascot-chip-2"><i class="fa-solid fa-route"></i> Score de contato: 92</span>
-      </div>
+      <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
     </div>
   </div>
 
@@ -967,7 +991,6 @@
           </div>
           <div class="captcha-right">
             <i class="fa-solid fa-shield-halved cmark" style="color:#4285F4;"></i>
-            <span class="cfoot">reCAPTCHA-style</span>
           </div>
         </div>
         <div class="captcha-error" id="captchaError">Confirme que você não é um robô para continuar.</div>
@@ -977,47 +1000,179 @@
 
       <button type="button"
         onclick="document.getElementById('screenLanding').classList.add('hidden');document.getElementById('screenLogin').classList.add('hidden');document.getElementById('screenForgot').classList.add('hidden');document.getElementById('screenMfa').classList.add('hidden');document.getElementById('screenApp').classList.remove('hidden');document.getElementById('appFooter').style.display='block';if(typeof buildCharts==='function'){setTimeout(buildCharts,50);}"
-        style="width:100%; background:#3D2E00; border:1px dashed #FDC82F; color:#FDC82F; font-size:12.5px; font-weight:700; padding:11px; border-radius:9px; margin-top:12px;">
+        style="width:100%; background:#FFF6DC; border:1px solid #F5E1A8; color:#8A6400; font-size:12.5px; font-weight:700; padding:11px; border-radius:9px; margin-top:12px;">
         ⚡ Ver o painel agora, sem login (atalho de demo)
       </button>
 
+      <p class="auth-register-note">Não tem uma conta? <button type="button" class="link-btn" id="registerLink">Cadastre-se</button></p>
+
       <div class="divider-or">protegido com verificação em duas etapas</div>
-      <p class="auth-footer-note">Protótipo — Hackathon Petronect. Use qualquer e-mail e senha para simular o acesso.</p>
     </div>
   </div>
 </div>
 
 <!-- ===================== FORGOT PASSWORD SCREEN ===================== -->
-<div class="auth-wrap hidden" id="screenForgot">
-  <div class="auth-card">
-    <button type="button" class="back-link" id="forgotBack"><i class="fa-solid fa-arrow-left"></i> Voltar ao login</button>
+<div class="auth-wrap auth-wrap-split hidden" id="screenForgot">
+  <div class="auth-split-left">
+    <div class="auth-split-decor"></div>
+    <div class="auth-split-content">
+      <div class="auth-logo">
+        <img src="assets/logo-petronect.jpg" alt="Petronect" class="auth-logo-img">
+      </div>
+      <span class="auth-split-eyebrow">Portalnect Intelligence</span>
+      <h1 class="auth-split-headline">Cada acesso <span>vira sinal</span><br>pra reter o fornecedor certo.</h1>
+      <p class="auth-split-sub">Identifique quem trava, entenda onde e atue no momento certo, sem depender só de cliques agregados no Google Analytics.</p>
+      <ul class="auth-split-bullets">
+        <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
+        <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
+        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
+      </ul>
 
-    <div id="forgotStepRequest">
-      <div class="mfa-icon-wrap"><i class="fa-solid fa-key"></i></div>
-      <h2>Esqueceu sua senha?</h2>
-      <p class="sub">Digite seu e-mail corporativo. Vamos enviar um link para você criar uma nova senha.</p>
+      <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
+    </div>
+  </div>
 
-      <div class="field" id="fieldForgotEmail">
-        <label for="forgotEmail">E-mail corporativo</label>
-        <div class="input-wrap">
-          <i class="fa-regular fa-envelope field-icon"></i>
-          <input type="email" id="forgotEmail" placeholder="nome@petronect.com.br" autocomplete="username">
+  <div class="auth-split-right">
+    <div class="auth-card auth-card-plain">
+      <button type="button" class="back-link" id="forgotBack"><i class="fa-solid fa-arrow-left"></i> Voltar ao login</button>
+
+      <div id="forgotStepRequest">
+        <div class="mfa-icon-wrap"><i class="fa-solid fa-key"></i></div>
+        <h2>Esqueceu sua senha?</h2>
+        <p class="sub">Digite seu e-mail corporativo. Vamos enviar um link para você criar uma nova senha.</p>
+
+        <div class="field" id="fieldForgotEmail">
+          <label for="forgotEmail">E-mail corporativo</label>
+          <div class="input-wrap">
+            <i class="fa-regular fa-envelope field-icon"></i>
+            <input type="email" id="forgotEmail" placeholder="nome@petronect.com.br" autocomplete="username">
+          </div>
+          <div class="error-msg">Digite um e-mail válido.</div>
         </div>
-        <div class="error-msg">Digite um e-mail válido.</div>
+
+        <button type="button" class="btn-primary" id="forgotSubmit">Enviar link de redefinição <i class="fa-solid fa-paper-plane"></i></button>
       </div>
 
-      <button type="button" class="btn-primary" id="forgotSubmit">Enviar link de redefinição <i class="fa-solid fa-paper-plane"></i></button>
+      <div id="forgotStepSent" class="hidden">
+        <div class="mfa-icon-wrap" style="background:var(--green-soft); color:var(--green);"><i class="fa-solid fa-check"></i></div>
+        <h2>Link enviado</h2>
+        <p class="sub">Enviamos um link de redefinição para <strong id="forgotEmailTarget" style="color:var(--text);">seu e-mail</strong>. Verifique sua caixa de entrada (e o spam).</p>
+        <button type="button" class="btn-primary" id="forgotBackToLoginBtn">Voltar ao login</button>
+        <div class="mfa-resend">Não recebeu? <button type="button" id="forgotResend">Reenviar link</button></div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div id="forgotStepSent" class="hidden">
-      <div class="mfa-icon-wrap" style="background:var(--green-soft); color:var(--green);"><i class="fa-solid fa-check"></i></div>
-      <h2>Link enviado</h2>
-      <p class="sub">Enviamos um link de redefinição para <strong id="forgotEmailTarget" style="color:var(--text);">seu e-mail</strong>. Verifique sua caixa de entrada (e o spam).</p>
-      <button type="button" class="btn-primary" id="forgotBackToLoginBtn">Voltar ao login</button>
-      <div class="mfa-resend">Não recebeu? <button type="button" id="forgotResend">Reenviar link</button></div>
+<!-- ===================== REGISTER SCREEN ===================== -->
+<div class="auth-wrap auth-wrap-split hidden" id="screenRegister">
+  <div class="auth-split-left">
+    <div class="auth-split-decor"></div>
+    <div class="auth-split-content">
+      <div class="auth-logo">
+        <img src="assets/logo-petronect.jpg" alt="Petronect" class="auth-logo-img">
+      </div>
+      <span class="auth-split-eyebrow">Portalnect Intelligence</span>
+      <h1 class="auth-split-headline">Cada acesso <span>vira sinal</span><br>pra reter o fornecedor certo.</h1>
+      <p class="auth-split-sub">Identifique quem trava, entenda onde e atue no momento certo, sem depender só de cliques agregados no Google Analytics.</p>
+      <ul class="auth-split-bullets">
+        <li><i class="fa-solid fa-check"></i> Jornada completa por CNPJ, não só pageviews</li>
+        <li><i class="fa-solid fa-check"></i> Diagnóstico automático de barreiras e abandono</li>
+        <li><i class="fa-solid fa-check"></i> Reengajamento disparado pelo Copiloto de IA</li>
+      </ul>
+
+      <img class="auth-split-hero" src="assets/mascote-portalnect.png" alt="Mascote Portalnect com headset e crachá">
     </div>
+  </div>
 
-    <p class="auth-footer-note">Protótipo — Hackathon Petronect. Nenhum e-mail real é enviado.</p>
+  <div class="auth-split-right auth-split-right-top">
+    <div class="auth-card auth-card-plain" style="max-width:440px;">
+      <button type="button" class="back-link" id="registerBack"><i class="fa-solid fa-arrow-left"></i> Voltar ao login</button>
+
+      <div id="registerStepForm">
+        <h2>Quer se cadastrar na Petrobras?</h2>
+        <p class="sub">Para iniciar o processo de cadastramento no Cadastro de Fornecedores Petrobras, preencha os dados da empresa e do usuário responsável nos campos abaixo.</p>
+
+        <form id="registerForm" novalidate>
+          <div class="field" id="fieldRegCountry">
+            <label for="regCountry">País</label>
+            <div class="input-wrap">
+              <i class="fa-solid fa-globe field-icon"></i>
+              <select id="regCountry">
+                <option>Brasil</option>
+                <option>Argentina</option>
+                <option>Estados Unidos</option>
+                <option>Portugal</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" id="fieldRegCnpj">
+            <label for="regCnpj">CNPJ (Cód. Fiscal para outros países)</label>
+            <div class="input-wrap">
+              <i class="fa-solid fa-building field-icon"></i>
+              <input type="text" id="regCnpj" placeholder="00.000.000/0000-00">
+            </div>
+            <div class="error-msg">Digite um CNPJ válido.</div>
+          </div>
+
+          <div class="field" id="fieldRegNome">
+            <label for="regNome">Nome</label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-user field-icon"></i>
+              <input type="text" id="regNome" placeholder="Seu nome">
+            </div>
+            <div class="error-msg">Digite seu nome.</div>
+          </div>
+
+          <div class="field" id="fieldRegSobrenome">
+            <label for="regSobrenome">Sobrenome</label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-user field-icon"></i>
+              <input type="text" id="regSobrenome" placeholder="Seu sobrenome">
+            </div>
+            <div class="error-msg">Digite seu sobrenome.</div>
+          </div>
+
+          <div class="field" id="fieldRegUsuario">
+            <label for="regUsuario">Usuário</label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-id-badge field-icon"></i>
+              <input type="text" id="regUsuario" placeholder="Escolha um usuário">
+            </div>
+            <div class="error-msg">Digite um usuário.</div>
+          </div>
+
+          <div class="field" id="fieldRegEmail">
+            <label for="regEmail">Correio eletrônico</label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-envelope field-icon"></i>
+              <input type="email" id="regEmail" placeholder="nome@empresa.com.br" autocomplete="email">
+            </div>
+            <div class="error-msg">Digite um e-mail válido.</div>
+          </div>
+
+          <div class="field" id="fieldRegEmailConfirm">
+            <label for="regEmailConfirm">Confirmar correio eletrônico</label>
+            <div class="input-wrap">
+              <i class="fa-regular fa-envelope field-icon"></i>
+              <input type="email" id="regEmailConfirm" placeholder="nome@empresa.com.br" autocomplete="email">
+            </div>
+            <div class="error-msg">Os e-mails digitados não coincidem.</div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="registerSubmit">Cadastrar <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+      </div>
+
+      <div id="registerStepSent" class="hidden">
+        <div class="mfa-icon-wrap" style="background:var(--green-soft); color:var(--green);"><i class="fa-solid fa-check"></i></div>
+        <h2>Cadastro enviado</h2>
+        <p class="sub">Recebemos seus dados. Enviaremos as instruções de acesso para <strong id="registerEmailTarget" style="color:var(--text);">seu e-mail</strong> assim que o cadastro for validado.</p>
+        <button type="button" class="btn-primary" id="registerBackToLoginBtn">Voltar ao login</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1053,8 +1208,7 @@
 
   <aside>
     <div class="brand">
-      <div class="brand-mark">Pt</div>
-      <div class="brand-name">Portalnect</div>
+      <img src="assets/logo-petronect.jpg" alt="Petronect" class="brand-logo-img">
     </div>
 
     <div class="nav-label">Painel</div>
@@ -1151,7 +1305,7 @@
       </div>
 
       <div class="section-label">[ SEÇÃO 3: NEGÓCIOS E DIAGNÓSTICO ]</div>
-      <div class="grid3">
+      <div class="grid2">
         <div class="card">
           <div class="card-head"><div class="ctitle"><i class="fa-solid fa-route"></i> Radar de editais (Top 5)</div></div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
@@ -1190,7 +1344,9 @@
             <button class="link-inline" id="verLogErrosBtn">[Ver log de erros]</button>
           </div>
         </div>
+      </div>
 
+      <div class="grid2">
         <div class="card">
           <div class="card-head">
             <div class="ctitle"><i class="fa-solid fa-layer-group"></i> Perfil de fornecedor por porte</div>
@@ -1904,6 +2060,10 @@
 
 <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg">Ação concluída</span></div>
 
+<a class="whatsapp-float" href="https://api.whatsapp.com/send/?phone=%2B552140401490&text&type=phone_number&app_absent=0" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+
 <footer style="display:none;" id="appFooter">Protótipo — Hackathon Petronect · dados simulados para demonstração.</footer>
 
 <script>
@@ -1975,6 +2135,7 @@ function showToast(msg) {
 const screenLanding = document.getElementById('screenLanding');
 const screenLogin = document.getElementById('screenLogin');
 const screenForgot = document.getElementById('screenForgot');
+const screenRegister = document.getElementById('screenRegister');
 const screenMfa = document.getElementById('screenMfa');
 const screenApp = document.getElementById('screenApp');
 
@@ -1982,6 +2143,7 @@ function showScreen(name) {
   screenLanding.classList.toggle('hidden', name !== 'landing');
   screenLogin.classList.toggle('hidden', name !== 'login');
   screenForgot.classList.toggle('hidden', name !== 'forgot');
+  screenRegister.classList.toggle('hidden', name !== 'register');
   screenMfa.classList.toggle('hidden', name !== 'mfa');
   screenApp.classList.toggle('hidden', name !== 'app');
   document.getElementById('appFooter').style.display = name === 'app' ? 'block' : 'none';
@@ -2185,6 +2347,44 @@ document.getElementById('forgotSubmit').addEventListener('click', () => {
   showToast('Link de redefinição enviado');
 });
 
+/* ---------- Register ---------- */
+document.getElementById('registerLink').addEventListener('click', () => {
+  document.getElementById('registerStepForm').classList.remove('hidden');
+  document.getElementById('registerStepSent').classList.add('hidden');
+  showScreen('register');
+});
+document.getElementById('registerBack').addEventListener('click', () => showScreen('login'));
+document.getElementById('registerBackToLoginBtn').addEventListener('click', () => showScreen('login'));
+
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const required = [
+    ['fieldRegCnpj', 'regCnpj'],
+    ['fieldRegNome', 'regNome'],
+    ['fieldRegSobrenome', 'regSobrenome'],
+    ['fieldRegUsuario', 'regUsuario'],
+    ['fieldRegEmail', 'regEmail'],
+  ];
+  let ok = true;
+  required.forEach(([fieldId, inputId]) => {
+    const val = document.getElementById(inputId).value.trim();
+    const valid = inputId === 'regEmail' ? /\S+@\S+\.\S+/.test(val) : val.length > 0;
+    document.getElementById(fieldId).classList.toggle('has-error', !valid);
+    if (!valid) ok = false;
+  });
+  const email = document.getElementById('regEmail').value.trim();
+  const emailConfirm = document.getElementById('regEmailConfirm').value.trim();
+  const emailsMatch = email === emailConfirm && emailConfirm.length > 0;
+  document.getElementById('fieldRegEmailConfirm').classList.toggle('has-error', !emailsMatch);
+  if (!emailsMatch) ok = false;
+  if (!ok) return;
+
+  document.getElementById('registerEmailTarget').textContent = email;
+  document.getElementById('registerStepForm').classList.add('hidden');
+  document.getElementById('registerStepSent').classList.remove('hidden');
+  showToast('Cadastro enviado');
+});
+
 let forgotCooldown = 0;
 document.getElementById('forgotResend').addEventListener('click', function() {
   if (forgotCooldown > 0) return;
@@ -2290,6 +2490,9 @@ navLinks.forEach(link => {
     const target = link.getAttribute('data-page');
     pages.forEach(p => p.classList.toggle('hidden', p.id !== 'page-' + target));
     closeSidebar();
+    if (target === 'jornada' && typeof openJornadaStage === 'function') {
+      openJornadaStage('detalhes');
+    }
   });
 });
 
@@ -3081,20 +3284,6 @@ function buildCharts() {
 /* Build charts right after successful MFA (app becomes visible) */
 document.getElementById('mfaSubmit').addEventListener('click', () => setTimeout(buildCharts, 50));
 
-/* On-screen confirmation that scripts finished loading + button is wired */
-(function() {
-  const banner = document.getElementById('debugBanner');
-  const btn = document.getElementById('loginSubmit');
-  if (btn) {
-    banner.style.display = 'block';
-    banner.style.background = '#1FAE64';
-    banner.textContent = '✓ Sistema carregado — botão Entrar conectado';
-    setTimeout(() => { banner.style.display = 'none'; }, 3000);
-  } else {
-    banner.style.display = 'block';
-    banner.textContent = '✗ Botão Entrar não encontrado no HTML';
-  }
-})();
 </script>
 
 </body>
