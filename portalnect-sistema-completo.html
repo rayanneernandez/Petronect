@@ -269,6 +269,21 @@
   }
   .whatsapp-float:hover { transform: scale(1.08); }
 
+  .reengage-nudge {
+    position: fixed; right: 24px; bottom: 96px; z-index: 999; width: 340px; max-width: calc(100vw - 48px);
+    background: #0B1B4A; border: 1px solid #22306B; border-radius: 14px; padding: 18px 18px 18px 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35); display: flex; gap: 12px; align-items: flex-start;
+    animation: reengage-in 0.35s ease;
+  }
+  .reengage-nudge.hidden { display: none; }
+  @keyframes reengage-in { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .reengage-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(253,200,47,0.16); color: var(--yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px; }
+  .reengage-title { font-size: 13.5px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .reengage-body { font-size: 12px; color: #B7C0E6; line-height: 1.5; margin: 0; }
+  .reengage-nudge .row-action-btn { font-size: 11.5px; padding: 7px 12px; }
+  .reengage-close { position: absolute; top: 8px; right: 10px; background: none; border: none; color: #7A85B8; font-size: 16px; cursor: pointer; line-height: 1; }
+  .reengage-close:hover { color: #fff; }
+
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 
@@ -1544,6 +1559,7 @@
     <nav>
       <button type="button" class="nav-link active" data-page="visao"><i class="fa-solid fa-grip"></i> Visão geral</button>
       <button type="button" class="nav-link" data-page="jornada"><i class="fa-solid fa-route"></i> Jornada do fornecedor</button>
+      <button type="button" class="nav-link" data-page="jornadaCliente"><i class="fa-solid fa-user-tie"></i> Jornada do cliente</button>
       <button type="button" class="nav-link" data-page="trafego"><i class="fa-solid fa-shield-halved"></i> Qualidade de tráfego <span class="badge">23</span></button>
       <button type="button" class="nav-link" data-page="perfis"><i class="fa-solid fa-building"></i> Perfis de fornecedor</button>
     </nav>
@@ -1603,6 +1619,22 @@
           <div class="kdelta down">↓ 3,1 pts</div>
           <div class="kpi-link">[Ver funil na Jornada]</div>
         </div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px; background:linear-gradient(135deg, var(--green-soft), var(--panel));">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-brain"></i> Como o Petronect Analytics pensa</div></div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div class="arch-box">Dados</div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box">Comportamento</div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box decision">Insight</div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box warning">Recomendação</div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box success">Ação</div>
+        </div>
+        <p style="font-size:11.5px; color:var(--text-2); margin:12px 0 0;">Não olhamos só quantidade de acesso — cruzamos com o que o fornecedor preencheu, até onde avançou e onde travou, pra transformar isso em recomendação acionável.</p>
       </div>
 
       <div class="section-label">[ SEÇÃO 2: TENDÊNCIA E SEGURANÇA ]</div>
@@ -1866,6 +1898,8 @@
           <select id="jornadaPeriodo" class="ctrl" style="cursor:pointer;">
             <option value="hoje">Hoje</option>
             <option value="7dias" selected>Últimos 7 dias</option>
+            <option value="6meses">Últimos 6 meses</option>
+            <option value="1ano">Último ano</option>
             <option value="custom">Personalizado</option>
           </select>
           <div style="position:relative;">
@@ -1902,9 +1936,15 @@
           <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:100%;background:#2B3A66;"></div></div><div class="fnum">142</div><div class="flabel">Acesso identificado</div><span class="funnel-arrow">→</span></div>
           <div class="funnel-step" data-stage="buscou"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:78%;background:var(--green);"></div></div><div class="fnum">111</div><div class="flabel">Buscou edital</div><div class="fdrop tooltip-wrap">−22% <span class="mini-tooltip">Perda de 31 · 25 saídas naturais · 06 erros técnicos</span></div><span class="funnel-arrow">→</span></div>
           <div class="funnel-step" data-stage="detalhes"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:56%;background:var(--yellow, #FDC82F);"></div></div><div class="fnum">79</div><div class="flabel">Abriu detalhes</div><div class="fdrop tooltip-wrap">−29% <span class="mini-tooltip">Perda de 32 · 24 saídas naturais · 08 erros técnicos</span></div><span class="funnel-arrow">→</span></div>
-          <div class="funnel-step" data-stage="iniciou"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:34%;background:var(--amber);"></div></div><div class="fnum">48</div><div class="flabel">Iniciou proposta</div><div class="fdrop tooltip-wrap">−39% <span class="mini-tooltip">Perda de 31 · 09 saídas naturais · 22 erros técnicos</span></div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step" data-stage="inscreveu"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:43%;background:var(--green);"></div></div><div class="fnum">61</div><div class="flabel">Inscreveu-se no edital <span class="threat-tag" style="margin-left:0;">sinal de interesse</span></div><div class="fdrop tooltip-wrap">−23% <span class="mini-tooltip">Perda de 18 · 14 saídas naturais · 04 erros técnicos</span></div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step" data-stage="iniciou"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:34%;background:var(--amber);"></div></div><div class="fnum">48</div><div class="flabel">Iniciou proposta</div><div class="fdrop tooltip-wrap">−21% <span class="mini-tooltip">Perda de 13 · 06 saídas naturais · 07 erros técnicos</span></div><span class="funnel-arrow">→</span></div>
           <div class="funnel-step" data-stage="enviou"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:20%;background:var(--green);"></div></div><div class="fnum">28</div><div class="flabel">Enviou proposta</div><div class="fdrop tooltip-wrap">−42% <span class="mini-tooltip">Perda de 20 · 11 saídas naturais · 09 erros técnicos</span></div></div>
         </div>
+      </div>
+
+      <div class="card" style="margin-top:14px; border-color:var(--amber); background:var(--amber-soft);">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-chart-line"></i> Por que o abandono importa além da Petronect</div></div>
+        <p style="font-size:12.5px; color:var(--text-2); line-height:1.6; margin:0;">Cada fornecedor que abandona não é só um número perdido aqui: é <strong style="color:var(--text);">um concorrente a menos</strong> disputando esse edital — e menos concorrência tende a significar preços menos competitivos pro comprador. Reduzir abandono técnico também fortalece o processo de compra.</p>
       </div>
 
       <div class="card" id="jornadaDrilldown" style="margin-top:14px; display:none;">
@@ -1916,11 +1956,73 @@
       </div>
     </div>
 
+    <!-- ---------- PAGE: JORNADA DO CLIENTE (COMPRADOR) ---------- -->
+    <div class="page hidden" id="page-jornadaCliente">
+      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Jornada do cliente</b></div>
+      <div class="header-row">
+        <div class="header-left"><h1>Jornada do cliente</h1><div class="sub">O lado do comprador: onde ele precisa agir e onde a gente pode avisar antes que vire problema</div></div>
+        <div class="header-controls">
+          <select class="ctrl" style="cursor:pointer;">
+            <option>Últimos 7 dias</option>
+            <option>Últimos 6 meses</option>
+            <option>Último ano</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+        <div class="kpi" style="border-color:var(--amber);">
+          <div class="klabel"><i class="fa-solid fa-triangle-exclamation" style="color:var(--amber);"></i> Pendências abertas</div>
+          <div class="kvalue">09 <span style="font-size:12px; font-weight:500; color:var(--text-2);">precisam de ação</span></div>
+        </div>
+        <div class="kpi" style="border-color:var(--red);">
+          <div class="klabel"><i class="fa-solid fa-hourglass-half" style="color:var(--red);"></i> Prazos próximos do fim</div>
+          <div class="kvalue">04 <span style="font-size:12px; font-weight:500; color:var(--text-2);">encerram em &lt;48h</span></div>
+        </div>
+        <div class="kpi" style="border-color:var(--green);">
+          <div class="klabel"><i class="fa-solid fa-paper-plane" style="color:var(--green);"></i> Avisos automáticos enviados</div>
+          <div class="kvalue">17 <span style="font-size:12px; font-weight:500; color:var(--text-2);">últimos 7 dias</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="funnel-steps">
+          <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:100%;background:#2B3A66;"></div></div><div class="fnum">64</div><div class="flabel">Editais publicados</div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:70%;background:var(--green);"></div></div><div class="fnum">45</div><div class="flabel">Propostas recebidas</div><div class="fdrop tooltip-wrap">−30% <span class="mini-tooltip">19 editais sem nenhuma proposta recebida ainda</span></div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:45%;background:var(--yellow, #FDC82F);"></div></div><div class="fnum">29</div><div class="flabel">Em negociação</div><div class="fdrop tooltip-wrap">−36% <span class="mini-tooltip">16 fechados direto sem negociação adicional</span></div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:28%;background:var(--amber);"></div></div><div class="fnum">18</div><div class="flabel">Pendência do comprador</div><div class="fdrop tooltip-wrap">−38% <span class="mini-tooltip">Assinatura, aprovação interna ou prorrogação de prazo</span></div><span class="funnel-arrow">→</span></div>
+          <div class="funnel-step"><div class="funnel-bar-wrap"><div class="funnel-bar" style="height:19%;background:var(--green);"></div></div><div class="fnum">12</div><div class="flabel">Processo concluído</div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px; border-color:var(--green); background:var(--green-soft);">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-bell"></i> Aviso automático · exemplo real de notificação</div></div>
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+          <div class="mfa-icon-wrap" style="background:var(--panel); flex-shrink:0;"><i class="fa-solid fa-hourglass-half" style="color:var(--amber);"></i></div>
+          <div>
+            <p style="font-size:13px; font-weight:600; color:var(--text); margin:0 0 4px;">"O Edital EDT-2026-1031 tem uma pendência sua (aprovação de prorrogação) e encerra em 36h. Deseja resolver agora?"</p>
+            <p style="font-size:11.5px; color:var(--text-2); margin:0;">Disparado automaticamente quando uma pendência do comprador fica parada perto do prazo — sem precisar de alguém olhando o painel o tempo todo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: TRÁFEGO ---------- -->
     <div class="page hidden" id="page-trafego">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Qualidade de tráfego</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Qualidade de tráfego</h1><div class="sub">Fase 1 · Camada de Borda (WAF / CrowdSec) — bloqueia antes de qualquer classificação de perfil</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px; border-color:var(--green); background:var(--green-soft); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <i class="fa-solid fa-circle-info" style="color:var(--green);"></i>
+          <p style="font-size:12px; color:var(--text-2); margin:0; max-width:640px;"><strong style="color:var(--text);">MVP: detecta e recomenda, não bloqueia sozinho.</strong> Toda linha aqui é um comportamento sinalizado para revisão humana — o bloqueio automático de todo o tráfego "suspeito" fica pra uma evolução futura, com critérios validados.</p>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); cursor:pointer; white-space:nowrap;">
+          Bloqueio automático
+          <input type="checkbox" id="autoBlockToggle" style="accent-color:var(--green); width:32px; height:18px; cursor:pointer;">
+        </label>
       </div>
 
       <div class="card" style="margin-bottom:14px;">
@@ -1969,7 +2071,7 @@
                 <div class="fmeta">CrowdSec: User-Agent Python-urllib/3.9 · ScraperBot-v2 · excesso de req/s → 403 <span class="threat-tag">Scraper de Preços</span></div>
               </div>
             </div>
-            <button class="row-action-btn" disabled>Bloqueado</button>
+            <button class="row-action-btn" id="solicitarDesbloqueioBtn" style="color:var(--red); border-color:var(--red);">Solicitar desbloqueio</button>
           </div>
           <div class="flag-row" data-flag data-status="Bloqueado" data-ip="203.0.113.44">
             <div style="display:flex; align-items:center; gap:10px; flex:1;">
@@ -1998,8 +2100,8 @@
               <span class="risk-badge medium">65</span>
               <span class="geo-flag">🇨🇦</span>
               <div>
-                <strong>192.0.2.87</strong> — navegação sequencial por todos os preços publicados
-                <div class="fmeta">CrowdSec: ASN de provedor cloud · rate limit acionado <span class="threat-tag">Scraper de Preços</span></div>
+                <strong>192.0.2.87</strong> — padrão suspeito: conecta em volume → preenche dados → baixa o edital → abandona
+                <div class="fmeta">CrowdSec: ASN de provedor cloud · rate limit acionado · sem envio de proposta após download <span class="threat-tag">Possível BOT de coleta de edital</span></div>
               </div>
             </div>
             <button class="row-action-btn" data-flag-action="review">Em análise</button>
@@ -2680,10 +2782,20 @@
       <div class="card">
         <div class="settings-list">
           <div class="settings-row"><div><div class="stitle">Alertas de abandono em tempo real</div><div class="sdesc">Notificar o time de atendimento assim que um fornecedor trava no processo.</div></div><button class="switch on" data-toggle></button></div>
-          <div class="settings-row"><div><div class="stitle">Bloqueio automático de bots</div><div class="sdesc">Bloquear IPs com padrão de RPA sem revisão manual.</div></div><button class="switch on" data-toggle></button></div>
+          <div class="settings-row"><div><div class="stitle">Bloqueio automático de bots</div><div class="sdesc">MVP: desligado por padrão — o sistema sinaliza e recomenda, a decisão de bloquear é sempre humana.</div></div><button class="switch" data-toggle></button></div>
           <div class="settings-row"><div><div class="stitle">Comunicação segmentada automática</div><div class="sdesc">Disparar mensagens por perfil sem aprovação manual do Marketing.</div></div><button class="switch" data-toggle></button></div>
           <div class="settings-row"><div><div class="stitle">Verificação em duas etapas (MFA)</div><div class="sdesc">Exigir código por e-mail em todo login no painel.</div></div><button class="switch on" data-toggle></button></div>
           <div class="settings-row"><div><div class="stitle">Relatório semanal por e-mail</div><div class="sdesc">Resumo de acessos, perfis e alertas enviado toda segunda-feira.</div></div><button class="switch" data-toggle></button></div>
+          <div class="settings-row"><div><div class="stitle">Autosave do preenchimento de propostas</div><div class="sdesc">Salva o rascunho automaticamente a cada alteração, evitando perda de dados por falha técnica.</div></div><button class="switch on" data-toggle></button></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-unlock-keyhole"></i> Reativação de acesso</div></div>
+        <p style="font-size:12px; color:var(--text-2); margin:0 0 14px;">Fornecedor inativo há muito tempo? Em vez de abrir chamado pro Atendimento, valide o CNPJ e reative automaticamente se o responsável for confirmado.</p>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="reativacaoCnpj" placeholder="CNPJ do fornecedor (ex: 12.345.678/0001-90)" class="ctrl" style="border:1px solid var(--line); flex:1; min-width:220px;">
+          <button class="row-action-btn" id="reativacaoBtn" style="background:var(--green-soft); border-color:var(--green); color:var(--green);">Validar CNPJ e reativar</button>
         </div>
       </div>
     </div>
@@ -2696,6 +2808,20 @@
 <a class="whatsapp-float" href="https://api.whatsapp.com/send/?phone=%2B552140401490&text&type=phone_number&app_absent=0" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
   <i class="fa-brands fa-whatsapp"></i>
 </a>
+
+<!-- Exemplo ao vivo de reengajamento automático (estilo "carrinho abandonado") -->
+<div id="reengageNudge" class="reengage-nudge hidden">
+  <button type="button" class="reengage-close" id="reengageCloseBtn" aria-label="Fechar">&times;</button>
+  <div class="reengage-icon"><i class="fa-solid fa-file-pen"></i></div>
+  <div>
+    <div class="reengage-title">Gostaria de retomar o preenchimento?</div>
+    <p class="reengage-body">O <strong>Edital EDT-2026-1024</strong> ficou salvo como rascunho. Ele encerra em menos de 26h — quer continuar de onde parou?</p>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button type="button" class="row-action-btn" id="reengageActionBtn" style="background:var(--green); border-color:var(--green); color:#0B1B4A;">Retomar preenchimento</button>
+      <button type="button" class="row-action-btn" id="reengageDismissBtn">Agora não</button>
+    </div>
+  </div>
+</div>
 
 <footer style="display:none;" id="appFooter">Protótipo — Hackathon Petronect · dados simulados para demonstração.</footer>
 
@@ -3214,6 +3340,11 @@ const jornadaStageData = {
     ['98.765.432/0001-12','sess_77492100','Inatividade alta','Ver Linha do Tempo'],
     ['45.123.789/0001-55','sess_55928122','Saída natural','Nenhuma ação']
   ]},
+  inscreveu: { label: 'Inscreveu-se no edital (61 usuários retidos)', rows: [
+    ['21.998.457/0001-10','sess_70983321','Inatividade alta','Ver Linha do Tempo'],
+    ['12.345.678/0001-90','sess_88011230','Erro de validação','Acionar Agente'],
+    ['55.222.111/0001-77','sess_40098871','Saída natural','Nenhuma ação']
+  ]},
   iniciou: { label: 'Iniciou proposta (48 usuários retidos)', rows: [
     ['44.111.222/0001-33','sess_36611200','Erro de validação','Acionar Agente'],
     ['33.444.555/0001-22','sess_28873390','Inatividade alta','Ver Linha do Tempo'],
@@ -3256,6 +3387,22 @@ function openJornadaStage(stage) {
 }
 document.querySelectorAll('.funnel-step[data-stage]').forEach(step => {
   step.addEventListener('click', () => openJornadaStage(step.getAttribute('data-stage')));
+});
+
+/* ---------- Tráfego: toggle de bloqueio automático (MVP = detectar e recomendar) ---------- */
+document.getElementById('autoBlockToggle').addEventListener('change', function() {
+  if (this.checked) {
+    showToast('Bloqueio automático ativado — equipe de segurança notificada da mudança de política');
+  } else {
+    showToast('Bloqueio automático desativado — equipe de segurança notificada para acompanhar de perto');
+  }
+});
+
+/* ---------- Tráfego: solicitação de desbloqueio (não libera sozinho, avisa a equipe) ---------- */
+document.getElementById('solicitarDesbloqueioBtn').addEventListener('click', function() {
+  this.textContent = 'Solicitação enviada';
+  this.disabled = true;
+  showToast('Equipe de segurança notificada para revisar o desbloqueio manualmente');
 });
 
 /* ---------- Traffic flags ---------- */
@@ -3683,6 +3830,20 @@ document.querySelectorAll('[data-toggle]').forEach(sw => {
     this.classList.toggle('on');
     showToast(this.classList.contains('on') ? 'Ativado' : 'Desativado');
   });
+});
+
+/* ---------- Configurações: reativação de acesso via CNPJ ---------- */
+document.getElementById('reativacaoBtn').addEventListener('click', function() {
+  const cnpj = document.getElementById('reativacaoCnpj').value.trim();
+  if (!cnpj) { showToast('Digite o CNPJ do fornecedor'); return; }
+  this.disabled = true;
+  this.textContent = 'Validando...';
+  setTimeout(() => {
+    showToast('CNPJ validado — acesso reativado automaticamente, sem chamado');
+    this.textContent = 'Validar CNPJ e reativar';
+    this.disabled = false;
+    document.getElementById('reativacaoCnpj').value = '';
+  }, 900);
 });
 
 /* ---------- Charts (created once app is shown) ---------- */
@@ -4141,6 +4302,31 @@ document.getElementById('themeToggleBtn').addEventListener('click', function() {
     const btn = document.getElementById('themeToggleBtn');
     if (btn) btn.title = 'Mudar para modo claro';
   }
+})();
+
+/* ---------- Reengajamento automático por tempo (exemplo ao vivo) ---------- */
+(function() {
+  const nudge = document.getElementById('reengageNudge');
+  let shown = false;
+  function maybeArm() {
+    if (shown) return;
+    const app = document.getElementById('screenApp');
+    if (app && !app.classList.contains('hidden')) {
+      shown = true;
+      setTimeout(() => nudge.classList.remove('hidden'), 6000);
+    }
+  }
+  new MutationObserver(maybeArm).observe(document.getElementById('screenApp'), { attributes: true, attributeFilter: ['class'] });
+  maybeArm();
+
+  document.getElementById('reengageCloseBtn').addEventListener('click', () => nudge.classList.add('hidden'));
+  document.getElementById('reengageDismissBtn').addEventListener('click', () => nudge.classList.add('hidden'));
+  document.getElementById('reengageActionBtn').addEventListener('click', () => {
+    nudge.classList.add('hidden');
+    const link = document.querySelector('.nav-link[data-page="jornada"]');
+    if (link) link.click();
+    showToast('Retomando o preenchimento do Edital EDT-2026-1024 (simulado)');
+  });
 })();
 
 </script>
