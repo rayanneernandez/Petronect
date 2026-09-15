@@ -160,7 +160,12 @@
     padding: 20px 14px; display: flex; flex-direction: column;
     position: fixed; top: 0; left: 0; height: 100vh; width: 224px;
     overflow-y: auto; z-index: 20;
+    scrollbar-width: thin; scrollbar-color: rgba(128,128,128,0.35) transparent;
   }
+  aside::-webkit-scrollbar { width: 5px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+  aside::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.35); border-radius: 3px; }
+  aside::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.55); }
   .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; }
   .brand-mark {
     width: 30px; height: 30px; border-radius: 9px;
@@ -184,7 +189,7 @@
   nav a:hover:not(.active), nav button.nav-link:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.03); }
   nav a .badge, nav button.nav-link .badge { margin-left: auto; font-size: 10.5px; font-weight: 700; background: var(--red-soft); color: var(--red); padding: 1px 7px; border-radius: 20px; }
 
-  .sidebar-user { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 8px; border-top: 1px solid var(--line); }
+  .sidebar-user { margin-top: 16px; display: flex; align-items: center; gap: 10px; padding: 14px 10px; border-top: 1px solid var(--line); flex-shrink: 0; }
   .sidebar-user .av { width: 32px; height: 32px; border-radius: 50%; background: var(--green-soft); color: var(--green); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
   .sidebar-user .name { font-size: 12.5px; font-weight: 600; }
   .sidebar-user .role { font-size: 11px; color: var(--text-3); }
@@ -737,7 +742,8 @@
     padding: 7px 12px; border-radius: 7px; font-family: inherit; cursor: pointer;
   }
   /* ======================== PERFIS — GRUPOS DE STATUS ======================== */
-  .sgc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 10px; }
+  .sgc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+  @media (max-width: 1400px) { .sgc-grid { grid-template-columns: repeat(2, 1fr); } }
   .status-group-card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; transition: opacity 0.2s, border-color 0.2s; }
   .status-group-card.sgc-confirmed { border-color: var(--green); opacity: 0.65; }
   .status-group-card.sgc-refused { opacity: 0.3; pointer-events: none; }
@@ -1583,6 +1589,7 @@
     <div class="nav-label">Sistema</div>
     <nav>
       <button type="button" class="nav-link" data-page="arquitetura"><i class="fa-solid fa-layer-group"></i> Arquitetura da solução</button>
+      <button type="button" class="nav-link" data-page="integracoes"><i class="fa-solid fa-plug-circle-bolt"></i> Integrações &amp; API</button>
       <button type="button" class="nav-link" data-page="config"><i class="fa-solid fa-gear"></i> Configurações</button>
     </nav>
 
@@ -1613,7 +1620,14 @@
           <div class="ctrl"><i class="fa-solid fa-globe"></i> Rede global</div>
           <div class="ctrl"><i class="fa-regular fa-calendar"></i> 14/09/2026</div>
           <div class="icon-btn spin" id="refreshBtn" title="Atualizar"><i class="fa-solid fa-rotate"></i></div>
-          <div class="icon-btn" id="downloadBtn" title="Exportar"><i class="fa-solid fa-arrow-down-to-line"></i></div>
+          <div class="export-dropdown">
+            <div class="icon-btn" id="downloadBtn" title="Exportar" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i></div>
+            <div class="export-menu hidden" id="visaoExportMenu">
+              <button data-export-format="csv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+              <button data-export-format="xlsx"><i class="fa-solid fa-file-excel"></i> Excel (.xlsx)</button>
+              <button data-export-format="pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1756,6 +1770,21 @@
           </div>
         </div>
         <p style="font-size:11.5px; color:var(--text-2); max-width:320px; margin:0;">31 casos atendidos × 64% de recuperação × valor médio das propostas reengajadas. Sem o Agente, essas oportunidades tendiam a virar abandono — e menos concorrência pro comprador.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-scale-balanced"></i> Com Agente de Reengajamento vs. sem ele</div></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:6px;"><span>Sem o Agente (linha de base)</span><strong style="color:var(--text);">11,2%</strong></div>
+            <div class="bar-track"><div class="bar-fill" style="width:11.2%; background:var(--text-3);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:6px;"><span>Com o Agente (atual)</span><strong style="color:var(--green);">19,7%</strong></div>
+            <div class="bar-track"><div class="bar-fill" style="width:19.7%; background:var(--green);"></div></div>
+          </div>
+        </div>
+        <p style="font-size:11.5px; color:var(--text-2); margin:14px 0 0;">Taxa de conclusão de proposta quase <strong style="color:var(--text);">76% maior</strong> nos fornecedores que passaram pelo fluxo de reengajamento automático, comparado ao histórico anterior de abandono sem intervenção.</p>
       </div>
 
       <div class="copiloto-layout">
@@ -2809,6 +2838,86 @@
       </div>
     </div>
 
+    <!-- ---------- PAGE: INTEGRAÇÕES & API ---------- -->
+    <div class="page hidden" id="page-integracoes">
+      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Integrações &amp; API</b></div>
+      <div class="header-row">
+        <div class="header-left"><h1>Integrações &amp; API</h1><div class="sub">Conecte o Petronect Analytics a outros sistemas e puxe os dados por conta própria</div></div>
+        <div class="header-controls">
+          <div class="tabs" id="apiEnvTabs" style="border-bottom:none;">
+            <button type="button" class="tab-btn active" data-env="sandbox">Sandbox</button>
+            <button type="button" class="tab-btn" data-env="producao">Produção</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:14px;">
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-key"></i> Chave de API</div></div>
+          <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Use essa chave no header <code style="background:var(--panel-2); padding:1px 5px; border-radius:4px; font-size:11px;">Authorization: Bearer</code> para puxar dados via a API REST do Petronect Analytics.</p>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div class="input-wrap" style="flex:1;">
+              <input type="text" id="apiTokenField" readonly value="pna_sandbox_7f3c1e9a2b6d4f8e0c1a2b3d4e5f6789" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:12.5px; font-family:monospace;">
+            </div>
+            <button class="row-action-btn" id="apiTokenCopyBtn" title="Copiar"><i class="fa-regular fa-copy"></i></button>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button class="row-action-btn" id="apiTokenRegenBtn"><i class="fa-solid fa-rotate"></i> Gerar novo token</button>
+            <span style="font-size:11px; color:var(--text-3); align-self:center;">Última geração: há 12 dias</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-tower-broadcast"></i> Webhook de eventos</div></div>
+          <p style="font-size:12px; color:var(--text-2); margin:0 0 10px;">Receba em tempo real os eventos do funil (abandono, inscrição, proposta enviada) no seu próprio sistema.</p>
+          <input type="text" id="webhookUrlField" placeholder="https://seusistema.com.br/webhooks/petronect" class="ctrl" style="width:100%; border:1px solid var(--line); margin-bottom:10px;">
+          <div style="display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:var(--text-2); margin-bottom:12px;">
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" checked style="accent-color:var(--green);"> Abandono detectado</label>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" checked style="accent-color:var(--green);"> Inscrição no edital</label>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" style="accent-color:var(--green);"> Proposta enviada</label>
+          </div>
+          <button class="row-action-btn" id="webhookTestBtn" style="background:var(--green-soft); border-color:var(--green); color:var(--green);">Enviar evento de teste</button>
+        </div>
+      </div>
+
+      <div class="section-label">CONECTORES PRONTOS</div>
+      <div class="grid2" style="margin-bottom:14px;">
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-cubes-stacked"></i></div><div><div style="font-weight:700; font-size:13px;">ERP (SAP / TOTVS)</div><div style="font-size:11px; color:var(--text-3);">Sincroniza cadastro de fornecedor e status de contrato</div></div></div>
+          <button class="switch on" data-toggle></button>
+        </div>
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-chart-pie"></i></div><div><div style="font-weight:700; font-size:13px;">Power BI / Looker</div><div style="font-size:11px; color:var(--text-3);">Exporta os dados agregados pra dashboards externos</div></div></div>
+          <button class="switch" data-toggle></button>
+        </div>
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-solid fa-headset"></i></div><div><div style="font-weight:700; font-size:13px;">CRM (Salesforce)</div><div style="font-size:11px; color:var(--text-3);">Cria e atualiza cards de atendimento automaticamente</div></div></div>
+          <button class="switch on" data-toggle></button>
+        </div>
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;"><div class="sgc-icon-wrap" style="background:var(--panel-2); color:var(--text-2);"><i class="fa-brands fa-whatsapp"></i></div><div><div style="font-weight:700; font-size:13px;">WhatsApp Business API</div><div style="font-size:11px; color:var(--text-3);">Dispara o reengajamento direto pelo WhatsApp oficial</div></div></div>
+          <button class="switch on" data-toggle></button>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-gauge-high"></i> Limite de uso (rate limit)</div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:34%; background:var(--green);"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-2); margin-top:8px;"><span>1.020 / 3.000 requisições</span><span>Reinicia em 6h12min</span></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-clock-rotate-left"></i> Log de requisições recentes</div></div>
+          <div class="drawer-history" id="apiLogList">
+            <div class="dh-row"><span><span style="color:var(--green); font-weight:700;">200</span> GET /v1/jornada/fornecedor</span><span>há 2 min</span></div>
+            <div class="dh-row"><span><span style="color:var(--green); font-weight:700;">200</span> POST /webhooks/test</span><span>há 14 min</span></div>
+            <div class="dh-row"><span><span style="color:var(--amber); font-weight:700;">429</span> GET /v1/perfis</span><span>há 41 min</span></div>
+            <div class="dh-row"><span><span style="color:var(--green); font-weight:700;">200</span> GET /v1/alertas?status=aberto</span><span>há 1h</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: CONFIG ---------- -->
     <div class="page hidden" id="page-config">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Configurações</b></div>
@@ -3160,6 +3269,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   document.getElementById('mfaEmailTarget').textContent = email;
   document.getElementById('userEmail').textContent = email;
   document.getElementById('userAvatar').textContent = email.slice(0,2).toUpperCase();
+  const displayName = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+  document.getElementById('userName').textContent = displayName || 'Atendimento Petronect';
   showScreen('mfa');
   setTimeout(() => document.querySelector('#mfaBoxes input[data-i="0"]').focus(), 150);
 });
@@ -3380,7 +3491,19 @@ document.getElementById('refreshBtn').addEventListener('click', function() {
   showToast('Dados atualizados');
   setTimeout(() => this.classList.remove('is-spinning'), 500);
 });
-document.getElementById('downloadBtn').addEventListener('click', () => showToast('Exportação gerada (simulada)'));
+document.querySelectorAll('#visaoExportMenu [data-export-format]').forEach(function(exBtn) {
+  exBtn.addEventListener('click', function() {
+    const rows = [
+      ['Indicador', 'Valor', 'Variação'],
+      ['Sessões totais', '1.084', '86% são bots'],
+      ['Acessos humanos', '142', '+18% vs ontem'],
+      ['Tempo médio de sessão', '06:42', '+00:38'],
+      ['Taxa de conclusão de proposta', '19,7%', '-3,1 pts'],
+    ];
+    exportRows(rows, 'visao-geral-dashboard', exBtn.getAttribute('data-export-format'), 'Visão Geral · Dashboard');
+    document.getElementById('visaoExportMenu').classList.add('hidden');
+  });
+});
 
 /* ---------- Visão Geral: KPI clicável leva pra Jornada com filtro ---------- */
 document.getElementById('kpiTaxaConclusao').addEventListener('click', () => {
@@ -3934,6 +4057,46 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     showToast('Mensagem enviada aos fornecedores');
   });
 });
+
+/* ---------- Integrações & API ---------- */
+(function() {
+  const tokenField = document.getElementById('apiTokenField');
+  function randomToken(prefix) {
+    const chars = 'abcdef0123456789';
+    let out = '';
+    for (let i = 0; i < 32; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return prefix + '_' + out;
+  }
+  document.querySelectorAll('#apiEnvTabs .tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#apiEnvTabs .tab-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const env = this.getAttribute('data-env');
+      tokenField.value = randomToken(env === 'producao' ? 'pna_live' : 'pna_sandbox');
+      showToast(env === 'producao' ? 'Ambiente de Produção selecionado — cuidado, dados reais' : 'Ambiente Sandbox selecionado');
+    });
+  });
+  document.getElementById('apiTokenCopyBtn').addEventListener('click', () => {
+    tokenField.select();
+    try { navigator.clipboard.writeText(tokenField.value); } catch (e) {}
+    showToast('Token copiado para a área de transferência');
+  });
+  document.getElementById('apiTokenRegenBtn').addEventListener('click', function() {
+    const activeEnv = document.querySelector('#apiEnvTabs .tab-btn.active').getAttribute('data-env');
+    tokenField.value = randomToken(activeEnv === 'producao' ? 'pna_live' : 'pna_sandbox');
+    showToast('Novo token gerado — o anterior foi revogado');
+  });
+  document.getElementById('webhookTestBtn').addEventListener('click', () => {
+    const url = document.getElementById('webhookUrlField').value.trim();
+    if (!url) { showToast('Informe a URL do webhook antes de testar'); return; }
+    const list = document.getElementById('apiLogList');
+    const row = document.createElement('div');
+    row.className = 'dh-row';
+    row.innerHTML = '<span><span style="color:var(--green); font-weight:700;">200</span> POST ' + url.replace(/^https?:\/\//, '').slice(0, 34) + '</span><span>agora</span>';
+    list.insertBefore(row, list.firstChild);
+    showToast('Evento de teste enviado para o webhook');
+  });
+})();
 
 /* ---------- Settings toggles ---------- */
 document.querySelectorAll('[data-toggle]').forEach(sw => {
