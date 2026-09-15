@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portalnect — Protótipo do sistema</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
 <style>
   :root {
@@ -268,6 +271,12 @@
     text-decoration: none; transition: transform 0.15s ease;
   }
   .whatsapp-float:hover { transform: scale(1.08); }
+
+  .export-dropdown { position: relative; display: inline-block; }
+  .export-menu { position: absolute; top: calc(100% + 6px); right: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); min-width: 170px; z-index: 30; overflow: hidden; }
+  .export-menu.hidden { display: none; }
+  .export-menu button { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: none; color: var(--text); font-size: 12.5px; font-weight: 600; padding: 10px 14px; text-align: left; cursor: pointer; }
+  .export-menu button:hover { background: var(--panel-2); }
 
   .reengage-nudge {
     position: fixed; right: 24px; bottom: 96px; z-index: 999; width: 340px; max-width: calc(100vw - 48px);
@@ -1738,6 +1747,17 @@
         <div class="kpi"><div class="klabel">Canal mais efetivo</div><div class="kvalue" style="font-size:19px;">WhatsApp</div><span class="kdelta flat">71% de resposta</span></div>
       </div>
 
+      <div class="card" style="margin-bottom:14px; border-color:var(--green); background:linear-gradient(135deg, var(--green-soft), var(--panel)); display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="sgc-icon-wrap sgc-icon-red" style="background:var(--green-soft); color:var(--green);"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:0.05em;">Impacto financeiro estimado (30 dias)</div>
+            <div style="font-size:26px; font-weight:800; color:var(--text);">R$ 1,86 milhão <span style="font-size:13px; font-weight:600; color:var(--green);">em propostas recuperadas</span></div>
+          </div>
+        </div>
+        <p style="font-size:11.5px; color:var(--text-2); max-width:320px; margin:0;">31 casos atendidos × 64% de recuperação × valor médio das propostas reengajadas. Sem o Agente, essas oportunidades tendiam a virar abandono — e menos concorrência pro comprador.</p>
+      </div>
+
       <div class="copiloto-layout">
         <div class="card copiloto-list-card">
           <div class="copiloto-list-head">
@@ -2038,7 +2058,14 @@
             <option value="Em análise">Em análise</option>
             <option value="Permitido">Permitidos</option>
           </select>
-          <button class="ctrl" id="trafegoExportCsv" style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar CSV</button>
+          <div class="export-dropdown">
+            <button class="ctrl" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></button>
+            <div class="export-menu hidden" id="trafegoExportMenu">
+              <button data-export-format="csv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+              <button data-export-format="xlsx"><i class="fa-solid fa-file-excel"></i> Excel (.xlsx)</button>
+              <button data-export-format="pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2165,7 +2192,16 @@
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Perfis de fornecedor</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Aprove por categoria de status — cada grupo pode ter vários fornecedores</div></div>
-        <div class="header-controls"><button class="ctrl" id="exportPerfisCsv" style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar CSV</button></div>
+        <div class="header-controls">
+          <div class="export-dropdown">
+            <button class="ctrl" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></button>
+            <div class="export-menu hidden" id="perfisExportMenu">
+              <button data-export-format="csv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+              <button data-export-format="xlsx"><i class="fa-solid fa-file-excel"></i> Excel (.xlsx)</button>
+              <button data-export-format="pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ===== SEÇÃO 1: GRUPOS DE STATUS ===== -->
@@ -2823,6 +2859,51 @@
   </div>
 </div>
 
+<!-- Drawer: retomar preenchimento da proposta (rascunho) -->
+<div class="drawer-overlay" id="resumeDrawerOverlay">
+  <div class="drawer" id="resumeDrawer">
+    <div class="drawer-head">
+      <div>
+        <div style="font-size:15px; font-weight:700;">Continuar proposta · rascunho</div>
+        <div style="font-size:12px; color:var(--text-3); margin-top:2px;">EDT-2026-1024 · Aquisição de Válvulas de Alta Pressão para Refinaria</div>
+      </div>
+      <button class="icon-btn" id="resumeDrawerClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body" id="resumeDrawerBody">
+      <div style="background:var(--amber-soft); border:1px solid var(--amber); color:var(--amber); border-radius:8px; padding:10px 12px; font-size:12px; font-weight:600; margin-bottom:18px;">
+        <i class="fa-solid fa-hourglass-half"></i> Este edital encerra em menos de 26 horas.
+      </div>
+      <div class="field">
+        <label>Valor da proposta</label>
+        <div class="input-wrap"><input type="text" value="R$ 420.000,00" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13.5px;"></div>
+      </div>
+      <div class="field">
+        <label>Certidão Negativa de Falência e Concordata</label>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:10px 13px;">
+          <span style="font-size:12.5px; color:var(--text);"><i class="fa-regular fa-file-pdf" style="color:var(--red); margin-right:6px;"></i>certidao_negativa_falencia.pdf</span>
+          <span style="font-size:11px; color:var(--green); font-weight:700;">2,1MB · ok</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Demais documentos exigidos</label>
+        <div class="drawer-history">
+          <div class="dh-row"><span>Certidão Negativa de Débitos Federais</span><span style="color:var(--green);"><i class="fa-solid fa-check"></i> Anexado</span></div>
+          <div class="dh-row"><span>Certidão Negativa de Débitos Trabalhistas</span><span style="color:var(--green);"><i class="fa-solid fa-check"></i> Anexado</span></div>
+          <div class="dh-row"><span>Balanço Patrimonial</span><span style="color:var(--green);"><i class="fa-solid fa-check"></i> Anexado</span></div>
+        </div>
+      </div>
+      <button type="button" class="btn-primary" id="resumeSubmitBtn" style="margin-top:8px;">Concluir e enviar proposta <i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+    <div class="drawer-body hidden" id="resumeDrawerSuccess" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;">
+      <div class="mfa-icon-wrap" style="background:var(--green-soft); color:var(--green);"><i class="fa-solid fa-check"></i></div>
+      <div>
+        <div style="font-size:16px; font-weight:700; color:var(--text);">Proposta enviada com sucesso!</div>
+        <p style="font-size:12.5px; color:var(--text-2); margin-top:6px;">O rascunho do Edital EDT-2026-1024 foi concluído e enviado. Sem esse lembrete automático, esse envio provavelmente teria virado abandono.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer style="display:none;" id="appFooter">Protótipo — Hackathon Petronect · dados simulados para demonstração.</footer>
 
 <script>
@@ -3432,8 +3513,45 @@ function applyTrafegoFilters() {
 document.getElementById('trafegoSearch').addEventListener('input', applyTrafegoFilters);
 document.getElementById('trafegoStatus').addEventListener('change', applyTrafegoFilters);
 
-/* ---------- Tráfego: exportar CSV ---------- */
-document.getElementById('trafegoExportCsv').addEventListener('click', () => {
+/* ---------- Exportação genérica: CSV / Excel / PDF ---------- */
+function exportRows(rows, filenameBase, format, title) {
+  if (format === 'csv') {
+    const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(';')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filenameBase + '.csv'; a.click();
+    URL.revokeObjectURL(url);
+  } else if (format === 'xlsx') {
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Dados');
+    XLSX.writeFile(wb, filenameBase + '.xlsx');
+  } else if (format === 'pdf') {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(13);
+    doc.text(title || 'Portalnect Intelligence', 14, 16);
+    doc.autoTable({ startY: 22, head: [rows[0]], body: rows.slice(1), styles: { fontSize: 8 }, headStyles: { fillColor: [11, 27, 74] } });
+    doc.save(filenameBase + '.pdf');
+  }
+  showToast((format === 'csv' ? 'CSV' : format === 'xlsx' ? 'Excel' : 'PDF') + ' exportado: ' + filenameBase + '.' + format);
+}
+
+/* Abrir/fechar os menus de exportação */
+document.querySelectorAll('[data-export-toggle]').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const menu = this.nextElementSibling;
+    document.querySelectorAll('.export-menu').forEach(m => { if (m !== menu) m.classList.add('hidden'); });
+    menu.classList.toggle('hidden');
+  });
+});
+document.addEventListener('click', () => document.querySelectorAll('.export-menu').forEach(m => m.classList.add('hidden')));
+
+/* ---------- Tráfego: exportar (CSV/Excel/PDF) ---------- */
+document.querySelectorAll('#trafegoExportMenu [data-export-format]').forEach(exBtn => {
+  exBtn.addEventListener('click', () => {
   const rows = [['IP','Status','Rota','Categoria da ameaca']];
   document.querySelectorAll('#flagList [data-flag]:not(.row-hidden)').forEach(row => {
     rows.push([
@@ -3443,13 +3561,9 @@ document.getElementById('trafegoExportCsv').addEventListener('click', () => {
       row.querySelector('.threat-tag') ? row.querySelector('.threat-tag').textContent : ''
     ]);
   });
-  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(';')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'trafego-suspeito.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV exportado: trafego-suspeito.csv');
+  exportRows(rows, 'trafego-suspeito', exBtn.getAttribute('data-export-format'), 'Qualidade de Tráfego');
+  document.getElementById('trafegoExportMenu').classList.add('hidden');
+  });
 });
 
 /* ---------- Tráfego: gráfico de tendência com granularidade ---------- */
@@ -3550,25 +3664,22 @@ document.getElementById('perfilFilterFornecedor').addEventListener('change', app
 document.getElementById('perfilFilterCnpj').addEventListener('change', applyPerfilFilters);
 
 
-/* ---------- Perfis: exportar CSV ---------- */
-document.getElementById('exportPerfisCsv').addEventListener('click', () => {
-  const rows = [['Fornecedor','CNPJ','Score','Ação sugerida']];
-  document.querySelectorAll('#perfilTableBody tr').forEach(row => {
-    if (row.style.display === 'none') return;
-    rows.push([
-      row.querySelector('.company').childNodes[0].textContent.trim(),
-      row.getAttribute('data-cnpj'),
-      row.getAttribute('data-score'),
-      row.getAttribute('data-acao')
-    ]);
+/* ---------- Perfis: exportar (CSV/Excel/PDF) ---------- */
+document.querySelectorAll('#perfisExportMenu [data-export-format]').forEach(function(exBtn) {
+  exBtn.addEventListener('click', function() {
+    const rows = [['Fornecedor','CNPJ','Score','Acao sugerida']];
+    document.querySelectorAll('#perfilTableBody tr').forEach(function(row) {
+      if (row.style.display === 'none') return;
+      rows.push([
+        row.querySelector('.company').childNodes[0].textContent.trim(),
+        row.getAttribute('data-cnpj'),
+        row.getAttribute('data-score'),
+        row.getAttribute('data-acao')
+      ]);
+    });
+    exportRows(rows, 'perfis-fornecedor', exBtn.getAttribute('data-export-format'), 'Perfis de Fornecedor');
+    document.getElementById('perfisExportMenu').classList.add('hidden');
   });
-  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(';')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'perfis-fornecedor.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV exportado: perfis-fornecedor.csv');
 });
 
 /* ---------- Perfis: drawer lateral (individual + grupo) ---------- */
@@ -4323,9 +4434,28 @@ document.getElementById('themeToggleBtn').addEventListener('click', function() {
   document.getElementById('reengageDismissBtn').addEventListener('click', () => nudge.classList.add('hidden'));
   document.getElementById('reengageActionBtn').addEventListener('click', () => {
     nudge.classList.add('hidden');
-    const link = document.querySelector('.nav-link[data-page="jornada"]');
-    if (link) link.click();
-    showToast('Retomando o preenchimento do Edital EDT-2026-1024 (simulado)');
+    document.getElementById('resumeDrawerBody').classList.remove('hidden');
+    document.getElementById('resumeDrawerSuccess').classList.add('hidden');
+    document.getElementById('resumeSubmitBtn').disabled = false;
+    document.getElementById('resumeSubmitBtn').innerHTML = 'Concluir e enviar proposta <i class="fa-solid fa-paper-plane"></i>';
+    document.getElementById('resumeDrawerOverlay').classList.add('show');
+  });
+})();
+
+/* ---------- Drawer: retomar preenchimento da proposta ---------- */
+(function() {
+  const overlay = document.getElementById('resumeDrawerOverlay');
+  const close = () => overlay.classList.remove('show');
+  document.getElementById('resumeDrawerClose').addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.getElementById('resumeSubmitBtn').addEventListener('click', function() {
+    this.disabled = true;
+    this.innerHTML = 'Enviando... <i class="fa-solid fa-spinner fa-spin"></i>';
+    setTimeout(() => {
+      document.getElementById('resumeDrawerBody').classList.add('hidden');
+      document.getElementById('resumeDrawerSuccess').classList.remove('hidden');
+      showToast('Proposta do Edital EDT-2026-1024 enviada com sucesso');
+    }, 900);
   });
 })();
 
