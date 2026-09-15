@@ -6,7 +6,7 @@
     if (blockedCombo || blockedSingle) e.preventDefault();
   });
   console.log('%cPare!', 'color:#F0475A;font-size:32px;font-weight:800;');
-  console.log('%cEste é um protótipo de demonstração (Hackathon Petronect), sem dados reais. Colar ou executar código aqui pode comprometer sua própria sessão — não faça isso a pedido de terceiros.', 'font-size:13px;color:#5A6482;');
+  console.log('%cEste é um protótipo de demonstração (Hackathon Petronect), sem dados reais. Colar ou executar código aqui pode comprometer sua própria sessão. Não faça isso a pedido de terceiros.', 'font-size:13px;color:#5A6482;');
 
   window.addEventListener('error', function(e) {
     const b = document.getElementById('debugBanner');
@@ -550,7 +550,7 @@ const jornadaStageData = {
     ['33.444.555/0001-22','sess_28873390','Inatividade alta','Ver Linha do Tempo'],
     ['19.870.654/0001-08','sess_19022871','Erro de validação','Acionar Agente']
   ]},
-  enviou: { label: 'Enviou proposta (28 usuários — sucesso)', rows: [
+  enviou: { label: 'Enviou proposta (28 usuários, sucesso)', rows: [
     ['98.765.432/0001-11','sess_60011238','Saída natural (sucesso)','Nenhuma ação'],
     ['71.020.998/0001-05','sess_60011901','Saída natural (sucesso)','Nenhuma ação']
   ]}
@@ -580,7 +580,7 @@ function openJornadaStage(stage) {
       } else if (action === 'Ver Linha do Tempo') {
         showToast('Exibindo linha do tempo da sessão (simulado)');
       } else {
-        showToast('Nenhuma ação necessária — saída natural');
+        showToast('Nenhuma ação necessária (saída natural)');
       }
     });
   });
@@ -592,9 +592,9 @@ document.querySelectorAll('.funnel-step[data-stage]').forEach(step => {
 /* ---------- Tráfego: toggle de bloqueio automático (MVP = detectar e recomendar) ---------- */
 document.getElementById('autoBlockToggle').addEventListener('change', function() {
   if (this.checked) {
-    showToast('Bloqueio automático ativado — equipe de segurança notificada da mudança de política');
+    showToast('Bloqueio automático ativado. Equipe de segurança notificada da mudança de política');
   } else {
-    showToast('Bloqueio automático desativado — equipe de segurança notificada para acompanhar de perto');
+    showToast('Bloqueio automático desativado. Equipe de segurança notificada para acompanhar de perto');
   }
 });
 
@@ -676,7 +676,7 @@ document.querySelectorAll('#trafegoExportMenu [data-export-format]').forEach(exB
     rows.push([
       row.getAttribute('data-ip'),
       row.getAttribute('data-status'),
-      row.querySelector('strong').nextSibling ? row.querySelector('strong').nextSibling.textContent.replace('—','').trim() : '',
+      row.querySelector('strong').nextSibling ? row.querySelector('strong').nextSibling.textContent.replace('·','').trim() : '',
       row.querySelector('.threat-tag') ? row.querySelector('.threat-tag').textContent : ''
     ]);
   });
@@ -991,14 +991,24 @@ document.getElementById('bulkAssign').addEventListener('click', () => {
   updateBulkBar();
 });
 
-/* ---------- Alertas: atribuir individualmente ---------- */
-document.querySelectorAll('[data-assign]').forEach(btn => {
+/* ---------- Alertas: atribuir individualmente (selecionando quem) ---------- */
+document.querySelectorAll('[data-assign-toggle]').forEach(btn => {
   btn.addEventListener('click', function(e) {
     e.stopPropagation();
-    const names = ['Ana Ribeiro', 'Carlos Mendes', 'Você', 'Juliana Alves'];
-    const assignee = this.previousElementSibling;
-    assignee.textContent = names[Math.floor(Math.random() * names.length)];
-    showToast('Alerta atribuído a ' + assignee.textContent);
+    const menu = this.nextElementSibling;
+    document.querySelectorAll('.export-menu').forEach(m => { if (m !== menu) m.classList.add('hidden'); });
+    menu.classList.toggle('hidden');
+  });
+});
+document.querySelectorAll('[data-assign-name]').forEach(opt => {
+  opt.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const name = this.getAttribute('data-assign-name');
+    const dropdown = this.closest('.export-dropdown');
+    const assignee = dropdown.previousElementSibling;
+    assignee.textContent = name;
+    dropdown.querySelector('.export-menu').classList.add('hidden');
+    showToast('Alerta atribuído a ' + name);
   });
 });
 
@@ -1069,7 +1079,7 @@ document.querySelectorAll('[data-send]').forEach(btn => {
       this.classList.add('active');
       const env = this.getAttribute('data-env');
       tokenField.value = randomToken(env === 'producao' ? 'pna_live' : 'pna_sandbox');
-      showToast(env === 'producao' ? 'Ambiente de Produção selecionado — cuidado, dados reais' : 'Ambiente Sandbox selecionado');
+      showToast(env === 'producao' ? 'Ambiente de Produção selecionado, cuidado com dados reais' : 'Ambiente Sandbox selecionado');
     });
   });
   document.getElementById('apiTokenCopyBtn').addEventListener('click', () => {
@@ -1080,7 +1090,7 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   document.getElementById('apiTokenRegenBtn').addEventListener('click', function() {
     const activeEnv = document.querySelector('#apiEnvTabs .tab-btn.active').getAttribute('data-env');
     tokenField.value = randomToken(activeEnv === 'producao' ? 'pna_live' : 'pna_sandbox');
-    showToast('Novo token gerado — o anterior foi revogado');
+    showToast('Novo token gerado. O anterior foi revogado');
   });
   document.getElementById('webhookTestBtn').addEventListener('click', () => {
     const url = document.getElementById('webhookUrlField').value.trim();
@@ -1098,7 +1108,18 @@ document.querySelectorAll('[data-send]').forEach(btn => {
 document.querySelectorAll('[data-toggle]').forEach(sw => {
   sw.addEventListener('click', function() {
     this.classList.toggle('on');
-    showToast(this.classList.contains('on') ? 'Ativado' : 'Desativado');
+    const on = this.classList.contains('on');
+    const connector = this.getAttribute('data-connector');
+    if (connector) {
+      const status = this.nextElementSibling;
+      status.textContent = on ? 'Conectado' : 'Desconectado';
+      status.style.color = on ? 'var(--green)' : 'var(--text-3)';
+      showToast(on
+        ? connector + ' conectado. Sincronizando automaticamente a partir de agora'
+        : connector + ' desconectado. Nada é mais enviado pra lá, mas o histórico já sincronizado continua salvo');
+    } else {
+      showToast(on ? 'Ativado' : 'Desativado');
+    }
   });
 });
 
@@ -1109,7 +1130,7 @@ document.getElementById('reativacaoBtn').addEventListener('click', function() {
   this.disabled = true;
   this.textContent = 'Validando...';
   setTimeout(() => {
-    showToast('CNPJ validado — acesso reativado automaticamente, sem chamado');
+    showToast('CNPJ validado. Acesso reativado automaticamente, sem chamado');
     this.textContent = 'Validar CNPJ e reativar';
     this.disabled = false;
     document.getElementById('reativacaoCnpj').value = '';
@@ -1123,7 +1144,7 @@ const copilotoCases = [
     nome: 'Tech Supplies Distribuidora Ltda', cnpj: '12.345.678/0001-90', categoria: 'Equipamentos Industriais', porte: 'Médio porte',
     email: 'comercial@techsupplies.com.br', telefone: '(11) 98765-4321', responsavel: 'Marcos Andrade (Gerente Comercial)', historico: 4,
     edital: 'EDT-2026-1024 · Aquisição de Válvulas de Alta Pressão para Refinaria', valorProposta: 'Proposta parcial de R$ 420.000,00 (estimado: R$ 450.000,00)',
-    documentos: ['Certidão Negativa de Débitos Federais', 'Certidão Negativa de Débitos Trabalhistas (CNDT)', 'Certificado de Regularidade do FGTS (CRF)', 'Certidão Negativa de Falência e Concordata ⚠ 14,2MB — acima do limite', 'Balanço Patrimonial e Demonstrações Contábeis', 'Atestado de Capacidade Técnica', 'Contrato Social e última alteração consolidada'],
+    documentos: ['Certidão Negativa de Débitos Federais', 'Certidão Negativa de Débitos Trabalhistas (CNDT)', 'Certificado de Regularidade do FGTS (CRF)', 'Certidão Negativa de Falência e Concordata ⚠ 14,2MB (acima do limite)', 'Balanço Patrimonial e Demonstrações Contábeis', 'Atestado de Capacidade Técnica', 'Contrato Social e última alteração consolidada'],
     prazo: '15/09/2026, 18:00', urgencia: 'Crítica · encerra em <26h',
     score: 92, dims: { intencao: 90, friccao: 95, inatividade: 25, valor: 96 },
     dimsSub: { intencao: 'Preencheu valor e avançou até o upload', friccao: 'Erro de validação + abandono na mesma sessão', inatividade: 'Abandonou há poucos minutos, ainda recente', valor: 'R$ 420 mil, prazo encerra em menos de 26h' },
@@ -1141,8 +1162,8 @@ const copilotoCases = [
       whatsapp: { subject: null, body: 'Oi! Vimos que você tentou enviar a certidão no Edital #1024 mas o arquivo passou do limite de 10MB. Quer que a gente te ajude a comprimir o PDF agora? O prazo fecha amanhã às 18h 🕐' },
       ligacao: { subject: null, body: 'Roteiro: 1) Confirmar se fala com o responsável pela proposta do Edital #1024. 2) Explicar que identificamos erro no upload da certidão (arquivo acima de 10MB). 3) Oferecer ajuda para comprimir o PDF ou link alternativo de envio. 4) Reforçar prazo: encerra amanhã às 18h.' }
     },
-    crmTitulo: 'Suporte Técnico a Vendas — CNPJ 12.345.678/0001-90',
-    crmResumo: 'Alta intenção (90/100) — Tech Supplies chegou até a etapa de upload mas o PDF da certidão excedeu 10MB (14,2MB). Valor da proposta: R$ 420.000,00. Contato urgente para destravar o envio.',
+    crmTitulo: 'Suporte Técnico a Vendas · CNPJ 12.345.678/0001-90',
+    crmResumo: 'Alta intenção (90/100). Tech Supplies chegou até a etapa de upload, mas o PDF da certidão excedeu 10MB (14,2MB). Valor da proposta: R$ 420.000,00. Contato urgente para destravar o envio.',
     crmCanal: 'Canal sugerido: WhatsApp / Telefone direto',
     intentScore: 90, intentLabel: 'Alta intenção',
     intentFactors: [
@@ -1169,12 +1190,12 @@ const copilotoCases = [
       { ordem: 4, evento: 'Abandono da sessão', hora: '15:14', detalhe: 'Fechou a aba sem concluir o envio', tipo: 'danger' }
     ],
     canais: {
-      email: { subject: 'Metalúrgica Aliança, vamos concluir sua proposta do Edital #1024?', body: 'Olá! Vimos que você teve dificuldade para anexar a certidão negativa na sua proposta do Edital #1024.\n\nNossa equipe pode te ajudar a resolver isso rapidamente — é só responder este e-mail ou usar o link de upload alternativo.\n\nO prazo encerra amanhã às 18:00.' },
+      email: { subject: 'Metalúrgica Aliança, vamos concluir sua proposta do Edital #1024?', body: 'Olá! Vimos que você teve dificuldade para anexar a certidão negativa na sua proposta do Edital #1024.\n\nNossa equipe pode te ajudar a resolver isso rapidamente. É só responder este e-mail ou usar o link de upload alternativo.\n\nO prazo encerra amanhã às 18:00.' },
       whatsapp: { subject: null, body: 'Oi! Percebemos que a certidão não subiu certo no Edital #1024. Bora resolver isso juntos antes do prazo fechar amanhã às 18h?' },
       ligacao: { subject: null, body: 'Roteiro: 1) Confirmar responsável pela proposta. 2) Explicar falha no upload da certidão (2 tentativas sem sucesso). 3) Oferecer suporte técnico direto. 4) Reforçar prazo de amanhã, 18h.' }
     },
-    crmTitulo: 'Suporte Técnico a Vendas — CNPJ 44.111.222/0001-33',
-    crmResumo: 'Alta intenção (82/100) — Metalúrgica Aliança tentou 2x enviar a certidão no Edital #1024 sem sucesso. Proposta parcial de R$ 180.000,00. A persistência indica interesse real.',
+    crmTitulo: 'Suporte Técnico a Vendas · CNPJ 44.111.222/0001-33',
+    crmResumo: 'Alta intenção (82/100). Metalúrgica Aliança tentou 2x enviar a certidão no Edital #1024 sem sucesso. Proposta parcial de R$ 180.000,00. A persistência indica interesse real.',
     crmCanal: 'Canal sugerido: E-mail / WhatsApp',
     intentScore: 82, intentLabel: 'Alta intenção',
     intentFactors: [
@@ -1193,7 +1214,7 @@ const copilotoCases = [
     score: 79, dims: { intencao: 55, friccao: 60, inatividade: 85, valor: 65 },
     dimsSub: { intencao: 'Visitou o edital 3x mas não iniciou proposta', friccao: 'Voltou à mesma página repetidamente, sinal de dúvida', inatividade: '48h sem nenhum avanço', valor: 'Oportunidade relevante, dentro do histórico do fornecedor' },
     diagIntencao: 'Intenção moderada, indecisão', diagSpam: 'Baixo · 1º contato em 30 dias', diagEtapa: 'Antes de iniciar a proposta',
-    causaRaiz: 'Sem erro técnico identificado — padrão sugere <b>dúvida sobre requisitos do edital</b>, não barreira de sistema.',
+    causaRaiz: 'Sem erro técnico identificado. O padrão sugere <b>dúvida sobre requisitos do edital</b>, não barreira de sistema.',
     eventos: [
       { ordem: 1, evento: 'Login efetuado', hora: '09:10', detalhe: 'Autenticação via certificado digital / CNPJ (dia 1)', tipo: 'ok' },
       { ordem: 2, evento: 'Visitou o edital', hora: '09:14', detalhe: 'Abriu detalhes do EDT-2026-0998, sem avançar', tipo: 'ok' },
@@ -1205,8 +1226,8 @@ const copilotoCases = [
       whatsapp: { subject: null, body: 'Oi! Vimos que você já deu uma olhada no Edital #0998 algumas vezes. Alguma dúvida que a gente possa ajudar a esclarecer?' },
       ligacao: { subject: null, body: 'Roteiro: 1) Confirmar interesse no Edital #0998. 2) Perguntar se há dúvida sobre requisitos técnicos ou documentação. 3) Oferecer explicação detalhada do processo. 4) Reforçar prazo: 18/09, 18h.' }
     },
-    crmTitulo: 'Follow-up comercial — CNPJ 33.444.555/0001-22',
-    crmResumo: 'Intenção moderada (55/100) — Ferragens União visitou o Edital #0998 três vezes em 48h sem iniciar proposta — padrão de indecisão, não erro técnico. Contato consultivo pode destravar.',
+    crmTitulo: 'Follow-up comercial · CNPJ 33.444.555/0001-22',
+    crmResumo: 'Intenção moderada (55/100). Ferragens União visitou o Edital #0998 três vezes em 48h sem iniciar proposta, um padrão de indecisão, não erro técnico. Contato consultivo pode destravar.',
     crmCanal: 'Canal sugerido: Ligação',
     intentScore: 55, intentLabel: 'Intenção moderada',
     intentFactors: [
@@ -1224,7 +1245,7 @@ const copilotoCases = [
     score: 50, dims: { intencao: 45, friccao: 10, inatividade: 15, valor: 55 },
     dimsSub: { intencao: 'Entrou pela primeira vez e visitou o edital', friccao: 'Nenhuma barreira técnica identificada', inatividade: 'Acesso recente, ainda dentro da janela normal', valor: 'Oportunidade relevante para o porte da empresa' },
     diagIntencao: 'Intenção incerta', diagSpam: 'Baixo · primeiro contato', diagEtapa: 'Antes de iniciar a proposta',
-    causaRaiz: 'Sem erro técnico — é o <b>primeiro acesso</b> do fornecedor ao portal, ainda avaliando o edital.',
+    causaRaiz: 'Sem erro técnico. É o <b>primeiro acesso</b> do fornecedor ao portal, ainda avaliando o edital.',
     eventos: [
       { ordem: 1, evento: 'Login efetuado', hora: '09:40', detalhe: 'Primeiro acesso via certificado digital / CNPJ', tipo: 'ok' },
       { ordem: 2, evento: 'Visitou o edital', hora: '09:44', detalhe: 'Abriu detalhes do EDT-2026-0998, sem avançar', tipo: 'ok' },
@@ -1235,8 +1256,8 @@ const copilotoCases = [
       whatsapp: { subject: null, body: 'Oi! Vimos que você deu uma olhada no Edital #0998 pela primeira vez. Posso te ajudar com alguma dúvida sobre os requisitos?' },
       ligacao: { subject: null, body: 'Roteiro: 1) Dar boas-vindas ao portal. 2) Perguntar se há dúvida sobre o Edital #0998. 3) Explicar o processo de envio de propostas. 4) Reforçar prazo: 18/09, 18h.' }
     },
-    crmTitulo: 'Boas-vindas e acompanhamento — CNPJ 55.222.111/0001-77',
-    crmResumo: 'Intenção moderada (45/100) — Comercial Centro-Oeste acessou o portal pela primeira vez e visitou o Edital #0998. Primeiro contato: boas-vindas e apoio para iniciar a proposta.',
+    crmTitulo: 'Boas-vindas e acompanhamento · CNPJ 55.222.111/0001-77',
+    crmResumo: 'Intenção moderada (45/100). Comercial Centro-Oeste acessou o portal pela primeira vez e visitou o Edital #0998. Primeiro contato: boas-vindas e apoio para iniciar a proposta.',
     crmCanal: 'Canal sugerido: E-mail',
     intentScore: 45, intentLabel: 'Intenção moderada',
     intentFactors: [
@@ -1253,7 +1274,7 @@ const copilotoCases = [
     score: 38, dims: { intencao: 30, friccao: 20, inatividade: 60, valor: 40 },
     dimsSub: { intencao: 'Baixo engajamento histórico no portal', friccao: 'Sem barreira técnica identificada', inatividade: 'Sem retorno há mais de 5 dias', valor: 'Oportunidade de menor porte' },
     diagIntencao: 'Intenção baixa, oportunidade pequena', diagSpam: 'Baixo · sem contatos recentes', diagEtapa: 'Nenhuma proposta iniciada',
-    causaRaiz: 'Sem sinal de barreira técnica — fornecedor com <b>baixo engajamento histórico</b> no portal.',
+    causaRaiz: 'Sem sinal de barreira técnica. Fornecedor com <b>baixo engajamento histórico</b> no portal.',
     eventos: [
       { ordem: 1, evento: 'Login efetuado', hora: '14:05', detalhe: 'Autenticação via certificado digital / CNPJ', tipo: 'ok' },
       { ordem: 2, evento: 'Consultou lista de editais', hora: '14:07', detalhe: 'Navegou pela lista sem abrir detalhes do EDT-2026-0998', tipo: 'ok' },
@@ -1264,8 +1285,8 @@ const copilotoCases = [
       whatsapp: { subject: null, body: 'Oi! Temos o Edital #0998 aberto e pode ser uma boa oportunidade pro seu perfil. Quer que a gente te explique os requisitos?' },
       ligacao: { subject: null, body: 'Roteiro: 1) Confirmar interesse em novas oportunidades no portal. 2) Apresentar o Edital #0998. 3) Perguntar se há barreiras para participar. 4) Reforçar prazo: 18/09, 18h.' }
     },
-    crmTitulo: 'Reativação comercial — CNPJ 21.998.457/0001-10',
-    crmResumo: 'Intenção baixa (30/100) — Suprimentos Novaera tem baixo engajamento histórico e não explorou o Edital #0998. Recomendado contato de reativação e apresentação da oportunidade.',
+    crmTitulo: 'Reativação comercial · CNPJ 21.998.457/0001-10',
+    crmResumo: 'Intenção baixa (30/100). Suprimentos Novaera tem baixo engajamento histórico e não explorou o Edital #0998. Recomendado contato de reativação e apresentação da oportunidade.',
     crmCanal: 'Canal sugerido: E-mail',
     intentScore: 30, intentLabel: 'Intenção baixa',
     intentFactors: [
@@ -1297,7 +1318,7 @@ function renderCaseQueue() {
     copilotoCases.forEach((c, i) => {
       const opt = document.createElement('option');
       opt.value = i;
-      opt.textContent = c.nome + ' — CNPJ ' + c.cnpj;
+      opt.textContent = c.nome + ' · CNPJ ' + c.cnpj;
       filterEl.appendChild(opt);
     });
   }
@@ -1348,7 +1369,7 @@ function renderCase() {
   document.getElementById('coFornecedorMeta').textContent = 'CNPJ ' + c.cnpj + ' · ' + c.categoria + ' · ' + c.porte;
   document.getElementById('coEmail').textContent = c.email;
   document.getElementById('coTelefone').textContent = c.telefone;
-  document.getElementById('coHistoricoCount').textContent = c.historico === 0 ? 'Nenhum ainda — primeiro contato' : c.historico + ' editais participados nos últimos 12m';
+  document.getElementById('coHistoricoCount').textContent = c.historico === 0 ? 'Nenhum ainda (primeiro contato)' : c.historico + ' editais participados nos últimos 12m';
   document.getElementById('coEditalTitulo').textContent = c.edital;
   document.getElementById('coEditalValor').textContent = c.valorProposta;
   document.getElementById('coPrazo').textContent = c.prazo;
@@ -1610,11 +1631,34 @@ document.getElementById('themeToggleBtn').addEventListener('click', function() {
   document.getElementById('resumeSubmitBtn').addEventListener('click', function() {
     this.disabled = true;
     this.innerHTML = 'Enviando... <i class="fa-solid fa-spinner fa-spin"></i>';
+    const valor = document.getElementById('resumeValorInput').value.trim() || 'R$ 420.000,00';
     setTimeout(() => {
+      document.getElementById('resumeValorConfirmado').textContent = valor;
       document.getElementById('resumeDrawerBody').classList.add('hidden');
       document.getElementById('resumeDrawerSuccess').classList.remove('hidden');
       showToast('Proposta do Edital EDT-2026-1024 enviada com sucesso');
     }, 900);
+  });
+
+  /* Trocar arquivo anexado (simulado) */
+  document.getElementById('resumeTrocarArquivoBtn').addEventListener('click', () => {
+    document.getElementById('resumeArquivoNome').textContent = 'certidao_negativa_falencia_v2.pdf';
+    showToast('Novo arquivo anexado (1,8MB · dentro do limite)');
+  });
+
+  /* Marcar/desmarcar documentos exigidos */
+  document.querySelectorAll('#resumeDocList [data-doc-toggle]').forEach(row => {
+    row.addEventListener('click', function() {
+      const status = this.querySelector('span:last-child');
+      const anexado = status.innerHTML.includes('Anexado');
+      if (anexado) {
+        status.innerHTML = '<i class="fa-regular fa-circle"></i> Pendente';
+        status.style.color = 'var(--text-3)';
+      } else {
+        status.innerHTML = '<i class="fa-solid fa-check"></i> Anexado';
+        status.style.color = 'var(--green)';
+      }
+    });
   });
 })();
 
