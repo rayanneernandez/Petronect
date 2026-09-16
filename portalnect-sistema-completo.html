@@ -2043,16 +2043,20 @@
       <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">A permissão é individual, por pessoa. Marque se aquele usuário <strong style="color:var(--green);">tem acesso</strong> à tela ou não. Filtre por perfil para ver um grupo, ou por usuário para ajustar só uma pessoa, mesmo que ela divida o perfil com outras. É liberado/bloqueado, sem meio-termo: não controla se pode só ver ou também editar.</p>
       <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
         <select id="permFiltroPerfil" style="background:#FFFFFF; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:8px 10px; font-size:12.5px; cursor:pointer;">
-          <option value="">Perfil: Todos</option>
+          <option value="">Filtrar por perfil...</option>
         </select>
         <select id="permFiltroUsuario" style="background:#FFFFFF; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:8px 10px; font-size:12.5px; cursor:pointer;">
-          <option value="">Usuário: Todos</option>
+          <option value="">Filtrar por usuário...</option>
         </select>
         <button class="link-inline" id="permFiltroLimparBtn">Limpar filtro</button>
       </div>
-      <div class="card" style="padding:0; overflow:hidden;">
+      <div class="card" id="permissoesSemFiltro" style="padding:32px; text-align:center; color:var(--text-3); font-size:13px;">
+        <i class="fa-regular fa-hand-pointer" style="font-size:20px; display:block; margin-bottom:8px;"></i>
+        Selecione um perfil ou um usuário acima para ver e ajustar as permissões
+      </div>
+      <div class="card hidden" id="permissoesTable" style="padding:0; overflow:hidden;">
         <div class="table-scroll-wrap" style="max-height:520px;">
-        <table style="margin:0;" id="permissoesTable">
+        <table style="margin:0;">
           <thead><tr id="permissoesHeadRow"><th>Tela</th></tr></thead>
           <tbody id="permissoesTableBody"></tbody>
         </table>

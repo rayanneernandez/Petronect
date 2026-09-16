@@ -1324,11 +1324,21 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     if (permFiltroPerfil) {
       return users.filter(function(u) { return u.perfil === permFiltroPerfil; });
     }
-    return users;
+    return [];
   }
 
   function renderPerms() {
     const usersToShow = usuariosParaColunas();
+    const table = document.getElementById('permissoesTable');
+    const empty = document.getElementById('permissoesSemFiltro');
+
+    if (!permFiltroPerfil && permFiltroUsuarioIdx === '') {
+      table.classList.add('hidden');
+      empty.classList.remove('hidden');
+      return;
+    }
+    table.classList.remove('hidden');
+    empty.classList.add('hidden');
 
     const head = document.getElementById('permissoesHeadRow');
     head.innerHTML = '<th>Tela</th>' + usersToShow.map(function(u) {
@@ -1365,10 +1375,10 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   function popularFiltrosPermissao() {
     const selPerfil = document.getElementById('permFiltroPerfil');
     const selUsuario = document.getElementById('permFiltroUsuario');
-    selPerfil.innerHTML = '<option value="">Perfil: Todos</option>' + ROLES.map(function(r) {
+    selPerfil.innerHTML = '<option value="">Filtrar por perfil...</option>' + ROLES.map(function(r) {
       return '<option value="' + r + '">' + r + '</option>';
     }).join('');
-    selUsuario.innerHTML = '<option value="">Usuário: Todos</option>' + users.map(function(u, i) {
+    selUsuario.innerHTML = '<option value="">Filtrar por usuário...</option>' + users.map(function(u, i) {
       return '<option value="' + i + '">' + u.nome + ' (' + u.perfil + ')</option>';
     }).join('');
   }
