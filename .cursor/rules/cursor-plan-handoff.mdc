@@ -1,0 +1,81 @@
+---
+description: Handoff between agents (multi-phase plans). Update HANDOFF.md at the end of a phase or when context is full; in a new conversation, read HANDOFF and resume.
+alwaysApply: true
+---
+
+# Handoff between agents (multi-phase plans)
+
+When working from a **plan** (file in `.cursor/plans/`, or a reference to a plan with to-dos):
+
+0. **Plan first:** if there is no plan with to-dos, create/update one via plan-routine or `/start-project` before implementing. During execution, keep the to-dos' `status` up to date (`pending` -> `in_progress` -> `completed`) so the human can follow along in the panel.
+
+0b. **Manual mode hard stop (default):** unless the user explicitly ran `/run-plan` (or a deprecated alias `/run-plan-loop` / `/run-plan-orchestrated`), treat **one phase ≈ one chat**. After finishing the current phase (or one heavy to-do), update HANDOFF, **stop coding**, and ask before the next phase. Burning an entire multi-phase plan in one window is a kit failure, not "being helpful".
+
+0c. **`/start-project` two gates (HITL):** Broad Intake Review before Gate A. Gate A = single composite question (with active plan: backlog+write / park+write / modify / cancel; without active plan: write / write+backlog / modify / cancel). Plan file only, no product edits. Gate B = after an explicit second yes, run one unit only (options: start first unit / run-plan / edit / Add to backlog / Stop here). `Add to backlog` lists under Backlog plans with Mode STOPPED; `Stop here` leaves the plan active without starting the unit. Active HANDOFF/plan → composite disposition+write options; never park silently. Goal in the same slash message is not execute permission. Merging "create plan and start Phase 1" in one turn is a kit failure. Fallback: one numbered list per message. Gates use Ask questions per `.cursor/rules/hitl-ask-questions.mdc`.
+
+0d. **Backlog CRUD (enqueue without activation):** `/backlog-add` runs Broad Intake, asks write-to-backlog confirmation, writes the plan file, appends HANDOFF `- **Backlog plans:**`, and stops (no Gate B, never parks or activates). `/backlog-edit` mutates plan markdown after confirm. `/backlog-delete` removes from Backlog and moves the file to `.cursor/plans/archive/`. `/backlog-cancel` soft-cancels open to-dos and removes the Backlog row but keeps the file under `.cursor/plans/`. Do not invent Field Report cards for routine backlog CRUD. Distinct from `/archive-plan` (parked-list only). Ask questions on every mutate; chat numbered-list fallback.
+
+1. **Execute to-dos by phase** following the plan's "Phases and to-dos by context" section (when it exists). Respect the order Phase 0 -> 1 -> 2 -> 3 -> 4 -> 5.
+
+2. **At the end of each phase:** create or update `.cursor/HANDOFF.md` with:
+   - Plan name (file)
+   - Last updated (timestamp)
+   - Phase completed (0 to 5)
+   - Completed to-dos (ids)
+   - Next phase
+   - Next to-dos (ids)
+   - Instruction for the next agent (1-3 sentences)
+   - **Manual mode:** if the phase produced commitable code, **suggest** `/git-staging` (do not run without being asked). Production only via `/git-prod`.
+ - **Continuous mode** (`/run-plan`): run `/git-staging` at the end of the tick if there is a diff; update to-do status in the plan every tick; **never** `/git-prod`. In the orchestrated strategy the main window does not implement: it dispatches a Task/worker, reviews the summary, writes the HANDOFF, and stages. No Task: in-session loop strategy.
+
+3. **If context is getting full** before the phase is done (manual mode):
+   - Update `.cursor/HANDOFF.md` with the current state (phase, last completed to-do, next to-do, clear instruction).
+   - **Trigger the handoff flow:** tell the user to **open a new conversation** (fresh agent, fresh context) and say something like: *"Continue the plan"* or *"Read .cursor/HANDOFF.md and resume from the next to-do"*.
+   - Suggested message: *"Context is close to the limit. HANDOFF.md updated. Open a **new conversation** and say: 'Continue the plan' or '@.cursor/HANDOFF.md resume from the next to-do'. The next agent will have a fresh context and should read HANDOFF.md first."*
+   - In **continuous loop** mode, prefer HANDOFF + stop/reschedule per the command; if the window is critical, stop the loop and ask for a new conversation.
+
+4. **In a new conversation** (fresh agent, fresh context), if the user says *"continue the plan"* or opens the plan: **read `.cursor/HANDOFF.md` first** and resume from the indicated next phase/to-do. Do not start over.
+
+5. **Plans always have to-dos:** when creating plans in planner mode, **always include to-dos** in the frontmatter (template: `.cursor/context/templates/plan.md`). If a plan without to-dos is detected, flag it: "Heads up, this plan has no to-dos. Want me to create some based on the sections?"
+
+6. **Context budget (optional per to-do):** `read_scope` (globs), `worker_contract` (return format), `max_ticks` (limit before a forced HANDOFF). Documented in `autogit/plan-routine.md`. In orchestrated mode, pass it to the worker; if `max_ticks` is exceeded, HANDOFF + new conversation.
+
+7. **Execution modes:** see `autogit/plan-routine.md` - manual (`/continue-plan`) or continuous (`/run-plan`, strategy auto-selected).
+
+## HANDOFF.md template
+
+Mission Control parses **machine fields** as `- **Field:**` bullets only. Do **not** invent `## Backlog plans` / `## Parked plans` / `## Run queue` headings in place of those fields (Checklist / Current mission go empty). Prefer backticked `*.plan.md` basenames.
+
+```markdown
+# Handoff - [Plan name]
+
+- **Plan:** `plan-file-name.plan.md`
+- **Last updated:** [YYYY-MM-DD HH:MM]
+- **Mode:** [manual | run-plan (orchestrated) | run-plan (in-session loop) | run-plan-all]
+- **Phase completed:** [0 to 5]
+- **Completed to-dos:** [list of ids]
+- **Next phase:** [N]
+- **Next to-dos:** [ids]
+- **Gaps:** [none | open residuals, blockers, or stop reasons]
+- **Instruction for the next agent:** [1-3 sentences]
+- **Backlog plans:**
+  - `other-plan.plan.md`
+- **Parked plans:** none
+```
+
+**Gaps voice:** `- **Gaps:**` is short operator residuals for Flight Log (NOW / Earlier), not mid-batch monitor paths, cadence WARNING ids, or `/git-prod` boilerplate. Prefer exact `none` when only audit/queue plumbing changed. Do not write `none. Residuals…` as Gaps body when the intent is OK (put pointers in Instruction). Say/avoid examples: `.cursor/context/templates/handoff.md` and ADR `2026-07-27_mc-flight-log-panel.md`.
+
+**Mode on API/usage limit hard stop:** set `- **Mode:**` to the prior run mode plus `— STOPPED: API/usage limit` (example: `run-plan (orchestrated) — STOPPED: API/usage limit`). Mission Control matches `STOPPED` in Mode. Mirror the stop reason in `- **Gaps:**` and `- **Instruction for the next agent:**` (recovery: named model switch and/or wait; resume via `/continue-plan` or `/run-plan` after confirm).
+
+For `/run-plan-all`, keep queue fields as bullets too (`- **Run queue:**`, `- **Queue cursor:**`, `- **Queue status:**`, `- **Queue outcomes:**`). See `.cursor/context/templates/handoff.md`.
+
+The `.cursor/HANDOFF.md` file can be added to `.gitignore` if you do not want to version it.
+
+## Context Memory System
+
+For long or multi-phase tasks, use the **Context Memory System**:
+- **Context Pack:** `.cursor/context/current/[task-id].md` - state, decisions, constraints, checklists.
+- **Templates:** `.cursor/context/templates/` - plan.md, context-pack.md, task-brief.md, handoff.md, adr.md.
+- **CLI:** `./cursor-handoff new|update|status|handoff|archive|resume` - creates/updates the Context Pack and HANDOFF.md.
+- **Archive:** when a task is done, `cursor-handoff archive` moves the Context Pack to `.cursor/context/archive/YYYY-MM/`.
+- In a new conversation: read `.cursor/HANDOFF.md` and, if it exists, the Context Pack in `current/` or `archive/` to resume.

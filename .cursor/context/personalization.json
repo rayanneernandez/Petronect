@@ -1,0 +1,115 @@
+{
+  "contractVersion": 1,
+  "generatorVersion": "5.9.0",
+  "repositoryFingerprint": "720c3bb0a981e66a559ef19d637aa9e7844629c8db38d730427e275275927794",
+  "items": [
+    {
+      "kind": "file",
+      "id": ".cursor/project-context.md",
+      "path": ".cursor/project-context.md",
+      "status": "applied",
+      "evidence": [
+        {
+          "source": "git",
+          "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+        },
+        {
+          "source": "file",
+          "value": "README.md:README"
+        },
+        {
+          "source": "file",
+          "value": ".cursor/rules:Cursor rules"
+        }
+      ]
+    },
+    {
+      "kind": "file",
+      "id": "AGENTS.md",
+      "path": "AGENTS.md",
+      "status": "applied",
+      "evidence": [
+        {
+          "source": "git",
+          "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+        },
+        {
+          "source": "file",
+          "value": "README.md:README"
+        },
+        {
+          "source": "file",
+          "value": ".cursor/rules:Cursor rules"
+        }
+      ]
+    },
+    {
+      "kind": "file",
+      "id": "CLAUDE.md",
+      "path": "CLAUDE.md",
+      "status": "applied",
+      "evidence": [
+        {
+          "source": "git",
+          "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+        },
+        {
+          "source": "file",
+          "value": "README.md:README"
+        },
+        {
+          "source": "file",
+          "value": ".cursor/rules:Cursor rules"
+        }
+      ]
+    },
+    {
+      "kind": "file",
+      "id": ".claude/commands/agent-kit.md",
+      "path": ".claude/commands/agent-kit.md",
+      "status": "applied",
+      "evidence": [
+        {
+          "source": "git",
+          "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+        },
+        {
+          "source": "file",
+          "value": "README.md:README"
+        },
+        {
+          "source": "file",
+          "value": ".cursor/rules:Cursor rules"
+        }
+      ]
+    },
+    {
+      "kind": "pack",
+      "id": "devops",
+      "status": "applied",
+      "evidence": [
+        {
+          "source": "file",
+          "value": "vercel.json"
+        }
+      ]
+    }
+  ],
+  "protectedPaths": [
+    ".claude/commands/agent-kit.md",
+    ".cursor/HANDOFF.md",
+    ".cursor/context/backups/**",
+    ".cursor/context/config.json",
+    ".cursor/context/current/**",
+    ".cursor/memory/**",
+    ".cursor/plans/**",
+    ".cursor/project-context.md",
+    ".cursor/rules/cursor-skills-devops.mdc",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "templates/CODEOWNERS",
+    "templates/gitlab-ci-content.yml",
+    "templates/gitlab-ci-docker.yml",
+    "templates/gitlab-ci-firebase.yml"
+  ]
+}

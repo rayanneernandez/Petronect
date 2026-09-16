@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": 1,
+  "purpose": {
+    "value": "unknown",
+    "categories": [
+      "unknown"
+    ],
+    "confidence": "low",
+    "evidence": []
+  },
+  "stack": {
+    "language": "unknown",
+    "workspaces": false,
+    "testCommands": [],
+    "validationCommands": [],
+    "hasProjectFiles": false
+  },
+  "git": {
+    "mode": "remote-hosted",
+    "workflow": "feature-pr",
+    "remotes": [
+      {
+        "name": "origin",
+        "url": "https://github.com/rayanneernandez/Petronect.git"
+      }
+    ],
+    "remoteUrl": "https://github.com/rayanneernandez/Petronect.git",
+    "remoteName": "origin",
+    "currentBranch": "main",
+    "defaultBranch": "main",
+    "isDirty": true,
+    "hasLocalStaging": false,
+    "hasRemoteStaging": false,
+    "provider": "github",
+    "providerKind": "github",
+    "providerConfidence": "high",
+    "providerEvidence": [
+      {
+        "source": "git",
+        "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+      }
+    ]
+  },
+  "infra": {
+    "docker": false,
+    "kubernetes": false,
+    "ci": "none",
+    "ciFiles": [],
+    "infrastructureFiles": [],
+    "deploymentFiles": [
+      "vercel.json"
+    ]
+  },
+  "services": {},
+  "context": {
+    "sources": [
+      {
+        "source": "file",
+        "value": "README.md:README"
+      },
+      {
+        "source": "file",
+        "value": ".cursor/rules:Cursor rules"
+      }
+    ],
+    "hasReadme": true,
+    "hasArchitecture": false,
+    "hasRunbooks": false,
+    "hasAgentGuidance": true
+  },
+  "detection": {
+    "generatedAt": "2026-09-16T01:53:30.743Z",
+    "repositoryFingerprint": "720c3bb0a981e66a559ef19d637aa9e7844629c8db38d730427e275275927794",
+    "providerConfidence": "high",
+    "providerEvidence": [
+      {
+        "source": "git",
+        "value": "remote:https://github.com/rayanneernandez/Petronect.git"
+      }
+    ]
+  }
+}

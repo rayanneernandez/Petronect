@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "version": "5.9.0",
+  "protected": [
+    ".claude/commands/agent-kit.md",
+    ".cursor/HANDOFF.md",
+    ".cursor/context/backups/**",
+    ".cursor/context/config.json",
+    ".cursor/context/current/**",
+    ".cursor/memory/**",
+    ".cursor/plans/**",
+    ".cursor/project-context.md",
+    ".cursor/rules/cursor-skills-devops.mdc",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "templates/CODEOWNERS",
+    "templates/gitlab-ci-content.yml",
+    "templates/gitlab-ci-docker.yml",
+    "templates/gitlab-ci-firebase.yml"
+  ],
+  "profile": "default",
+  "registry": {
+    "url": "https://github.com/agent-kit-startup/agent-kit",
+    "ref": "main"
+  },
+  "packs": [
+    "devops"
+  ],
+  "skills": [],
+  "personalization": {
+    "contractVersion": 1,
+    "generatorVersion": "5.9.0",
+    "origin": "repository-profile",
+    "resultPath": ".cursor/context/personalization.json"
+  },
+  "installedAt": "2026-09-16T01:53:31.295Z"
+}

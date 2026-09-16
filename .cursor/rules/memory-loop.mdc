@@ -1,0 +1,73 @@
+---
+description: CHECK -> ACT -> WRITE loop in .cursor/memory/, consult memory before diagnosing errors or decisions; record after significant incidents and update the index.
+alwaysApply: true
+---
+
+# Memory Loop: learning across chats
+
+## Goal
+
+Persist **resolved errors** and **tradeoff decisions** in `.cursor/memory/` so the next chat can reuse them in seconds (glob, grep on titles, `**Tags:**` lines, symptoms).
+
+## Flow
+
+1. **CHECK** - before investigating a serious error or proposing a relevant architectural decision, search `.cursor/memory/errors/` and `.cursor/memory/decisions/` (glob, grep on titles, symptoms). Also glob theme-matched `.cursor/memory/plan-monitor-*.md` and `plan-review-*.md` (and `_index.md` Audits) before deep re-investigation of a theme already reviewed externally (ADR `decisions/2026-07-27_plan-monitor-consumer-awareness.md`).
+2. **ACT** - if a matching entry exists, **reuse** the solution or align with the documented decision; otherwise, solve it normally.
+3. **WRITE** - after closing the case, if it meets the criteria below, create a new file and **update** `.cursor/memory/_index.md`.
+
+## Where to write
+
+| Type | Folder | File name |
+|------|--------|-----------|
+| Error + cause + fix | `.cursor/memory/errors/` | `YYYY-MM-DD_descriptive-slug.md` |
+| Decision (ADR-lite) | `.cursor/memory/decisions/` | `YYYY-MM-DD_descriptive-slug.md` |
+| Multi-lens plan review audit | `.cursor/memory/` | `plan-review-<plan-slug>.md` |
+
+**Plan review audits:** Active plans under `.cursor/plans/` stay gitignored (public-tree guard). Findings-contract output must also land in a versioned audit under `.cursor/memory/` and be listed in `_index.md` **Audits** (see `decisions/2026-07-25_plan-review-findings-durable-home.md`). The plan body may hold a working copy during `/run-plan`; consolidate or close copies the final backlog into the audit.
+
+## Write criteria
+
+**Do not** save: typos, obvious imports, trivial formatting tweaks.
+
+**Save** when at least one of these is true:
+
+- (a) The error required investigation (logs, repro, several attempts).
+- (b) The solution was **not** obvious at first.
+- (c) There was a **choice** between alternatives (tradeoffs).
+- (d) A `/git-staging` or `/git-prod` **closed** an incident or decision not yet in `.cursor/memory/`; the promote is a good moment to WRITE, tied to the DevOps spine.
+
+## Format: errors (`errors/*.md`)
+
+H1 title = short summary. Compact body:
+
+- **Date:** YYYY-MM-DD
+- **Error:** symptom / message / context
+- **Cause:** root cause
+- **Solution:** what to do
+- **Files:** paths touched (optional)
+- **Tags:** lowercase keywords, comma-separated
+
+## Format: decisions (`decisions/*.md`)
+
+- **Date:** YYYY-MM-DD
+- **Status:** Proposed | Accepted | Deprecated | Superseded by `<file>` (required for new writes; evidence policy progression)
+- **Evidence:** optional paths to code, tests, runtime matrices, or ledgers when the decision is Accepted
+- **Context:** 1-2 sentences
+- **Decision:** what was chosen
+- **Discarded alternative:** brief
+- **Tags:**
+
+## Index
+
+After each new entry, add a line to `.cursor/memory/_index.md` with: title (relative link), date, tags.
+
+## What **not** to do
+
+- Do not process JSONL transcripts as the loop's main source.
+- Do not introduce embeddings, a vector DB, or an external service just for this.
+- Do not duplicate style preferences already covered by other rules.
+- Do not inflate memory with noise; prefer a few **useful** entries.
+
+## Optional subagent
+
+For long sessions, deduplication, or bulk reindexing, use the **memory-extractor** agent (`.cursor/agents/memory-extractor.md`).
