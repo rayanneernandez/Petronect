@@ -146,7 +146,7 @@
   aside {
     background: var(--panel); border-right: 1px solid var(--line);
     padding: 20px 14px 0; display: flex; flex-direction: column;
-    position: fixed; top: 0; left: 0; height: 100vh; width: 224px;
+    position: fixed; top: 0; left: 0; height: 100vh; height: 100dvh; width: 224px;
     overflow: hidden; z-index: 20;
   }
   .sidebar-nav-scroll {
@@ -428,7 +428,7 @@
   }
   .drawer-overlay.show { display: block; }
   .drawer {
-    position: fixed; top: 0; right: -420px; width: 400px; max-width: 90vw; height: 100vh;
+    position: fixed; top: 0; right: -420px; width: 400px; max-width: 90vw; height: 100vh; height: 100dvh;
     background: var(--panel); border-left: 1px solid var(--line); z-index: 71; transition: right 0.25s ease;
     display: flex; flex-direction: column;
   }
@@ -866,7 +866,7 @@
     /* App dashboard becomes mobile-friendly with a slide-out menu */
     .layout { grid-template-columns: 1fr !important; }
     aside {
-      position: fixed; left: -260px; top: 0; height: 100vh; width: 240px; z-index: 60;
+      position: fixed; left: -260px; top: 0; height: 100vh; height: 100dvh; width: 240px; z-index: 60;
       transition: left 0.22s ease; box-shadow: 2px 0 24px rgba(0,0,0,0.4);
     }
     aside.open { left: 0; }
@@ -884,6 +884,29 @@
     .grid2, .grid3, .msg-grid { grid-template-columns: 1fr !important; }
     .header-row { flex-direction: column; align-items: stretch !important; }
     .header-controls { flex-wrap: wrap; }
+
+    /* Funil da jornada: rola na horizontal em vez de espremer/cortar as etapas */
+    .funnel-steps { overflow-x: auto; padding-bottom: 4px; }
+    .funnel-step { flex: 0 0 108px; }
+
+    /* Qualquer grid de 3/4 colunas fixas vira 2 colunas no celular */
+    div[style*="grid-template-columns:repeat(4,1fr)"],
+    div[style*="grid-template-columns: repeat(4, 1fr)"],
+    div[style*="grid-template-columns:repeat(3,1fr)"],
+    div[style*="grid-template-columns: repeat(3, 1fr)"] {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Linha de tráfego (IP/flag): botão de ação desce pra linha de baixo em vez de cortar */
+    .flag-row { flex-wrap: wrap; row-gap: 8px; }
+    .flag-row .row-action-btn { margin-left: auto; }
+
+    /* Card de alerta: ações descem pra baixo do texto em vez de vazar da tela */
+    .alert { flex-wrap: wrap; }
+    .alert-clickable { min-width: 100%; order: 1; }
+    .icon { order: 0; }
+    .alert-actions { order: 2; flex-direction: row; margin-left: 0; margin-top: 4px; }
+    .alert .when { order: 3; margin-left: 0; padding-left: 0; }
   }
 
   /* ---------- Copiloto: layout mestre-detalhe (tabela + painel de detalhe) ---------- */

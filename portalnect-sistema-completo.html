@@ -987,10 +987,12 @@
 
       <div class="card" id="jornadaDrilldown" style="margin-top:14px; display:none;">
         <div class="card-head"><div class="ctitle"><i class="fa-solid fa-route"></i> Detalhamento da etapa: <span id="drilldownStageName">—</span></div></div>
+        <div class="table-scroll-wrap">
         <table>
           <thead><tr><th>Fornecedor (CNPJ)</th><th>Sessão</th><th>Status do abandono</th><th style="text-align:right;">Ação recomendada</th></tr></thead>
           <tbody id="drilldownTableBody"></tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -1049,7 +1051,7 @@
     <div class="page hidden" id="page-trafego">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Qualidade de tráfego</b></div>
       <div class="header-row">
-        <div class="header-left"><h1>Qualidade de tráfego</h1><div class="sub">Fase 1 · Camada de Borda (WAF / CrowdSec) — bloqueia antes de qualquer classificação de perfil</div></div>
+        <div class="header-left"><h1>Qualidade de tráfego</h1><div class="sub">Fase 1 · Camada de Borda (WAF / CrowdSec), bloqueia antes de qualquer classificação de perfil</div></div>
       </div>
 
       <div class="card" style="margin-bottom:14px; border-color:var(--green); background:var(--green-soft); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
@@ -1209,7 +1211,7 @@
     <div class="page hidden" id="page-perfis">
       <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Perfis de fornecedor</b></div>
       <div class="header-row">
-        <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Aprove por categoria de status — cada grupo pode ter vários fornecedores</div></div>
+        <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Aprove por categoria de status, cada grupo pode ter vários fornecedores</div></div>
         <div class="header-controls">
           <div class="export-dropdown">
             <button class="ctrl" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></button>
@@ -1548,8 +1550,8 @@
           <input type="checkbox" class="alert-check" style="margin-top:3px;">
           <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
           <div class="alert-clickable" style="flex:1;">
-            <h4>Tech Supplies Distribuidora Ltda — barreira técnica no upload</h4>
-            <p>CNPJ 12.345.678/0001-90 · Edital EDT-2026-1024 · PDF de certidão (14,2MB) acima do limite de 10MB. Score de intenção: <strong>85</strong>. Urgência: <span style="color:var(--red); font-weight:700;">CRÍTICA</span> — encerra em &lt;26h.</p>
+            <h4>Tech Supplies Distribuidora Ltda: barreira técnica no upload</h4>
+            <p>CNPJ 12.345.678/0001-90 · Edital EDT-2026-1024 · PDF de certidão (14,2MB) acima do limite de 10MB. Score de intenção: <strong>85</strong>. Urgência: <span style="color:var(--red); font-weight:700;">CRÍTICA</span>, encerra em &lt;26h.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">—</span>
               <div class="export-dropdown">
                 <button class="assign-btn" data-assign-toggle>Atribuir</button>
@@ -1573,7 +1575,7 @@
           <input type="checkbox" class="alert-check" style="margin-top:3px;">
           <div class="icon"><i class="fa-solid fa-clock"></i></div>
           <div class="alert-clickable" style="flex:1;">
-            <h4>Valcorp Válvulas Industriais S.A. — prazo longo até encerramento</h4>
+            <h4>Valcorp Válvulas Industriais S.A.: prazo longo até encerramento</h4>
             <p>CNPJ 33.221.098/0001-44 · Edital EDT-2026-1031 · Fornecedor visitou o edital mas não iniciou proposta. Score de intenção: <strong>40</strong>. Status: <span style="color:var(--amber); font-weight:700;">Em atendimento</span>.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">Atendente 02</span></div>
           </div>
@@ -1588,7 +1590,7 @@
           <input type="checkbox" class="alert-check" style="margin-top:3px;">
           <div class="icon"><i class="fa-solid fa-file-circle-xmark"></i></div>
           <div class="alert-clickable" style="flex:1;">
-            <h4>MecPress Equipamentos Ltda — documento vencido</h4>
+            <h4>MecPress Equipamentos Ltda: documento vencido</h4>
             <p>CNPJ 09.876.543/0001-21 · Edital EDT-2026-1042 · Certidão com prazo de validade expirado ao tentar enviar proposta. Score de intenção: <strong>70</strong>.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">Atendente 01</span></div>
           </div>
@@ -1603,7 +1605,7 @@
           <input type="checkbox" class="alert-check" style="margin-top:3px;">
           <div class="icon"><i class="fa-solid fa-circle-info"></i></div>
           <div class="alert-clickable" style="flex:1;">
-            <h4>Industrial Fittings Comércio Ltda — sem causa identificada</h4>
+            <h4>Industrial Fittings Comércio Ltda: sem causa identificada</h4>
             <p>CNPJ 55.667.890/0001-02 · Edital EDT-2026-0987 (encerrado) · Abandono sem padrão técnico identificado. Score de intenção: <strong>20</strong>. Urgência: <span style="color:var(--text-3); font-weight:700;">BAIXA</span>.</p>
             <div class="alert-assign">Atribuído a: <span class="assignee">—</span>
               <div class="export-dropdown">
