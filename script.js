@@ -1238,37 +1238,38 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     'Perfis de fornecedor', 'Agente de Reengajamento', 'Alertas e ações', 'Comunicação segmentada',
     'Automação', 'Integrações & API', 'Usuários & Permissões', 'Configurações',
   ];
-  const USERS_KEY = 'petronect_usuarios';
-  const PERMS_KEY = 'petronect_permissoes';
+  const USERS_KEY = 'petronect_usuarios_v2';
 
-  const DEFAULT_USERS = [
-    { nome: 'Joana Silva', email: 'joana.silva@petronect.com.br', perfil: 'Administrador', ativo: true, ultimoAcesso: 'agora' },
-    { nome: 'Carlos Mendes', email: 'carlos.mendes@petronect.com.br', perfil: 'Atendimento', ativo: true, ultimoAcesso: 'há 16 min' },
-    { nome: 'Ana Ribeiro', email: 'ana.ribeiro@petronect.com.br', perfil: 'Marketing', ativo: true, ultimoAcesso: 'há 3h' },
-    { nome: 'Juliana Alves', email: 'juliana.alves@petronect.com.br', perfil: 'Atendimento', ativo: true, ultimoAcesso: 'ontem' },
-    { nome: 'Rafael Souza', email: 'rafael.souza@petronect.com.br', perfil: 'Segurança', ativo: true, ultimoAcesso: 'há 2 dias' },
-    { nome: 'Beatriz Lima', email: 'beatriz.lima@petronect.com.br', perfil: 'Somente leitura', ativo: false, ultimoAcesso: 'há 19 dias' },
-  ];
-
-  function defaultPerms() {
+  const ROLE_SEM_ACESSO = {
+    'Administrador': [],
+    'Atendimento': ['Usuários & Permissões', 'Configurações', 'Integrações & API'],
+    'Marketing': ['Usuários & Permissões', 'Configurações', 'Integrações & API', 'Qualidade de tráfego', 'Automação'],
+    'Segurança': ['Usuários & Permissões', 'Configurações', 'Comunicação segmentada'],
+    'Somente leitura': ['Usuários & Permissões', 'Configurações'],
+  };
+  function permissoesPadraoDoPerfil(perfil) {
+    const bloqueadas = ROLE_SEM_ACESSO[perfil] || [];
     const m = {};
-    ROLES.forEach(function(role) { m[role] = {}; });
-    const semAcessoAtendimento = ['Usuários & Permissões', 'Configurações', 'Integrações & API'];
-    const semAcessoMarketing = ['Usuários & Permissões', 'Configurações', 'Integrações & API', 'Qualidade de tráfego', 'Automação'];
-    const semAcessoSeguranca = ['Usuários & Permissões', 'Configurações', 'Comunicação segmentada'];
-    const semAcessoLeitura = ['Usuários & Permissões', 'Configurações'];
-    PAGES.forEach(function(page) {
-      m['Administrador'][page] = true;
-      m['Atendimento'][page] = !semAcessoAtendimento.includes(page);
-      m['Marketing'][page] = !semAcessoMarketing.includes(page);
-      m['Segurança'][page] = !semAcessoSeguranca.includes(page);
-      m['Somente leitura'][page] = !semAcessoLeitura.includes(page);
-    });
+    PAGES.forEach(function(page) { m[page] = !bloqueadas.includes(page); });
     return m;
   }
 
+  function usuarioBase(nome, email, perfil, ativo, ultimoAcesso) {
+    return { nome: nome, email: email, perfil: perfil, ativo: ativo, ultimoAcesso: ultimoAcesso, permissoes: permissoesPadraoDoPerfil(perfil) };
+  }
+  const DEFAULT_USERS = [
+    usuarioBase('Joana Silva', 'joana.silva@petronect.com.br', 'Administrador', true, 'agora'),
+    usuarioBase('Carlos Mendes', 'carlos.mendes@petronect.com.br', 'Atendimento', true, 'há 16 min'),
+    usuarioBase('Ana Ribeiro', 'ana.ribeiro@petronect.com.br', 'Marketing', true, 'há 3h'),
+    usuarioBase('Juliana Alves', 'juliana.alves@petronect.com.br', 'Atendimento', true, 'ontem'),
+    usuarioBase('Rafael Souza', 'rafael.souza@petronect.com.br', 'Segurança', true, 'há 2 dias'),
+    usuarioBase('Beatriz Lima', 'beatriz.lima@petronect.com.br', 'Somente leitura', false, 'há 19 dias'),
+  ];
+  // Duas pessoas com o mesmo perfil não precisam ter as mesmas permissões:
+  // Juliana (Atendimento) perde acesso ao Agente de Reengajamento, diferente do Carlos.
+  DEFAULT_USERS[3].permissoes['Agente de Reengajamento'] = false;
+
   let users = null;
-  let perms = null;
 
   function loadJSON(key, fallback) {
     try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
@@ -1304,36 +1305,59 @@ document.querySelectorAll('[data-send]').forEach(btn => {
         users.splice(i, 1);
         saveJSON(USERS_KEY, users);
         showToast(nome + ' removido do sistema');
+        permFiltroUsuarioIdx = '';
         renderUsers();
+        popularFiltrosPermissao();
+        renderPerms();
       });
     });
   }
 
   let permFiltroPerfil = '';
+  let permFiltroUsuarioIdx = '';
+
+  function usuariosParaColunas() {
+    if (permFiltroUsuarioIdx !== '') {
+      const u = users[Number(permFiltroUsuarioIdx)];
+      return u ? [u] : [];
+    }
+    if (permFiltroPerfil) {
+      return users.filter(function(u) { return u.perfil === permFiltroPerfil; });
+    }
+    return users;
+  }
 
   function renderPerms() {
-    const rolesToShow = permFiltroPerfil ? [permFiltroPerfil] : ROLES;
+    const usersToShow = usuariosParaColunas();
 
     const head = document.getElementById('permissoesHeadRow');
-    head.innerHTML = '<th>Tela</th>' + rolesToShow.map(function(r) { return '<th>' + r + '</th>'; }).join('');
+    head.innerHTML = '<th>Tela</th>' + usersToShow.map(function(u) {
+      return '<th>' + u.nome + '<div style="font-weight:400; color:var(--text-3); font-size:11px;">' + u.perfil + '</div></th>';
+    }).join('');
 
     const body = document.getElementById('permissoesTableBody');
+    if (!usersToShow.length) {
+      body.innerHTML = '<tr><td colspan="1" style="text-align:center; color:var(--text-3); padding:24px;">Nenhum usuário encontrado para esse filtro</td></tr>';
+      return;
+    }
     body.innerHTML = PAGES.map(function(page) {
-      return '<tr><td>' + page + '</td>' + rolesToShow.map(function(role) {
-        const acesso = !!(perms[role] && perms[role][page]);
-        return '<td><button type="button" class="switch' + (acesso ? ' on' : '') + '" data-perm-role="' + role + '" data-perm-page="' + page + '"></button></td>';
+      return '<tr><td>' + page + '</td>' + usersToShow.map(function(u) {
+        const idx = users.indexOf(u);
+        const acesso = !!(u.permissoes && u.permissoes[page]);
+        return '<td><button type="button" class="switch' + (acesso ? ' on' : '') + '" data-perm-user="' + idx + '" data-perm-page="' + page + '"></button></td>';
       }).join('') + '</tr>';
     }).join('');
 
-    body.querySelectorAll('[data-perm-role]').forEach(function(btn) {
+    body.querySelectorAll('[data-perm-user]').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const role = this.getAttribute('data-perm-role');
+        const idx = Number(this.getAttribute('data-perm-user'));
         const page = this.getAttribute('data-perm-page');
-        const acesso = !perms[role][page];
-        perms[role][page] = acesso;
-        saveJSON(PERMS_KEY, perms);
+        const user = users[idx];
+        const acesso = !user.permissoes[page];
+        user.permissoes[page] = acesso;
+        saveJSON(USERS_KEY, users);
         this.classList.toggle('on', acesso);
-        showToast(role + ' · ' + page + ': ' + (acesso ? 'acesso liberado' : 'acesso bloqueado'));
+        showToast(user.nome + ' · ' + page + ': ' + (acesso ? 'acesso liberado' : 'acesso bloqueado'));
       });
     });
   }
@@ -1350,7 +1374,7 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   }
 
   users = loadJSON(USERS_KEY, DEFAULT_USERS);
-  perms = loadJSON(PERMS_KEY, defaultPerms());
+  users.forEach(function(u) { if (!u.permissoes) { u.permissoes = permissoesPadraoDoPerfil(u.perfil); } });
   renderUsers();
   renderPerms();
   popularFiltrosPermissao();
@@ -1367,19 +1391,22 @@ document.querySelectorAll('[data-send]').forEach(btn => {
 
   document.getElementById('permFiltroPerfil').addEventListener('change', function() {
     permFiltroPerfil = this.value;
+    permFiltroUsuarioIdx = '';
     document.getElementById('permFiltroUsuario').value = '';
     renderPerms();
   });
   document.getElementById('permFiltroUsuario').addEventListener('change', function() {
-    if (!this.value) { return; }
+    permFiltroUsuarioIdx = this.value;
+    if (!this.value) { renderPerms(); return; }
     const user = users[Number(this.value)];
-    permFiltroPerfil = user.perfil;
-    document.getElementById('permFiltroPerfil').value = user.perfil;
+    document.getElementById('permFiltroPerfil').value = '';
+    permFiltroPerfil = '';
     renderPerms();
-    showToast('Mostrando o acesso de ' + user.nome + ' (perfil ' + user.perfil + ')');
+    showToast('Mostrando as permissões individuais de ' + user.nome);
   });
   document.getElementById('permFiltroLimparBtn').addEventListener('click', function() {
     permFiltroPerfil = '';
+    permFiltroUsuarioIdx = '';
     document.getElementById('permFiltroPerfil').value = '';
     document.getElementById('permFiltroUsuario').value = '';
     renderPerms();
@@ -1419,10 +1446,11 @@ document.querySelectorAll('[data-send]').forEach(btn => {
       ultimoAcesso = 'nunca acessou';
     }
 
-    users.push({ nome: nome, email: email, perfil: perfil, ativo: true, ultimoAcesso: ultimoAcesso });
+    users.push(usuarioBase(nome, email, perfil, true, ultimoAcesso));
     saveJSON(USERS_KEY, users);
     renderUsers();
     popularFiltrosPermissao();
+    renderPerms();
     showToast(modo === 'senha' ? 'Usuário criado com senha definida' : 'Convite enviado por e-mail para ' + email);
     convidarOverlay.classList.remove('show');
   });
