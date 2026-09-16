@@ -1219,8 +1219,8 @@
           <div class="bar-track"><div class="bar-fill" style="width:92%; background:var(--red);"></div></div>
           <div class="sgc-btns">
             <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
-            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedores</button>
-            <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar todos</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar</button>
           </div>
           <div class="sgc-tooltip">
             <div class="sgc-tt-title">Fornecedores neste grupo</div>
@@ -1251,7 +1251,7 @@
           <div class="bar-track"><div class="bar-fill" style="width:79%; background:var(--amber);"></div></div>
           <div class="sgc-btns">
             <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
-            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver</button>
             <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar</button>
           </div>
           <div class="sgc-tooltip">
@@ -1282,7 +1282,7 @@
           <div class="bar-track"><div class="bar-fill" style="width:50%; background:var(--amber);"></div></div>
           <div class="sgc-btns">
             <button class="sgc-btn-recusar"><i class="fa-solid fa-xmark"></i> Recusar</button>
-            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver</button>
             <button class="sgc-btn-confirmar"><i class="fa-solid fa-check"></i> Confirmar</button>
           </div>
           <div class="sgc-tooltip">
@@ -1313,8 +1313,8 @@
           <div class="bar-track"><div class="bar-fill" style="width:12%; background:var(--green);"></div></div>
           <div class="sgc-btns">
             <button class="sgc-btn-recusar" style="opacity:0.4;" disabled>Recusar</button>
-            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver fornecedor</button>
-            <button class="sgc-btn-confirmar" style="background:var(--green-soft); color:var(--green); border:1px solid var(--green);" disabled>Ok, monitorando</button>
+            <button class="sgc-btn-ver"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar" style="background:var(--green-soft); color:var(--green); border:1px solid var(--green);" disabled>Monitorando</button>
           </div>
           <div class="sgc-tooltip">
             <div class="sgc-tt-title">Fornecedores neste grupo</div>
@@ -2021,6 +2021,12 @@
         </div>
       </div>
 
+      <div class="tabs" id="usuariosPageTabs" style="margin-bottom:16px;">
+        <button type="button" class="tab-btn active" data-usertab="usuarios">Usuários</button>
+        <button type="button" class="tab-btn" data-usertab="permissoes">Permissões</button>
+      </div>
+
+      <div id="usuariosTabContent">
       <div class="card hidden" id="convidarUsuarioForm" style="margin-bottom:14px;">
         <div class="card-head"><div class="ctitle"><i class="fa-solid fa-user-plus"></i> Convidar novo usuário</div></div>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; align-items:end;">
@@ -2049,9 +2055,11 @@
         </table>
         </div>
       </div>
+      </div>
 
-      <div class="section-label">PERMISSÕES POR PERFIL</div>
-      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Clique numa célula pra alternar entre <strong style="color:var(--text-3);">Nenhum</strong> → <strong style="color:#4F9AE0;">Ver</strong> → <strong style="color:var(--green);">Editar</strong>. Vale por tela do sistema, pra cada perfil.</p>
+      <div id="permissoesTabContent" class="hidden">
+      <div class="section-label">ACESSO POR PERFIL</div>
+      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Marque se aquele perfil <strong style="color:var(--green);">tem acesso</strong> à tela ou não. É liberado/bloqueado, sem meio-termo — não controla se pode só ver ou também editar.</p>
       <div class="card" style="padding:0; overflow:hidden;">
         <div class="table-scroll-wrap" style="max-height:520px;">
         <table style="margin:0;" id="permissoesTable">
@@ -2059,6 +2067,7 @@
           <tbody id="permissoesTableBody"></tbody>
         </table>
         </div>
+      </div>
       </div>
     </div>
 
@@ -2187,6 +2196,22 @@
       </div>
       <button type="button" class="btn-primary" id="connectorDrawerSaveBtn">Salvar configuração</button>
       <button type="button" class="row-action-btn" id="connectorDrawerSyncBtn" style="width:100%; margin-top:8px;"><i class="fa-solid fa-rotate"></i> Sincronizar agora</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer: linha do tempo da sessão -->
+<div class="drawer-overlay" id="timelineDrawerOverlay">
+  <div class="drawer" id="timelineDrawer">
+    <div class="drawer-head">
+      <div>
+        <div style="font-size:15px; font-weight:700;" id="timelineDrawerTitle">Fornecedor</div>
+        <div style="font-size:12px; color:var(--text-3); margin-top:2px;" id="timelineDrawerSub">Linha do tempo da sessão</div>
+      </div>
+      <button class="icon-btn" id="timelineDrawerClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="co-timeline" id="timelineDrawerList"></div>
     </div>
   </div>
 </div>

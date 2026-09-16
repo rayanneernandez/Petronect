@@ -574,11 +574,15 @@ function openJornadaStage(stage) {
   document.querySelectorAll('[data-drilldown-action]').forEach(btn => {
     btn.addEventListener('click', function() {
       const action = this.getAttribute('data-drilldown-action');
+      const row = this.closest('tr');
+      const cnpj = row.querySelector('.company').textContent.trim();
+      const sessao = row.children[1].textContent.trim();
+      const status = row.children[2].textContent.trim();
       if (action === 'Acionar Agente') {
         document.querySelector('.nav-link[data-page="copiloto"]').click();
         showToast('Abrindo Agente de Reengajamento para este fornecedor');
       } else if (action === 'Ver Linha do Tempo') {
-        showToast('Exibindo linha do tempo da sessão (simulado)');
+        abrirLinhaDoTempo(cnpj, sessao, status);
       } else {
         showToast('Nenhuma ação necessária (saída natural)');
       }
@@ -587,6 +591,48 @@ function openJornadaStage(stage) {
 }
 document.querySelectorAll('.funnel-step[data-stage]').forEach(step => {
   step.addEventListener('click', () => openJornadaStage(step.getAttribute('data-stage')));
+});
+
+/* ---------- Drawer: linha do tempo da sessão (a partir do drilldown da Jornada) ---------- */
+function abrirLinhaDoTempo(cnpj, sessao, status) {
+  const eventosPorStatus = {
+    'Erro de validação': [
+      { hora: '16:30', ordem: 1, evento: 'Login efetuado', detalhe: 'Autenticação via certificado digital / CNPJ', tipo: '' },
+      { hora: '16:31', ordem: 2, evento: 'Busca de edital com sucesso', detalhe: 'Acessou o edital normalmente', tipo: '' },
+      { hora: '16:34', ordem: 3, evento: 'Preenchimento iniciado', detalhe: 'Começou a preencher os dados da proposta', tipo: '' },
+      { hora: '16:36', ordem: 4, evento: 'Erro de validação', detalhe: 'Falha ao validar um dos campos ou documentos obrigatórios', tipo: 'danger' },
+      { hora: '16:37', ordem: 5, evento: 'Sessão abandonada', detalhe: 'Fechou a aba logo após o erro, sem tentar novamente', tipo: 'danger' },
+    ],
+    'Inatividade alta': [
+      { hora: '14:02', ordem: 1, evento: 'Login efetuado', detalhe: 'Autenticação via certificado digital / CNPJ', tipo: '' },
+      { hora: '14:05', ordem: 2, evento: 'Navegou pelo edital', detalhe: 'Visualizou os detalhes e requisitos por alguns minutos', tipo: '' },
+      { hora: '14:11', ordem: 3, evento: 'Ficou inativo na tela', detalhe: 'Sem nenhuma interação por mais de 20 minutos', tipo: 'warn' },
+      { hora: '14:34', ordem: 4, evento: 'Sessão expirada', detalhe: 'Encerrada por inatividade, sem retorno até agora', tipo: 'warn' },
+    ],
+    'Saída natural': [
+      { hora: '09:12', ordem: 1, evento: 'Login efetuado', detalhe: 'Autenticação via certificado digital / CNPJ', tipo: '' },
+      { hora: '09:14', ordem: 2, evento: 'Buscou o edital', detalhe: 'Encontrou e abriu o edital de interesse', tipo: '' },
+      { hora: '09:20', ordem: 3, evento: 'Saiu sem pendência técnica', detalhe: 'Fechou a sessão normalmente, sem erro identificado', tipo: '' },
+    ],
+    'Saída natural (sucesso)': [
+      { hora: '11:40', ordem: 1, evento: 'Login efetuado', detalhe: 'Autenticação via certificado digital / CNPJ', tipo: '' },
+      { hora: '11:44', ordem: 2, evento: 'Preencheu a proposta', detalhe: 'Concluiu todos os campos e anexos exigidos', tipo: '' },
+      { hora: '11:52', ordem: 3, evento: 'Proposta enviada', detalhe: 'Envio confirmado com sucesso', tipo: '' },
+    ],
+  };
+  const eventos = eventosPorStatus[status] || eventosPorStatus['Saída natural'];
+  document.getElementById('timelineDrawerTitle').textContent = cnpj;
+  document.getElementById('timelineDrawerSub').textContent = sessao + ' · ' + status;
+  document.getElementById('timelineDrawerList').innerHTML = eventos.map(function(ev) {
+    return '<div class="co-event ' + ev.tipo + '"><span class="co-time">' + ev.hora + '</span><span class="co-dot"></span><div><div class="co-title">' + ev.ordem + '. ' + ev.evento + '</div><div class="co-detail">' + ev.detalhe + '</div></div></div>';
+  }).join('');
+  document.getElementById('timelineDrawerOverlay').classList.add('show');
+}
+document.getElementById('timelineDrawerClose').addEventListener('click', function() {
+  document.getElementById('timelineDrawerOverlay').classList.remove('show');
+});
+document.getElementById('timelineDrawerOverlay').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
 });
 
 /* ---------- Tráfego: toggle de bloqueio automático (MVP = detectar e recomendar) ---------- */
@@ -1192,9 +1238,6 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     'Perfis de fornecedor', 'Agente de Reengajamento', 'Alertas e ações', 'Comunicação segmentada',
     'Automação', 'Integrações & API', 'Usuários & Permissões', 'Configurações',
   ];
-  const LEVELS = ['nenhum', 'ver', 'editar'];
-  const LEVEL_LABEL = { nenhum: 'Nenhum', ver: 'Ver', editar: 'Editar' };
-
   const USERS_KEY = 'petronect_usuarios';
   const PERMS_KEY = 'petronect_permissoes';
 
@@ -1210,17 +1253,16 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   function defaultPerms() {
     const m = {};
     ROLES.forEach(function(role) { m[role] = {}; });
+    const semAcessoAtendimento = ['Usuários & Permissões', 'Configurações', 'Integrações & API'];
+    const semAcessoMarketing = ['Usuários & Permissões', 'Configurações', 'Integrações & API', 'Qualidade de tráfego', 'Automação'];
+    const semAcessoSeguranca = ['Usuários & Permissões', 'Configurações', 'Comunicação segmentada'];
+    const semAcessoLeitura = ['Usuários & Permissões', 'Configurações'];
     PAGES.forEach(function(page) {
-      m['Administrador'][page] = 'editar';
-      m['Somente leitura'][page] = (page === 'Usuários & Permissões' || page === 'Configurações') ? 'nenhum' : 'ver';
-    });
-    const atendimentoEditar = ['Alertas e ações', 'Agente de Reengajamento', 'Automação'];
-    const marketingEditar = ['Comunicação segmentada'];
-    const segurancaEditar = ['Qualidade de tráfego'];
-    PAGES.forEach(function(page) {
-      m['Atendimento'][page] = atendimentoEditar.includes(page) ? 'editar' : (page === 'Usuários & Permissões' || page === 'Configurações' || page === 'Integrações & API' ? 'nenhum' : 'ver');
-      m['Marketing'][page] = marketingEditar.includes(page) ? 'editar' : (['Usuários & Permissões', 'Configurações', 'Integrações & API', 'Qualidade de tráfego', 'Automação'].includes(page) ? 'nenhum' : 'ver');
-      m['Segurança'][page] = segurancaEditar.includes(page) ? 'editar' : (['Usuários & Permissões', 'Configurações', 'Comunicação segmentada'].includes(page) ? 'nenhum' : 'ver');
+      m['Administrador'][page] = true;
+      m['Atendimento'][page] = !semAcessoAtendimento.includes(page);
+      m['Marketing'][page] = !semAcessoMarketing.includes(page);
+      m['Segurança'][page] = !semAcessoSeguranca.includes(page);
+      m['Somente leitura'][page] = !semAcessoLeitura.includes(page);
     });
     return m;
   }
@@ -1274,8 +1316,8 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     const body = document.getElementById('permissoesTableBody');
     body.innerHTML = PAGES.map(function(page) {
       return '<tr><td>' + page + '</td>' + ROLES.map(function(role) {
-        const level = (perms[role] && perms[role][page]) || 'nenhum';
-        return '<td><button type="button" class="perm-pill perm-' + level + '" data-perm-role="' + role + '" data-perm-page="' + page + '">' + LEVEL_LABEL[level] + '</button></td>';
+        const acesso = !!(perms[role] && perms[role][page]);
+        return '<td><button type="button" class="switch' + (acesso ? ' on' : '') + '" data-perm-role="' + role + '" data-perm-page="' + page + '"></button></td>';
       }).join('') + '</tr>';
     }).join('');
 
@@ -1283,13 +1325,11 @@ document.querySelectorAll('[data-send]').forEach(btn => {
       btn.addEventListener('click', function() {
         const role = this.getAttribute('data-perm-role');
         const page = this.getAttribute('data-perm-page');
-        const current = perms[role][page] || 'nenhum';
-        const next = LEVELS[(LEVELS.indexOf(current) + 1) % LEVELS.length];
-        perms[role][page] = next;
+        const acesso = !perms[role][page];
+        perms[role][page] = acesso;
         saveJSON(PERMS_KEY, perms);
-        this.className = 'perm-pill perm-' + next;
-        this.textContent = LEVEL_LABEL[next];
-        showToast(role + ' · ' + page + ': ' + LEVEL_LABEL[next]);
+        this.classList.toggle('on', acesso);
+        showToast(role + ' · ' + page + ': ' + (acesso ? 'acesso liberado' : 'acesso bloqueado'));
       });
     });
   }
@@ -1298,6 +1338,16 @@ document.querySelectorAll('[data-send]').forEach(btn => {
   perms = loadJSON(PERMS_KEY, defaultPerms());
   renderUsers();
   renderPerms();
+
+  document.querySelectorAll('#usuariosPageTabs [data-usertab]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#usuariosPageTabs [data-usertab]').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      const tab = this.getAttribute('data-usertab');
+      document.getElementById('usuariosTabContent').classList.toggle('hidden', tab !== 'usuarios');
+      document.getElementById('permissoesTabContent').classList.toggle('hidden', tab !== 'permissoes');
+    });
+  });
 
   document.getElementById('convidarUsuarioBtn').addEventListener('click', function() {
     document.getElementById('convidarUsuarioForm').classList.toggle('hidden');
