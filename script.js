@@ -1,4 +1,4 @@
-  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   document.addEventListener('keydown', function (e) {
     const key = (e.key || '').toUpperCase();
     const blockedCombo = (e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C'].includes(key);
@@ -441,6 +441,11 @@ navLinks.forEach(link => {
     if (target === 'jornada' && typeof openJornadaStage === 'function') {
       openJornadaStage('detalhes');
     }
+    const crumb = link.getAttribute('data-crumb');
+    if (crumb) {
+      const crumbEl = document.querySelector('#page-' + target + ' .breadcrumb');
+      if (crumbEl) crumbEl.childNodes[0].textContent = crumb + ' › ';
+    }
   });
 });
 
@@ -458,7 +463,10 @@ function renderEvolucaoChart(gran) {
         { label: 'Bot / RPA', data: d.bot, borderColor: '#F0475A', backgroundColor: '#F0475A22', tension: 0.35, borderWidth: 2.5, pointRadius: 2, fill: true }
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: getChartTooltipOptions({
+        callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y} acessos` }
+      }) },
       scales: { x: { grid: { color: getChartGridColor() }, border: { display: false } }, y: { grid: { color: getChartGridColor() }, border: { display: false } } } }
   });
 }
@@ -635,13 +643,10 @@ document.getElementById('timelineDrawerOverlay').addEventListener('click', funct
   if (e.target === this) this.classList.remove('show');
 });
 
-/* ---------- Tráfego: toggle de bloqueio automático (MVP = detectar e recomendar) ---------- */
-document.getElementById('autoBlockToggle').addEventListener('change', function() {
-  if (this.checked) {
-    showToast('Bloqueio automático ativado. Equipe de segurança notificada da mudança de política');
-  } else {
-    showToast('Bloqueio automático desativado. Equipe de segurança notificada para acompanhar de perto');
-  }
+/* ---------- Tráfego: bloqueio automático fica travado em desligado (MVP = detectar e recomendar) ---------- */
+document.querySelector('label[title*="evolução futura"]').addEventListener('click', function(e) {
+  e.preventDefault();
+  showToast('Bloqueio automático ainda não está disponível: por enquanto o sistema só sinaliza, quem bloqueia é a equipe');
 });
 
 /* ---------- Tráfego: solicitação de desbloqueio (não libera sozinho, avisa a equipe) ---------- */
@@ -792,7 +797,10 @@ function renderTrendChart(gran) {
         { label: 'Bot / RPA', data: d.bot, borderColor: '#F0475A', backgroundColor: '#F0475A22', tension: 0.35, borderWidth: 2.5, pointRadius: 2, fill: true }
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: getChartTooltipOptions({
+        callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y} acessos` }
+      }) },
       scales: { x: { grid: { color: getChartGridColor() }, border: { display: false } }, y: { grid: { color: getChartGridColor() }, border: { display: false } } } }
   });
 }
@@ -853,6 +861,71 @@ document.getElementById('ipDrawerBlockBtn').addEventListener('click', function()
   this.disabled = true;
   showToast('IP bloqueado manualmente');
 });
+
+/* ---------- Perfis de cliente ---------- */
+(function() {
+  const drawerOverlay = document.getElementById('clienteDrawerOverlay');
+  const tableBody = document.getElementById('perfilClienteTableBody');
+
+  function abrirClienteDrawer(row) {
+    document.getElementById('clienteDrawerNome').textContent = row.querySelector('.company').childNodes[0].textContent.trim();
+    document.getElementById('clienteDrawerCnpj').textContent = 'CNPJ ' + row.getAttribute('data-cnpj');
+    document.getElementById('clienteDrawerScore').textContent = row.getAttribute('data-score');
+    document.getElementById('clienteDrawerStatus').textContent = row.getAttribute('data-status');
+    document.getElementById('clienteDrawerContato').textContent = row.getAttribute('data-contato');
+    document.getElementById('clienteDrawerAcao').textContent = row.getAttribute('data-acao');
+    drawerOverlay.classList.add('show');
+  }
+
+  tableBody.querySelectorAll('[data-cliente-ver]').forEach(function(btn) {
+    btn.addEventListener('click', function() { abrirClienteDrawer(this.closest('tr')); });
+  });
+  document.getElementById('clienteDrawerClose').addEventListener('click', () => drawerOverlay.classList.remove('show'));
+  drawerOverlay.addEventListener('click', (e) => { if (e.target === drawerOverlay) drawerOverlay.classList.remove('show'); });
+  document.getElementById('clienteDrawerAcionarBtn').addEventListener('click', function() {
+    const acao = document.getElementById('clienteDrawerAcao').textContent;
+    const nome = document.getElementById('clienteDrawerNome').textContent;
+    showToast('"' + acao + '" acionado para ' + nome);
+    drawerOverlay.classList.remove('show');
+  });
+
+  document.querySelectorAll('[data-cliente-group]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const acao = this.getAttribute('data-cliente-action');
+      const grupo = this.getAttribute('data-cliente-group');
+      if (acao === 'Ver') {
+        const row = tableBody.querySelector('tr[data-status="' + grupo + '"]');
+        if (row) abrirClienteDrawer(row);
+      } else {
+        showToast('Grupo "' + grupo + '": ' + (acao === 'Confirmar' ? 'ação confirmada para todos os compradores' : 'grupo recusado, sem ação necessária'));
+      }
+    });
+  });
+
+  document.getElementById('perfilClienteSearch').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    tableBody.querySelectorAll('tr').forEach(function(row) {
+      const texto = row.textContent.toLowerCase();
+      row.classList.toggle('row-hidden', !texto.includes(q));
+    });
+  });
+
+  document.querySelectorAll('#perfisClienteExportMenu [data-export-format]').forEach(function(exBtn) {
+    exBtn.addEventListener('click', function() {
+      const rows = [['Comprador', 'Status', 'Score', 'Ação sugerida']];
+      tableBody.querySelectorAll('tr:not(.row-hidden)').forEach(function(row) {
+        rows.push([
+          row.querySelector('.company').childNodes[0].textContent.trim(),
+          row.getAttribute('data-status'),
+          row.getAttribute('data-score'),
+          row.getAttribute('data-acao'),
+        ]);
+      });
+      exportRows(rows, 'perfis-de-cliente', exBtn.getAttribute('data-export-format'), 'Perfis de Cliente');
+      document.getElementById('perfisClienteExportMenu').classList.add('hidden');
+    });
+  });
+})();
 
 /* ---------- Perfis: busca na tabela individual ---------- */
 function applyPerfilFilters() {
@@ -1004,8 +1077,9 @@ document.querySelectorAll('#statusGroupsGrid .status-group-card').forEach(sgCard
 /* ---------- Alertas: badge dinâmico ---------- */
 function updateAlertBadge() {
   const openCount = document.querySelectorAll('#alertList [data-alert]:not([data-status="resolvido"])').length;
-  const badge = document.querySelector('.nav-link[data-page="alertas"] .badge');
-  if (badge) badge.textContent = openCount;
+  document.querySelectorAll('.nav-link[data-page="alertas"] .badge').forEach(function(badge) {
+    badge.textContent = openCount;
+  });
 }
 
 /* ---------- Alertas: resolver ---------- */
@@ -2041,6 +2115,24 @@ function getChartGridColor() {
 function getChartTickColor() {
   return document.getElementById('screenApp').classList.contains('dark-mode') ? '#9297AC' : '#7A88B2';
 }
+function getChartTooltipOptions(extra) {
+  const isDark = document.getElementById('screenApp').classList.contains('dark-mode');
+  const base = {
+    enabled: true,
+    backgroundColor: isDark ? '#16234A' : '#0B1B4A',
+    titleColor: '#FFFFFF',
+    bodyColor: isDark ? '#D7DCF0' : '#E7EAF6',
+    borderColor: isDark ? '#2A3E82' : 'transparent',
+    borderWidth: isDark ? 1 : 0,
+    padding: 10,
+    cornerRadius: 8,
+    displayColors: true,
+    boxPadding: 4,
+    titleFont: { weight: '700', size: 11.5 },
+    bodyFont: { size: 11.5 }
+  };
+  return Object.assign(base, extra || {});
+}
 
 function buildCharts() {
   if (chartsBuilt) return;
@@ -2062,13 +2154,19 @@ function buildCharts() {
   new Chart(document.getElementById('chartPorte'), {
     type: 'bar',
     data: { labels: ['Micro','Pequeno','Médio','Grande','Corporativo'], datasets: [{ label: 'Engajado', data: [8,14,22,17,9], backgroundColor: purple, borderRadius: 5, barPercentage: 0.55 }, { label: 'Novo', data: [5,9,7,4,3], backgroundColor: amber, borderRadius: 5, barPercentage: 0.55 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, border: { display: false } }, y: { grid: { color: gridColor }, border: { display: false } } } }
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: getChartTooltipOptions({
+        callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y} fornecedores` }
+      }) }, scales: { x: { grid: { display: false }, border: { display: false } }, y: { grid: { color: gridColor }, border: { display: false } } } }
   });
 
   new Chart(document.getElementById('chartHumanBot'), {
     type: 'doughnut',
-    data: { datasets: [{ data: [86,14], backgroundColor: [red, blue], borderWidth: 0, spacing: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
+    data: { labels: ['Bot / RPA', 'Humano validado'], datasets: [{ data: [86,14], backgroundColor: [red, blue], borderWidth: 0, spacing: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '72%',
+      plugins: { legend: { display: false }, tooltip: getChartTooltipOptions({
+        callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%` }
+      }) } }
   });
 
   renderTrendChart('dia');
@@ -2183,4 +2281,3 @@ document.getElementById('themeToggleBtn').addEventListener('click', function() {
     });
   });
 })();
-

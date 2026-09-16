@@ -529,29 +529,36 @@
     </div>
 
     <div class="sidebar-nav-scroll">
-    <div class="nav-label">Painel</div>
+    <div class="nav-label">Fornecedor</div>
     <nav>
       <button type="button" class="nav-link active" data-page="visao"><i class="fa-solid fa-grip"></i> Visão geral</button>
       <button type="button" class="nav-link" data-page="jornada"><i class="fa-solid fa-route"></i> Jornada do fornecedor</button>
-      <button type="button" class="nav-link" data-page="jornadaCliente"><i class="fa-solid fa-user-tie"></i> Jornada do cliente</button>
-      <button type="button" class="nav-link" data-page="trafego"><i class="fa-solid fa-shield-halved"></i> Qualidade de tráfego <span class="badge">23</span></button>
       <button type="button" class="nav-link" data-page="perfis"><i class="fa-solid fa-building"></i> Perfis de fornecedor</button>
+      <button type="button" class="nav-link" data-page="alertas" data-crumb="Fornecedor"><i class="fa-solid fa-bell"></i> Alertas e ações <span class="badge">3</span></button>
     </nav>
 
-    <div class="nav-label">Ação</div>
+    <div class="nav-label">Cliente</div>
     <nav>
+      <button type="button" class="nav-link" data-page="visaoCliente"><i class="fa-solid fa-grip"></i> Visão geral</button>
+      <button type="button" class="nav-link" data-page="jornadaCliente"><i class="fa-solid fa-user-tie"></i> Jornada do cliente</button>
+      <button type="button" class="nav-link" data-page="perfisCliente"><i class="fa-solid fa-user-group"></i> Perfis de cliente</button>
+      <button type="button" class="nav-link" data-page="alertas" data-crumb="Cliente"><i class="fa-solid fa-bell"></i> Alertas e ações <span class="badge">3</span></button>
+    </nav>
+
+    <div class="nav-label">Ferramentas</div>
+    <nav>
+      <button type="button" class="nav-link" data-page="trafego"><i class="fa-solid fa-shield-halved"></i> Qualidade de tráfego <span class="badge">23</span></button>
       <button type="button" class="nav-link" data-page="copiloto"><i class="fa-solid fa-route"></i> Agente de Reengajamento</button>
-      <button type="button" class="nav-link" data-page="alertas"><i class="fa-solid fa-bell"></i> Alertas e ações <span class="badge">3</span></button>
       <button type="button" class="nav-link" data-page="comunicacao"><i class="fa-regular fa-paper-plane"></i> Comunicação segmentada</button>
       <button type="button" class="nav-link" data-page="automacao"><i class="fa-solid fa-robot"></i> Automação</button>
     </nav>
 
     <div class="nav-label">Sistema</div>
     <nav>
-      <button type="button" class="nav-link" data-page="arquitetura"><i class="fa-solid fa-layer-group"></i> Arquitetura da solução</button>
-      <button type="button" class="nav-link" data-page="integracoes"><i class="fa-solid fa-plug-circle-bolt"></i> Integrações &amp; API</button>
       <button type="button" class="nav-link" data-page="usuarios"><i class="fa-solid fa-users-gear"></i> Usuários &amp; Permissões</button>
       <button type="button" class="nav-link" data-page="config"><i class="fa-solid fa-gear"></i> Configurações</button>
+      <button type="button" class="nav-link" data-page="integracoes"><i class="fa-solid fa-plug-circle-bolt"></i> Integrações &amp; API</button>
+      <button type="button" class="nav-link" data-page="arquitetura"><i class="fa-solid fa-layer-group"></i> Arquitetura da solução</button>
     </nav>
     </div>
 
@@ -572,7 +579,7 @@
 
     <!-- ---------- PAGE: VISÃO GERAL ---------- -->
     <div class="page" id="page-visao">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Visão geral</b></div>
+      <div class="breadcrumb">Fornecedor &nbsp;›&nbsp; <b>Visão geral</b></div>
       <div class="header-row">
         <div class="header-left">
           <h1>Dashboard geral</h1>
@@ -738,7 +745,7 @@
 
     <!-- ---------- PAGE: COPILOTO DE IA ---------- -->
     <div class="page hidden" id="page-copiloto">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Agente de Reengajamento</b></div>
+      <div class="breadcrumb">Ferramentas &nbsp;›&nbsp; <b>Agente de Reengajamento</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Agente de Reengajamento</h1><div class="sub">Fila priorizada por Score de Necessidade de Contato</div></div>
       </div>
@@ -929,7 +936,7 @@
 
     <!-- ---------- PAGE: JORNADA ---------- -->
     <div class="page hidden" id="page-jornada">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Jornada do fornecedor</b></div>
+      <div class="breadcrumb">Fornecedor &nbsp;›&nbsp; <b>Jornada do fornecedor</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Jornada do fornecedor</h1><div class="sub">Onde os acessos humanos avançam e onde eles travam</div></div>
         <div class="header-controls">
@@ -996,9 +1003,66 @@
       </div>
     </div>
 
+    <!-- ---------- PAGE: VISÃO GERAL (CLIENTE / COMPRADOR) ---------- -->
+    <div class="page hidden" id="page-visaoCliente">
+      <div class="breadcrumb">Cliente &nbsp;›&nbsp; <b>Visão geral</b></div>
+      <div class="header-row">
+        <div class="header-left">
+          <h1>Dashboard do comprador</h1>
+          <div class="sub"><span class="live-dot"></span>64 editais com pelo menos um comprador ativo esta semana</div>
+        </div>
+        <div class="header-controls">
+          <select class="ctrl" style="cursor:pointer;">
+            <option>Últimos 7 dias</option>
+            <option>Últimos 6 meses</option>
+            <option>Último ano</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="kpis" style="margin-bottom:16px;">
+        <div class="kpi">
+          <div class="klabel"><i class="fa-solid fa-building-user"></i> Compradores ativos</div>
+          <div class="kvalue">38 <span style="font-size:12px; font-weight:500; color:var(--text-2);">esta semana</span></div>
+        </div>
+        <div class="kpi" style="border-color:var(--green);">
+          <div class="klabel"><i class="fa-solid fa-handshake" style="color:var(--green);"></i> Propostas aceitas</div>
+          <div class="kvalue">45 <span style="font-size:12px; font-weight:500; color:var(--text-2);">↑ 12% vs semana passada</span></div>
+        </div>
+        <div class="kpi" style="border-color:var(--amber);">
+          <div class="klabel"><i class="fa-solid fa-triangle-exclamation" style="color:var(--amber);"></i> Pendências abertas</div>
+          <div class="kvalue">09 <span style="font-size:12px; font-weight:500; color:var(--text-2);">precisam de ação</span></div>
+        </div>
+        <div class="kpi" style="border-color:var(--red);">
+          <div class="klabel"><i class="fa-solid fa-hourglass-half" style="color:var(--red);"></i> Prazos próximos do fim</div>
+          <div class="kvalue">04 <span style="font-size:12px; font-weight:500; color:var(--text-2);">encerram em &lt;48h</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:var(--green); background:var(--green-soft); margin-bottom:16px;">
+        <div class="card-head"><div class="ctitle"><i class="fa-brands fa-hackerrank"></i> Como pensamos o lado do comprador</div></div>
+        <p style="font-size:12px; color:var(--text-2); margin:0; max-width:640px;">A jornada do fornecedor mostra quem trava na proposta. Essa visão é o espelho: mostra onde o <strong style="color:var(--text);">comprador</strong> trava depois que a proposta chega, aprovação interna, assinatura, prorrogação, para a Petronect avisar antes que o prazo estoure.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-chart-pie"></i> Maiores motivos de pendência</div></div>
+          <div class="flag-row" style="margin-bottom:8px;"><span><strong>Aprovação interna</strong> · aguardando outro setor do comprador</span><span class="fmeta">42%</span></div>
+          <div class="flag-row" style="margin-bottom:8px;"><span><strong>Assinatura</strong> · falta assinar o contrato final</span><span class="fmeta">31%</span></div>
+          <div class="flag-row"><span><strong>Prorrogação de prazo</strong> · pedido de mais tempo</span><span class="fmeta">27%</span></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="ctitle"><i class="fa-solid fa-star"></i> Compradores mais engajados</div></div>
+          <div class="flag-row" style="margin-bottom:8px;"><span><strong>Petrobras Distribuidora</strong> · 6 editais fechados</span><span class="fmeta">score 96</span></div>
+          <div class="flag-row" style="margin-bottom:8px;"><span><strong>Refinaria Sul Ltda</strong> · 4 editais fechados</span><span class="fmeta">score 88</span></div>
+          <div class="flag-row"><span><strong>TransPetro Log.</strong> · 3 editais fechados</span><span class="fmeta">score 81</span></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: JORNADA DO CLIENTE (COMPRADOR) ---------- -->
     <div class="page hidden" id="page-jornadaCliente">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Jornada do cliente</b></div>
+      <div class="breadcrumb">Cliente &nbsp;›&nbsp; <b>Jornada do cliente</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Jornada do cliente</h1><div class="sub">O lado do comprador: onde ele precisa agir e onde a gente pode avisar antes que vire problema</div></div>
         <div class="header-controls">
@@ -1047,9 +1111,162 @@
       </div>
     </div>
 
+    <!-- ---------- PAGE: PERFIS DE CLIENTE ---------- -->
+    <div class="page hidden" id="page-perfisCliente">
+      <div class="breadcrumb">Cliente &nbsp;›&nbsp; <b>Perfis de cliente</b></div>
+      <div class="header-row">
+        <div class="header-left"><h1>Perfis de cliente</h1><div class="sub">Agrupa compradores por comportamento, cada grupo pode ter vários compradores</div></div>
+        <div class="header-controls">
+          <div class="export-dropdown">
+            <button class="ctrl" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i> Exportar <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></button>
+            <div class="export-menu hidden" id="perfisClienteExportMenu">
+              <button data-export-format="csv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+              <button data-export-format="xlsx"><i class="fa-solid fa-file-excel"></i> Excel (.xlsx)</button>
+              <button data-export-format="pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">CATEGORIAS DE STATUS · ação em lote por grupo</div>
+      <div class="sgc-grid">
+        <div class="status-group-card">
+          <div class="sgc-top">
+            <span class="tag risk">Alto valor parado</span>
+            <span class="sgc-count">2 compradores</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-red"><i class="fa-solid fa-fire-flame-curved"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--red);">88</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">Ação sugerida:<br><strong>Contato comercial direto</strong></div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:88%; background:var(--red);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar" data-cliente-action="Recusar" data-cliente-group="Alto valor parado"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver" data-cliente-action="Ver" data-cliente-group="Alto valor parado"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar" data-cliente-action="Confirmar" data-cliente-group="Alto valor parado"><i class="fa-solid fa-check"></i> Confirmar</button>
+          </div>
+        </div>
+
+        <div class="status-group-card">
+          <div class="sgc-top">
+            <span class="tag risk">Aprovação demorada</span>
+            <span class="sgc-count">3 compradores</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-amber"><i class="fa-solid fa-user-clock"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--amber);">74</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">Ação sugerida:<br><strong>Lembrete automático</strong></div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:74%; background:var(--amber);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar" data-cliente-action="Recusar" data-cliente-group="Aprovação demorada"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver" data-cliente-action="Ver" data-cliente-group="Aprovação demorada"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar" data-cliente-action="Confirmar" data-cliente-group="Aprovação demorada"><i class="fa-solid fa-check"></i> Confirmar</button>
+          </div>
+        </div>
+
+        <div class="status-group-card">
+          <div class="sgc-top">
+            <span class="tag risk">Renovação em risco</span>
+            <span class="sgc-count">1 comprador</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-amber"><i class="fa-solid fa-rotate-left"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--amber);">65</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">Ação sugerida:<br><strong>Acionar Agente de Reengajamento</strong></div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:65%; background:var(--amber);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar" data-cliente-action="Recusar" data-cliente-group="Renovação em risco"><i class="fa-solid fa-xmark"></i> Recusar</button>
+            <button class="sgc-btn-ver" data-cliente-action="Ver" data-cliente-group="Renovação em risco"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar" data-cliente-action="Confirmar" data-cliente-group="Renovação em risco"><i class="fa-solid fa-check"></i> Confirmar</button>
+          </div>
+        </div>
+
+        <div class="status-group-card">
+          <div class="sgc-top">
+            <span class="tag engaged">Fluindo bem</span>
+            <span class="sgc-count">4 compradores</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="sgc-icon-wrap sgc-icon-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div>
+              <div class="sgc-score-big" style="color:var(--green);">15</div>
+              <div class="sgc-score-label">score máx.</div>
+            </div>
+            <div class="sgc-meta">Ação sugerida:<br><strong style="color:var(--green);">Sem necessidade de intervenção ✓</strong></div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:15%; background:var(--green);"></div></div>
+          <div class="sgc-btns">
+            <button class="sgc-btn-recusar" style="opacity:0.4;" disabled>Recusar</button>
+            <button class="sgc-btn-ver" data-cliente-action="Ver" data-cliente-group="Fluindo bem"><i class="fa-solid fa-eye"></i> Ver</button>
+            <button class="sgc-btn-confirmar" style="background:var(--green-soft); color:var(--green); border:1px solid var(--green);" disabled>Monitorando</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:24px;">COMPRADORES · visão individual</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+        <div style="position:relative;">
+          <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-3); font-size:12px;"></i>
+          <input type="text" id="perfilClienteSearch" placeholder="Buscar por empresa ou CNPJ..." style="background:#FFFFFF; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:8px 12px 8px 30px; font-size:12.5px; outline:none; width:230px; box-shadow:0 1px 2px rgba(11,27,74,0.05);">
+        </div>
+      </div>
+
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div class="table-scroll-wrap">
+        <table style="margin:0;">
+          <thead>
+            <tr><th>Comprador</th><th>Status</th><th style="min-width:120px;">Score</th><th>Ação sugerida</th><th style="text-align:right;">Acionar</th></tr>
+          </thead>
+          <tbody id="perfilClienteTableBody">
+            <tr data-status="Alto valor parado" data-score="88" data-cnpj="20.111.222/0001-33" data-contato="compras@petrobrasdist.com.br" data-acao="Contato comercial direto">
+              <td class="company">Petrobras Distribuidora<span class="subrow">CNPJ 20.111.222/0001-33</span></td>
+              <td><span class="tag risk">Alto valor parado</span></td>
+              <td><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:88%; background:var(--red);"></div></div></td>
+              <td>Contato comercial direto</td>
+              <td style="text-align:right;"><button class="row-action-btn" data-cliente-ver><i class="fa-solid fa-eye"></i> Ver</button></td>
+            </tr>
+            <tr data-status="Aprovação demorada" data-score="74" data-cnpj="31.222.333/0001-44" data-contato="juridico@refinariasul.com.br" data-acao="Lembrete automático">
+              <td class="company">Refinaria Sul Ltda<span class="subrow">CNPJ 31.222.333/0001-44</span></td>
+              <td><span class="tag risk">Aprovação demorada</span></td>
+              <td><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:74%; background:var(--amber);"></div></div></td>
+              <td>Lembrete automático</td>
+              <td style="text-align:right;"><button class="row-action-btn" data-cliente-ver><i class="fa-solid fa-eye"></i> Ver</button></td>
+            </tr>
+            <tr data-status="Renovação em risco" data-score="65" data-cnpj="44.333.222/0001-55" data-contato="contratos@transpetrolog.com.br" data-acao="Acionar Agente de Reengajamento">
+              <td class="company">TransPetro Log.<span class="subrow">CNPJ 44.333.222/0001-55</span></td>
+              <td><span class="tag risk">Renovação em risco</span></td>
+              <td><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:65%; background:var(--amber);"></div></div></td>
+              <td>Acionar Agente de Reengajamento</td>
+              <td style="text-align:right;"><button class="row-action-btn" data-cliente-ver><i class="fa-solid fa-eye"></i> Ver</button></td>
+            </tr>
+            <tr data-status="Fluindo bem" data-score="15" data-cnpj="55.444.333/0001-66" data-contato="compras@petronova.com.br" data-acao="Sem necessidade de intervenção">
+              <td class="company">Petronova Energia<span class="subrow">CNPJ 55.444.333/0001-66</span></td>
+              <td><span class="tag engaged">Fluindo bem</span></td>
+              <td><div class="bar-track" style="width:80px;"><div class="bar-fill" style="width:15%; background:var(--green);"></div></div></td>
+              <td>Sem necessidade de intervenção</td>
+              <td style="text-align:right;"><button class="row-action-btn" data-cliente-ver><i class="fa-solid fa-eye"></i> Ver</button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: TRÁFEGO ---------- -->
     <div class="page hidden" id="page-trafego">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Qualidade de tráfego</b></div>
+      <div class="breadcrumb">Ferramentas &nbsp;›&nbsp; <b>Qualidade de tráfego</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Qualidade de tráfego</h1><div class="sub">Fase 1 · Camada de Borda (WAF / CrowdSec), bloqueia antes de qualquer classificação de perfil</div></div>
       </div>
@@ -1059,9 +1276,9 @@
           <i class="fa-solid fa-circle-info" style="color:var(--green);"></i>
           <p style="font-size:12px; color:var(--text-2); margin:0; max-width:640px;"><strong style="color:var(--text);">MVP: detecta e recomenda, não bloqueia sozinho.</strong> Toda linha aqui é um comportamento sinalizado para revisão humana. O bloqueio automático de todo o tráfego "suspeito" fica para uma evolução futura, com critérios validados.</p>
         </div>
-        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); cursor:pointer; white-space:nowrap;">
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-3); cursor:not-allowed; white-space:nowrap;" title="Fica para uma evolução futura, com critérios validados. Por enquanto o sistema só sinaliza, quem bloqueia é a equipe.">
           Bloqueio automático
-          <input type="checkbox" id="autoBlockToggle" style="accent-color:var(--green); width:32px; height:18px; cursor:pointer;">
+          <input type="checkbox" id="autoBlockToggle" disabled style="accent-color:var(--text-3); width:32px; height:18px; cursor:not-allowed;">
         </label>
       </div>
 
@@ -1207,9 +1424,34 @@
       </div>
     </div>
 
+    <!-- ---------- Drawer: Dossiê de comprador ---------- -->
+    <div class="drawer-overlay" id="clienteDrawerOverlay">
+      <div class="drawer" id="clienteDrawer">
+        <div class="drawer-head">
+          <div>
+            <div style="font-size:15px; font-weight:700;" id="clienteDrawerNome">—</div>
+            <div style="font-size:12px; color:var(--text-2);" id="clienteDrawerCnpj">—</div>
+          </div>
+          <button class="icon-btn" id="clienteDrawerClose"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="drawer-body">
+          <div style="display:flex; gap:10px; margin-bottom:18px;">
+            <div class="traffic-card" style="flex:1;"><div class="tlabel">Score</div><div class="tvalue" id="clienteDrawerScore" style="color:var(--red);">—</div></div>
+            <div class="traffic-card" style="flex:1;"><div class="tlabel">Status</div><div style="font-weight:700; font-size:13px;" id="clienteDrawerStatus">—</div></div>
+          </div>
+          <div style="font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">Contato</div>
+          <div class="drawer-history" style="margin-bottom:18px;">
+            <div class="dh-row"><span>E-mail</span><span id="clienteDrawerContato">—</span></div>
+            <div class="dh-row"><span>Ação sugerida</span><span id="clienteDrawerAcao">—</span></div>
+          </div>
+          <button class="row-action-btn" id="clienteDrawerAcionarBtn" style="width:100%; background:var(--green-soft); border-color:var(--green); color:var(--green);">Acionar ação sugerida</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ---------- PAGE: PERFIS ---------- -->
     <div class="page hidden" id="page-perfis">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Perfis de fornecedor</b></div>
+      <div class="breadcrumb">Fornecedor &nbsp;›&nbsp; <b>Perfis de fornecedor</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Perfis de fornecedor</h1><div class="sub">Aprove por categoria de status, cada grupo pode ter vários fornecedores</div></div>
         <div class="header-controls">
@@ -1502,7 +1744,7 @@
 
     <!-- ---------- PAGE: ALERTAS ---------- -->
     <div class="page hidden" id="page-alertas">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Alertas e ações</b></div>
+      <div class="breadcrumb">Fornecedor &nbsp;›&nbsp; <b>Alertas e ações</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Alertas e ações</h1><div class="sub">Disparados por padrão de comportamento, não por volume de cliques</div></div>
       </div>
@@ -1630,7 +1872,7 @@
 
     <!-- ---------- PAGE: COMUNICAÇÃO ---------- -->
     <div class="page hidden" id="page-comunicacao">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Comunicação segmentada</b></div>
+      <div class="breadcrumb">Ferramentas &nbsp;›&nbsp; <b>Comunicação segmentada</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Comunicação segmentada</h1><div class="sub">Mensagem gerada automaticamente a partir do perfil</div></div>
       </div>
@@ -1658,7 +1900,7 @@
 
     <!-- ---------- PAGE: ARQUITETURA ---------- -->
     <div class="page hidden" id="page-arquitetura">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Arquitetura da solução</b></div>
+      <div class="breadcrumb">Sistema &nbsp;›&nbsp; <b>Arquitetura da solução</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Jornada de Acesso e Ação Inteligente</h1><div class="sub">3 fases: Camada de Borda → Product Analytics → Agente de Reengajamento</div></div>
       </div>
@@ -1851,7 +2093,7 @@
 
     <!-- ---------- PAGE: AUTOMAÇÃO ---------- -->
     <div class="page hidden" id="page-automacao">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Automação</b></div>
+      <div class="breadcrumb">Ferramentas &nbsp;›&nbsp; <b>Automação</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Automação</h1><div class="sub">Configure quando o sistema age sozinho e quando ele só recomenda</div></div>
       </div>
@@ -1924,7 +2166,7 @@
 
     <!-- ---------- PAGE: INTEGRAÇÕES & API ---------- -->
     <div class="page hidden" id="page-integracoes">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Integrações &amp; API</b></div>
+      <div class="breadcrumb">Sistema &nbsp;›&nbsp; <b>Integrações &amp; API</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Integrações &amp; API</h1><div class="sub">Conecte o Petronect Analytics a outros sistemas e puxe os dados por conta própria</div></div>
         <div class="header-controls">
@@ -2044,7 +2286,7 @@
 
     <!-- ---------- PAGE: USUÁRIOS & PERMISSÕES ---------- -->
     <div class="page hidden" id="page-usuarios">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Usuários &amp; Permissões</b></div>
+      <div class="breadcrumb">Sistema &nbsp;›&nbsp; <b>Usuários &amp; Permissões</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Usuários &amp; Permissões</h1><div class="sub">Quem tem acesso ao painel e o que cada perfil pode ver ou editar</div></div>
         <div class="header-controls">
@@ -2098,7 +2340,7 @@
 
     <!-- ---------- PAGE: CONFIG ---------- -->
     <div class="page hidden" id="page-config">
-      <div class="breadcrumb">Fornecedores &nbsp;›&nbsp; <b>Configurações</b></div>
+      <div class="breadcrumb">Sistema &nbsp;›&nbsp; <b>Configurações</b></div>
       <div class="header-row">
         <div class="header-left"><h1>Configurações</h1><div class="sub">Preferências do sistema e da conta</div></div>
       </div>
