@@ -4,9 +4,24 @@
 // Automacao guarda os ajustes do usuario no navegador, via
 // localStorage); quando existir um banco por tras, este endpoint passa
 // a ler/gravar as regras de verdade, sem precisar mudar o front-end.
+const { checkCrowdSec } = require('../_crowdsec.js');
+
 module.exports = (req, res) => {
+  const security = checkCrowdSec(req);
+
+  if (!security.allowed) {
+    return res.status(security.status).json({
+      error: security.error,
+      status: security.status,
+      threatTag: security.threatTag,
+      cwe: security.cwe,
+    });
+  }
+
   if (req.method === 'GET') {
     return res.status(200).json({
+      status: security.status,
+      threatTag: security.threatTag,
       regras: [
         {
           id: 'score-alto',
@@ -44,5 +59,10 @@ module.exports = (req, res) => {
     });
   }
   res.setHeader('Allow', 'GET');
-  res.status(405).json({ error: 'Metodo nao suportado.' });
+  res.status(405).json({
+    error: 'Metodo nao suportado.',
+    status: 405,
+    threatTag: security.threatTag,
+    cwe: security.cwe,
+  });
 };

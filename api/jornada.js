@@ -3,8 +3,23 @@
 // (o mesmo dataset de demonstracao usado no front-end); quando houver um
 // banco de verdade por tras, e so trocar o corpo desta funcao pela
 // consulta real -- o contrato de resposta (JSON abaixo) ja fica pronto.
+const { checkCrowdSec } = require('./_crowdsec.js');
+
 module.exports = (req, res) => {
-  res.status(200).json({
+  const security = checkCrowdSec(req);
+
+  if (!security.allowed) {
+    return res.status(security.status).json({
+      error: security.error,
+      status: security.status,
+      threatTag: security.threatTag,
+      cwe: security.cwe,
+    });
+  }
+
+  return res.status(200).json({
+    status: security.status,
+    threatTag: security.threatTag,
     periodo: '7dias',
     atualizadoEm: new Date().toISOString(),
     etapas: [
