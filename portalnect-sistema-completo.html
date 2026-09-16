@@ -2027,25 +2027,6 @@
       </div>
 
       <div id="usuariosTabContent">
-      <div class="card hidden" id="convidarUsuarioForm" style="margin-bottom:14px;">
-        <div class="card-head"><div class="ctitle"><i class="fa-solid fa-user-plus"></i> Convidar novo usuário</div></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; align-items:end;">
-          <div class="field" style="margin:0;"><label>Nome</label><input type="text" id="novoUsuarioNome" placeholder="Nome completo" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;"></div>
-          <div class="field" style="margin:0;"><label>E-mail</label><input type="email" id="novoUsuarioEmail" placeholder="nome@petronect.com.br" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;"></div>
-          <div class="field" style="margin:0;">
-            <label>Perfil</label>
-            <select id="novoUsuarioPerfil" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:10px 12px; font-size:12.5px;">
-              <option>Administrador</option>
-              <option>Atendimento</option>
-              <option>Marketing</option>
-              <option>Segurança</option>
-              <option>Somente leitura</option>
-            </select>
-          </div>
-          <button class="row-action-btn" id="enviarConviteBtn" style="background:var(--green); border-color:var(--green); color:#0B1B4A; height:38px;">Enviar convite</button>
-        </div>
-      </div>
-
       <div class="section-label">USUÁRIOS DO SISTEMA</div>
       <div class="card" style="padding:0; overflow:hidden; margin-bottom:20px;">
         <div class="table-scroll-wrap">
@@ -2059,7 +2040,16 @@
 
       <div id="permissoesTabContent" class="hidden">
       <div class="section-label">ACESSO POR PERFIL</div>
-      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Marque se aquele perfil <strong style="color:var(--green);">tem acesso</strong> à tela ou não. É liberado/bloqueado, sem meio-termo — não controla se pode só ver ou também editar.</p>
+      <p style="font-size:12px; color:var(--text-2); margin:0 0 12px;">Marque se aquele perfil <strong style="color:var(--green);">tem acesso</strong> à tela ou não. É liberado/bloqueado, sem meio-termo: não controla se pode só ver ou também editar.</p>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+        <select id="permFiltroPerfil" style="background:#FFFFFF; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:8px 10px; font-size:12.5px; cursor:pointer;">
+          <option value="">Perfil: Todos</option>
+        </select>
+        <select id="permFiltroUsuario" style="background:#FFFFFF; border:1px solid var(--line); color:var(--text); border-radius:8px; padding:8px 10px; font-size:12.5px; cursor:pointer;">
+          <option value="">Usuário: Todos</option>
+        </select>
+        <button class="link-inline" id="permFiltroLimparBtn">Limpar filtro</button>
+      </div>
       <div class="card" style="padding:0; overflow:hidden;">
         <div class="table-scroll-wrap" style="max-height:520px;">
         <table style="margin:0;" id="permissoesTable">
@@ -2212,6 +2202,66 @@
     </div>
     <div class="drawer-body">
       <div class="co-timeline" id="timelineDrawerList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer/modal: convidar novo usuário -->
+<div class="drawer-overlay" id="convidarUsuarioOverlay">
+  <div class="drawer" id="convidarUsuarioDrawer">
+    <div class="drawer-head">
+      <div>
+        <div style="font-size:15px; font-weight:700;">Convidar novo usuário</div>
+        <div style="font-size:12px; color:var(--text-3); margin-top:2px;">Adicione alguém ao painel e defina o perfil de acesso</div>
+      </div>
+      <button class="icon-btn" id="convidarUsuarioClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="field">
+        <label for="novoUsuarioNome">Nome</label>
+        <div class="input-wrap"><input type="text" id="novoUsuarioNome" placeholder="Nome completo" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13px;"></div>
+      </div>
+      <div class="field">
+        <label for="novoUsuarioEmail">E-mail</label>
+        <div class="input-wrap"><input type="email" id="novoUsuarioEmail" placeholder="nome@petronect.com.br" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13px;"></div>
+      </div>
+      <div class="field">
+        <label for="novoUsuarioPerfil">Perfil</label>
+        <select id="novoUsuarioPerfil" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13px;">
+          <option>Administrador</option>
+          <option>Atendimento</option>
+          <option>Marketing</option>
+          <option>Segurança</option>
+          <option>Somente leitura</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Como esse usuário vai acessar</label>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+          <label style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--text-2); cursor:pointer;">
+            <input type="radio" name="modoAcesso" value="convite" checked style="margin-top:3px; accent-color:var(--green);">
+            <span><strong style="color:var(--text);">Enviar link de convite por e-mail</strong><br>A pessoa recebe um e-mail e define a própria senha no primeiro acesso. Mais seguro: ninguém além dela sabe a senha.</span>
+          </label>
+          <label style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--text-2); cursor:pointer;">
+            <input type="radio" name="modoAcesso" value="senha" style="margin-top:3px; accent-color:var(--green);">
+            <span><strong style="color:var(--text);">Definir uma senha agora</strong><br>Você escolhe a senha inicial e passa pra pessoa por fora (ela pode trocar depois).</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="novoUsuarioSenhaFields" class="hidden">
+        <div class="field">
+          <label for="novoUsuarioSenha">Senha inicial</label>
+          <div class="input-wrap"><input type="password" id="novoUsuarioSenha" placeholder="••••••••" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13px;"></div>
+        </div>
+        <div class="field">
+          <label for="novoUsuarioSenhaConfirma">Confirmar senha</label>
+          <div class="input-wrap"><input type="password" id="novoUsuarioSenhaConfirma" placeholder="••••••••" style="width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--text); border-radius:9px; padding:11px 13px; font-size:13px;"></div>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" id="enviarConviteBtn" style="margin-top:8px;">Convidar usuário <i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 </div>

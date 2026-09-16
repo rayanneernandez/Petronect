@@ -1309,13 +1309,17 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     });
   }
 
+  let permFiltroPerfil = '';
+
   function renderPerms() {
+    const rolesToShow = permFiltroPerfil ? [permFiltroPerfil] : ROLES;
+
     const head = document.getElementById('permissoesHeadRow');
-    head.innerHTML = '<th>Tela</th>' + ROLES.map(function(r) { return '<th>' + r + '</th>'; }).join('');
+    head.innerHTML = '<th>Tela</th>' + rolesToShow.map(function(r) { return '<th>' + r + '</th>'; }).join('');
 
     const body = document.getElementById('permissoesTableBody');
     body.innerHTML = PAGES.map(function(page) {
-      return '<tr><td>' + page + '</td>' + ROLES.map(function(role) {
+      return '<tr><td>' + page + '</td>' + rolesToShow.map(function(role) {
         const acesso = !!(perms[role] && perms[role][page]);
         return '<td><button type="button" class="switch' + (acesso ? ' on' : '') + '" data-perm-role="' + role + '" data-perm-page="' + page + '"></button></td>';
       }).join('') + '</tr>';
@@ -1334,10 +1338,22 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     });
   }
 
+  function popularFiltrosPermissao() {
+    const selPerfil = document.getElementById('permFiltroPerfil');
+    const selUsuario = document.getElementById('permFiltroUsuario');
+    selPerfil.innerHTML = '<option value="">Perfil: Todos</option>' + ROLES.map(function(r) {
+      return '<option value="' + r + '">' + r + '</option>';
+    }).join('');
+    selUsuario.innerHTML = '<option value="">Usuário: Todos</option>' + users.map(function(u, i) {
+      return '<option value="' + i + '">' + u.nome + ' (' + u.perfil + ')</option>';
+    }).join('');
+  }
+
   users = loadJSON(USERS_KEY, DEFAULT_USERS);
   perms = loadJSON(PERMS_KEY, defaultPerms());
   renderUsers();
   renderPerms();
+  popularFiltrosPermissao();
 
   document.querySelectorAll('#usuariosPageTabs [data-usertab]').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -1349,21 +1365,66 @@ document.querySelectorAll('[data-send]').forEach(btn => {
     });
   });
 
+  document.getElementById('permFiltroPerfil').addEventListener('change', function() {
+    permFiltroPerfil = this.value;
+    document.getElementById('permFiltroUsuario').value = '';
+    renderPerms();
+  });
+  document.getElementById('permFiltroUsuario').addEventListener('change', function() {
+    if (!this.value) { return; }
+    const user = users[Number(this.value)];
+    permFiltroPerfil = user.perfil;
+    document.getElementById('permFiltroPerfil').value = user.perfil;
+    renderPerms();
+    showToast('Mostrando o acesso de ' + user.nome + ' (perfil ' + user.perfil + ')');
+  });
+  document.getElementById('permFiltroLimparBtn').addEventListener('click', function() {
+    permFiltroPerfil = '';
+    document.getElementById('permFiltroPerfil').value = '';
+    document.getElementById('permFiltroUsuario').value = '';
+    renderPerms();
+  });
+
+  /* ---------- Modal: convidar usuário ---------- */
+  const convidarOverlay = document.getElementById('convidarUsuarioOverlay');
   document.getElementById('convidarUsuarioBtn').addEventListener('click', function() {
-    document.getElementById('convidarUsuarioForm').classList.toggle('hidden');
+    document.getElementById('novoUsuarioNome').value = '';
+    document.getElementById('novoUsuarioEmail').value = '';
+    document.getElementById('novoUsuarioSenha').value = '';
+    document.getElementById('novoUsuarioSenhaConfirma').value = '';
+    document.querySelector('input[name="modoAcesso"][value="convite"]').checked = true;
+    document.getElementById('novoUsuarioSenhaFields').classList.add('hidden');
+    convidarOverlay.classList.add('show');
+  });
+  document.getElementById('convidarUsuarioClose').addEventListener('click', function() { convidarOverlay.classList.remove('show'); });
+  convidarOverlay.addEventListener('click', function(e) { if (e.target === convidarOverlay) convidarOverlay.classList.remove('show'); });
+  document.querySelectorAll('input[name="modoAcesso"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.getElementById('novoUsuarioSenhaFields').classList.toggle('hidden', this.value !== 'senha');
+    });
   });
   document.getElementById('enviarConviteBtn').addEventListener('click', function() {
     const nome = document.getElementById('novoUsuarioNome').value.trim();
     const email = document.getElementById('novoUsuarioEmail').value.trim();
     const perfil = document.getElementById('novoUsuarioPerfil').value;
+    const modo = document.querySelector('input[name="modoAcesso"]:checked').value;
     if (!nome || !email) { showToast('Preencha nome e e-mail antes de convidar'); return; }
-    users.push({ nome: nome, email: email, perfil: perfil, ativo: true, ultimoAcesso: 'convite pendente' });
+
+    let ultimoAcesso = 'convite pendente';
+    if (modo === 'senha') {
+      const senha = document.getElementById('novoUsuarioSenha').value;
+      const confirma = document.getElementById('novoUsuarioSenhaConfirma').value;
+      if (!senha || senha.length < 6) { showToast('A senha precisa ter pelo menos 6 caracteres'); return; }
+      if (senha !== confirma) { showToast('As senhas digitadas não coincidem'); return; }
+      ultimoAcesso = 'nunca acessou';
+    }
+
+    users.push({ nome: nome, email: email, perfil: perfil, ativo: true, ultimoAcesso: ultimoAcesso });
     saveJSON(USERS_KEY, users);
     renderUsers();
-    showToast('Convite enviado para ' + email);
-    document.getElementById('novoUsuarioNome').value = '';
-    document.getElementById('novoUsuarioEmail').value = '';
-    document.getElementById('convidarUsuarioForm').classList.add('hidden');
+    popularFiltrosPermissao();
+    showToast(modo === 'senha' ? 'Usuário criado com senha definida' : 'Convite enviado por e-mail para ' + email);
+    convidarOverlay.classList.remove('show');
   });
 })();
 
