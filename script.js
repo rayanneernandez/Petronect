@@ -714,6 +714,48 @@ document.querySelectorAll('[data-export-toggle]').forEach(btn => {
 });
 document.addEventListener('click', () => document.querySelectorAll('.export-menu').forEach(m => m.classList.add('hidden')));
 
+/* ---------- Visão geral: filtro de rede e de data ---------- */
+document.querySelectorAll('#redeGlobalMenu [data-rede]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.getElementById('redeGlobalLabel').textContent = this.getAttribute('data-rede');
+    document.getElementById('redeGlobalMenu').classList.add('hidden');
+    showToast('Mostrando dados de: ' + this.getAttribute('data-rede'));
+  });
+});
+document.getElementById('dataFiltroMenu').addEventListener('click', function(e) { e.stopPropagation(); });
+
+function formatarDataBR(iso) {
+  const [ano, mes, dia] = iso.split('-');
+  return dia + '/' + mes + '/' + ano;
+}
+function aplicarPeriodo() {
+  const de = document.getElementById('dataFiltroDe').value;
+  const ate = document.getElementById('dataFiltroAte').value;
+  if (!de || !ate) { return; }
+  const label = de === ate ? formatarDataBR(de) : formatarDataBR(de) + ' a ' + formatarDataBR(ate);
+  document.getElementById('dataFiltroLabel').textContent = label;
+  document.getElementById('dataFiltroMenu').classList.add('hidden');
+  showToast('Mostrando dados de ' + label);
+}
+document.getElementById('dataFiltroAplicarBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  aplicarPeriodo();
+});
+document.querySelectorAll('[data-periodo-preset]').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const hoje = new Date(2026, 8, 14);
+    const de = new Date(hoje);
+    const preset = this.getAttribute('data-periodo-preset');
+    if (preset === '7dias') { de.setDate(de.getDate() - 6); }
+    else if (preset === '30dias') { de.setDate(de.getDate() - 29); }
+    const toISO = function(d) { return d.toISOString().slice(0, 10); };
+    document.getElementById('dataFiltroDe').value = toISO(de);
+    document.getElementById('dataFiltroAte').value = toISO(hoje);
+    aplicarPeriodo();
+  });
+});
+
 /* ---------- Tráfego: exportar (CSV/Excel/PDF) ---------- */
 document.querySelectorAll('#trafegoExportMenu [data-export-format]').forEach(exBtn => {
   exBtn.addEventListener('click', () => {

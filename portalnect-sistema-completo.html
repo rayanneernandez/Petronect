@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portalnect — Protótipo do sistema</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="shortcut icon" href="assets/favicon.ico">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -577,8 +579,35 @@
           <div class="sub"><span class="live-dot"></span>142 acessos humanos validados hoje</div>
         </div>
         <div class="header-controls">
-          <div class="ctrl"><i class="fa-solid fa-globe"></i> Rede global</div>
-          <div class="ctrl"><i class="fa-regular fa-calendar"></i> 14/09/2026</div>
+          <div class="export-dropdown">
+            <div class="ctrl" id="redeGlobalBtn" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-globe"></i> <span id="redeGlobalLabel">Rede global</span></div>
+            <div class="export-menu hidden" id="redeGlobalMenu">
+              <button type="button" data-rede="Rede global">Rede global</button>
+              <button type="button" data-rede="Bacia de Santos">Bacia de Santos</button>
+              <button type="button" data-rede="Bacia de Campos">Bacia de Campos</button>
+              <button type="button" data-rede="Nordeste">Nordeste</button>
+            </div>
+          </div>
+          <div class="export-dropdown">
+            <div class="ctrl" id="dataFiltroBtn" data-export-toggle style="cursor:pointer;"><i class="fa-regular fa-calendar"></i> <span id="dataFiltroLabel">14/09/2026</span></div>
+            <div class="export-menu hidden" id="dataFiltroMenu" style="min-width:240px; padding:14px;">
+              <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:10px;">Período</div>
+              <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
+                <label style="font-size:11.5px; color:var(--text-2);">De
+                  <input type="date" id="dataFiltroDe" value="2026-09-14" style="width:100%; margin-top:4px; padding:7px 8px; border-radius:7px; border:1px solid var(--line); background:#FFFFFF; color:var(--text); font-size:12.5px;">
+                </label>
+                <label style="font-size:11.5px; color:var(--text-2);">Até
+                  <input type="date" id="dataFiltroAte" value="2026-09-14" style="width:100%; margin-top:4px; padding:7px 8px; border-radius:7px; border:1px solid var(--line); background:#FFFFFF; color:var(--text); font-size:12.5px;">
+                </label>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+                <button type="button" class="row-action-btn" data-periodo-preset="hoje" style="font-size:11.5px; padding:5px 9px;">Hoje</button>
+                <button type="button" class="row-action-btn" data-periodo-preset="7dias" style="font-size:11.5px; padding:5px 9px;">Últimos 7 dias</button>
+                <button type="button" class="row-action-btn" data-periodo-preset="30dias" style="font-size:11.5px; padding:5px 9px;">Últimos 30 dias</button>
+              </div>
+              <button type="button" class="row-action-btn" id="dataFiltroAplicarBtn" style="width:100%; justify-content:center; background:var(--green); color:#fff; border-color:var(--green);">Aplicar período</button>
+            </div>
+          </div>
           <div class="icon-btn spin" id="refreshBtn" title="Atualizar"><i class="fa-solid fa-rotate"></i></div>
           <div class="export-dropdown">
             <div class="icon-btn" id="downloadBtn" title="Exportar" data-export-toggle style="cursor:pointer;"><i class="fa-solid fa-arrow-down-to-line"></i></div>
